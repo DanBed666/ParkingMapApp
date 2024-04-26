@@ -1,5 +1,6 @@
 package com.example.parkingmapapp;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -16,6 +17,8 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.kml.KmlDocument;
@@ -41,8 +44,9 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
     private MapView map = null;
     Button location;
     Button find;
-
     MyLocationNewOverlay mLocationOverlay;
+    InfoFragment fragment;
+    FragmentTransaction ft;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -115,6 +119,8 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
                 findParkings(mLocationOverlay.getMyLocation());
             }
         });
+
+        fragment = new InfoFragment();
 
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this);
         map.getOverlays().add(mapEventsOverlay);
@@ -217,6 +223,8 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
     public boolean singleTapConfirmedHelper(GeoPoint p)
     {
         Log.i("SINGLE", "Single tap");
+        getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+
         return true;
     }
 
@@ -224,6 +232,11 @@ public class MainActivity extends AppCompatActivity implements MapEventsReceiver
     public boolean longPressHelper(GeoPoint p)
     {
         Log.i("LONG", "Long tap");
+
+        ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.fragment, fragment);
+        ft.commit();
+
         return true;
     }
 }

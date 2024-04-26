@@ -28,4 +28,9 @@
         android:layout_alignParentBottom="true"
         android:text="LOC"/>
 
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment"
+        android:layout_width="500dp"
+        android:layout_height="200dp"/>
+
 </RelativeLayout>
