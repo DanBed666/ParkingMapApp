@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -20,11 +21,13 @@ import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.kml.KmlDocument;
 import org.osmdroid.bonuspack.location.OverpassAPIProvider;
 import org.osmdroid.config.Configuration;
+import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.FolderOverlay;
+import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
@@ -32,7 +35,7 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends AppCompatActivity implements MapEventsReceiver
 {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView map = null;
@@ -112,6 +115,9 @@ public class MainActivity extends AppCompatActivity
                 findParkings(mLocationOverlay.getMyLocation());
             }
         });
+
+        MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this);
+        map.getOverlays().add(mapEventsOverlay);
     }
 
     @Override
@@ -205,5 +211,19 @@ public class MainActivity extends AppCompatActivity
         FolderOverlay kmlOverlay = (FolderOverlay) kmlDocument.mKmlRoot.buildOverlay(map, null, null, kmlDocument);
         map.getOverlays().add(kmlOverlay);
         map.getOverlays().add(kmlOverlay);
+    }
+
+    @Override
+    public boolean singleTapConfirmedHelper(GeoPoint p)
+    {
+        Log.i("SINGLE", "Single tap");
+        return true;
+    }
+
+    @Override
+    public boolean longPressHelper(GeoPoint p)
+    {
+        Log.i("LONG", "Long tap");
+        return true;
     }
 }
