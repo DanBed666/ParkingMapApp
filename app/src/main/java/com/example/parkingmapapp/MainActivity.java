@@ -3,7 +3,10 @@ package com.example.parkingmapapp;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,10 +17,14 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import org.osmdroid.api.IMapController;
+import org.osmdroid.bonuspack.kml.KmlDocument;
+import org.osmdroid.bonuspack.location.OverpassAPIProvider;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.FolderOverlay;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
@@ -29,12 +36,19 @@ public class MainActivity extends AppCompatActivity
 {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView map = null;
+    Button location;
+    Button find;
+
+    MyLocationNewOverlay mLocationOverlay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
         setContentView(R.layout.activity_main);
 
@@ -56,6 +70,8 @@ public class MainActivity extends AppCompatActivity
         map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
 
+        mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(getApplicationContext()),map);
+
         String [] permissions = new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
         requestPermissionsIfNecessary(permissions
@@ -74,6 +90,27 @@ public class MainActivity extends AppCompatActivity
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+
+        location = findViewById(R.id.btn_location);
+        find = findViewById(R.id.btn_find);
+
+        location.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                navToLocation(mLocationOverlay.getMyLocation());
+            }
+        });
+
+        find.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                findParkings(mLocationOverlay.getMyLocation());
+            }
         });
     }
 
@@ -140,7 +177,6 @@ public class MainActivity extends AppCompatActivity
 
     public void showMyLocation()
     {
-        MyLocationNewOverlay mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(getApplicationContext()),map);
         mLocationOverlay.enableFollowLocation();
         map.getOverlays().add(mLocationOverlay);
         map.getController().setZoom(18.0);
@@ -151,5 +187,23 @@ public class MainActivity extends AppCompatActivity
         CompassOverlay mCompassOverlay = new CompassOverlay(getApplicationContext(), new InternalCompassOrientationProvider(getApplicationContext()), map);
         mCompassOverlay.enableCompass();
         map.getOverlays().add(mCompassOverlay);
+    }
+
+    public void navToLocation(GeoPoint location)
+    {
+        map.getController().setCenter(location);
+    }
+
+    public void findParkings(GeoPoint location)
+    {
+        OverpassAPIProvider overpassProvider = new OverpassAPIProvider();
+        BoundingBox range = new BoundingBox(location.getLatitude() + 0.05, location.getLongitude() + 0.05,
+                location.getLatitude() - 0.05, location.getLongitude() - 0.05);
+        String url = overpassProvider.urlForTagSearchKml("amenity=parking", range, 500, 30);
+        KmlDocument kmlDocument = new KmlDocument();
+        boolean ok = overpassProvider.addInKmlFolder(kmlDocument.mKmlRoot, url);
+        FolderOverlay kmlOverlay = (FolderOverlay) kmlDocument.mKmlRoot.buildOverlay(map, null, null, kmlDocument);
+        map.getOverlays().add(kmlOverlay);
+        map.getOverlays().add(kmlOverlay);
     }
 }
