@@ -27,8 +27,8 @@
         android:layout_height="wrap_content"/>
 
     <TextView
-        android:id="@+id/tv_login"
-        android:text="Go to login site"
+        android:id="@+id/tv_register"
+        android:text="Go to register site"
         android:textAlignment="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

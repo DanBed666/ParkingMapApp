@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "272027959583",
+    "project_id": "parkingmapapp-39ec0",
+    "storage_bucket": "parkingmapapp-39ec0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:272027959583:android:a83ba05ebd8c85d3c4702a",
+        "android_client_info": {
+          "package_name": "com.example.parkingmapapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-zEMTrQzTok1hqXEiGBbPkdI0AY9oCuY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

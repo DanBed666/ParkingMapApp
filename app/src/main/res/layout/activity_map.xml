@@ -1,10 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:id="@+id/main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MapActivity">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context=".MainActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <org.osmdroid.views.MapView android:id="@+id/map"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
+    <Button
+        android:id="@+id/btn_find"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:text="FND"/>
+
+    <Button
+        android:id="@+id/btn_location"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:text="LOC"/>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment"
+        android:layout_width="500dp"
+        android:layout_height="200dp"/>
+
+</RelativeLayout>
