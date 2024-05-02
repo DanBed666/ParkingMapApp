@@ -20,31 +20,34 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class LoginActivity extends AppCompatActivity {
-
+public class RegisterActivity extends AppCompatActivity
+{
     EditText emailET;
     EditText passwordET;
     Button register;
-    TextView goToRegister;
+    TextView goToLogin;
     FirebaseAuth mAuth;
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_login);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+
+        setContentView(R.layout.activity_register);
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) ->
+        {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
+        mAuth = FirebaseAuth.getInstance();
+
         emailET = findViewById(R.id.et_email);
         passwordET = findViewById(R.id.et_password);
         register = findViewById(R.id.btn_register);
-        goToRegister = findViewById(R.id.tv_register);
-
-        mAuth = FirebaseAuth.getInstance();
+        goToLogin = findViewById(R.id.tv_login);
 
         register.setOnClickListener(new View.OnClickListener()
         {
@@ -54,32 +57,23 @@ public class LoginActivity extends AppCompatActivity {
                 signUp(emailET.getText().toString(), passwordET.getText().toString());
             }
         });
-
-        goToRegister.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
-            }
-        });
     }
 
     public void signUp(String email, String password)
     {
-        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>()
+        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>()
         {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task)
             {
                 if (task.isSuccessful())
                 {
-                    Log.i("LOGIN!", "Zalogowano pomyślnie!");
-                    startActivity(new Intent(getApplicationContext(), MapActivity.class));
+                    Log.i("REJESTRACJA", "Zarejestrowano!");
+                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 }
                 else
                 {
-                    Log.i("BŁĄD", "Błąd w trakcie logowania!");
+                    Log.i("BŁĄD", "Błąd w trakcie rejestracji!");
                 }
             }
         });
