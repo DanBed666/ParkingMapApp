@@ -28,6 +28,14 @@
         android:layout_alignParentBottom="true"
         android:text="LOC"/>
 
+    <Button
+        android:id="@+id/btn_settings"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:text="SET"/>
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment"
         android:layout_width="500dp"

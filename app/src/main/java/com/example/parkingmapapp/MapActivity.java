@@ -2,6 +2,7 @@ package com.example.parkingmapapp;
 
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -44,6 +45,7 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
     private MapView map = null;
     Button location;
     Button find;
+    Button settings;
     MyLocationNewOverlay mLocationOverlay;
     InfoFragment fragment;
     FragmentTransaction ft;
@@ -124,6 +126,15 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
 
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this);
         map.getOverlays().add(mapEventsOverlay);
+
+        settings.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+            }
+        });
     }
 
     @Override
