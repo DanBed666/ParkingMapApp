@@ -24,6 +24,9 @@ import androidx.fragment.app.FragmentTransaction;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.kml.KmlDocument;
 import org.osmdroid.bonuspack.location.OverpassAPIProvider;
+import org.osmdroid.bonuspack.routing.OSRMRoadManager;
+import org.osmdroid.bonuspack.routing.Road;
+import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -32,6 +35,7 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.FolderOverlay;
 import org.osmdroid.views.overlay.MapEventsOverlay;
+import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
@@ -247,6 +251,9 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
         ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fragment, fragment);
         ft.commit();
+
+        Utils u = new Utils(getApplicationContext(), map, mLocationOverlay.getMyLocation(), p);
+        u.setRoute();
 
         return true;
     }
