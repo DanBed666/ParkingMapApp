@@ -64,12 +64,16 @@ public class InfoFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_info, container, false);
         route = v.findViewById(R.id.btn_route);
 
+        assert getArguments() != null;
+        Utils u = (Utils) getArguments().getSerializable("OBJECT");
+
         route.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-
+                assert u != null;
+                u.setRoute();
             }
         });
 

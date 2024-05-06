@@ -35,6 +35,8 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.FolderOverlay;
 import org.osmdroid.views.overlay.MapEventsOverlay;
+import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
@@ -53,6 +55,7 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
     MyLocationNewOverlay mLocationOverlay;
     InfoFragment fragment;
     FragmentTransaction ft;
+    Utils u;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -240,6 +243,7 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
     {
         Log.i("SINGLE", "Single tap");
         getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+        u.clearRoute();
 
         return true;
     }
@@ -249,12 +253,15 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
     {
         Log.i("LONG", "Long tap");
 
+        u = new Utils(getApplicationContext(), map, mLocationOverlay.getMyLocation(), p);
+        u.setMarker(p);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("OBJECT", u);
+        fragment.setArguments(bundle);
+
         ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fragment, fragment);
         ft.commit();
-
-        Utils u = new Utils(getApplicationContext(), map, mLocationOverlay.getMyLocation(), p);
-        u.setRoute();
 
         return true;
     }
