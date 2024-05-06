@@ -107,6 +107,7 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
 
         location = findViewById(R.id.btn_location);
         find = findViewById(R.id.btn_find);
+        settings = findViewById(R.id.btn_settings);
 
         location.setOnClickListener(new View.OnClickListener()
         {

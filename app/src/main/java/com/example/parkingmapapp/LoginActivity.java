@@ -20,6 +20,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.Objects;
+
 public class LoginActivity extends AppCompatActivity {
 
     EditText emailET;
@@ -51,7 +53,10 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
-                signUp(emailET.getText().toString(), passwordET.getText().toString());
+                String email = emailET.getText().toString();
+                String password = emailET.getText().toString();
+
+                signUp(email, password);
             }
         });
 
@@ -80,6 +85,7 @@ public class LoginActivity extends AppCompatActivity {
                 else
                 {
                     Log.i("BŁĄD", "Błąd w trakcie logowania!");
+                    Log.i("BŁĄD2", Objects.requireNonNull(task.getException()).getMessage());
                 }
             }
         });

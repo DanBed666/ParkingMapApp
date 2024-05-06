@@ -1,8 +1,10 @@
 package com.example.parkingmapapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,12 +33,17 @@ public class SettingsActivity extends AppCompatActivity
 
         mAuth = FirebaseAuth.getInstance();
 
+        logout = findViewById(R.id.btn_logout);
+
         logout.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
                 mAuth.signOut();
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                Toast.makeText(getApplicationContext(), "Wylogowano pomyślnie", Toast.LENGTH_SHORT).show();
+                finish();
             }
         });
     }
