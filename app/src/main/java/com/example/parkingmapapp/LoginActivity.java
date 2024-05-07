@@ -63,7 +63,8 @@ public class LoginActivity extends AppCompatActivity {
                 Log.i("PASS", email);
                 Log.i("PASS", password);
 
-                signUp(email, password);
+                if (checkCredentials(email, password))
+                    signIn(email, password);
             }
         });
 
@@ -81,12 +82,12 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
-
+                startActivity(new Intent(getApplicationContext(), RemindPasswordActivity.class));
             }
         });
     }
 
-    public void signUp(String email, String password)
+    public void signIn(String email, String password)
     {
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>()
         {
@@ -97,14 +98,23 @@ public class LoginActivity extends AppCompatActivity {
                 {
                     Log.i("LOGIN!", "Zalogowano pomyślnie!");
                     FirebaseUser user = mAuth.getCurrentUser();
-                    updateUI(user);
-                    finish();
+
+                    assert user != null;
+                    if (user.isEmailVerified())
+                    {
+                        updateUI(user);
+                        finish();
+                    }
+                    else
+                    {
+                        Toast.makeText(getApplicationContext(), "Potwierdź swój adres email aby się zalogować", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 else
                 {
-                    Log.i("BŁĄD", "Błąd w trakcie logowania!");
+                    Log.i("BŁĄD", "Niepoprawny login lub hasło!");
                     Log.i("BŁĄD2", Objects.requireNonNull(task.getException()).getMessage());
-                    Toast.makeText(getApplicationContext(), "Błąd w trakcie logowania", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Niepoprawny login lub hasło!", Toast.LENGTH_LONG).show();
                     updateUI(null);
                 }
             }
@@ -122,5 +132,16 @@ public class LoginActivity extends AppCompatActivity {
         {
             Toast.makeText(getApplicationContext(), "NIe zalogowałeś sie", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public boolean checkCredentials(String email, String password)
+    {
+        if (email.isEmpty() && password.isEmpty())
+        {
+            Toast.makeText(getApplicationContext(), "Wypełnij puste pola!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
     }
 }
