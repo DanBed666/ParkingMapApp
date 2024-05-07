@@ -57,7 +57,10 @@ public class RegisterActivity extends AppCompatActivity
             public void onClick(View v)
             {
                 String email = emailET.getText().toString();
-                String password = emailET.getText().toString();
+                String password = passwordET.getText().toString();
+
+                Log.i("PASS", email);
+                Log.i("PASS", password);
 
                 if (checkCredentials(email, password))
                     signUp(email, password);
@@ -86,6 +89,7 @@ public class RegisterActivity extends AppCompatActivity
                     Log.i("REJESTRACJA", "Zarejestrowano!");
                     startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                     sendConfirmMail();
+                    finish();
                 }
                 else
                 {
