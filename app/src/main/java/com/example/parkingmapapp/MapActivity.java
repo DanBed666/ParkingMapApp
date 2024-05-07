@@ -237,10 +237,12 @@ public class MapActivity extends AppCompatActivity
         boolean ok = overpassProvider.addInKmlFolder(kmlDocument.mKmlRoot, url);
         KMLStyler kmlStyler = new KMLStyler(getApplicationContext(), map, location, listener);
 
-        if (ok) {
+        if (ok)
+        {
             FolderOverlay kmlOverlay = (FolderOverlay) kmlDocument.mKmlRoot.buildOverlay(map, null, kmlStyler, kmlDocument);
             map.getOverlays().add(kmlOverlay);
-        } else {
+        } else
+        {
             Toast.makeText(getApplicationContext(), "Nie znaleziono parkingów w danym obszarze!", Toast.LENGTH_SHORT).show();
         }
     }

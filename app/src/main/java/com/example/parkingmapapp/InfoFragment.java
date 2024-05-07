@@ -4,10 +4,12 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,12 +63,18 @@ public class InfoFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         Button route;
+        TextView test;
+
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_info, container, false);
         route = v.findViewById(R.id.btn_route);
+        test = v.findViewById(R.id.tv_test);
 
         assert getArguments() != null;
         Utils u = (Utils) getArguments().getSerializable("OBJECT");
+        String id = getArguments().getString("ID");
+
+        test.setText(id);
 
         route.setOnClickListener(new View.OnClickListener()
         {

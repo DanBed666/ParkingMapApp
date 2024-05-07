@@ -2,6 +2,7 @@ package com.example.parkingmapapp;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.fragment.app.FragmentTransaction;
 
@@ -53,6 +54,8 @@ public class KMLStyler implements KmlFeature.Styler
     @Override
     public void onPoint(Marker marker, KmlPlacemark kmlPlacemark, KmlPoint kmlPoint)
     {
+        String id = kmlPlacemark.getExtendedData("parking");
+
         marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener()
         {
             @Override
@@ -63,6 +66,7 @@ public class KMLStyler implements KmlFeature.Styler
 
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("OBJECT", u);
+                bundle.putString("ID", id);
                 fragment.setArguments(bundle);
 
                 ft = listener.getSupportFM().beginTransaction();
@@ -74,7 +78,7 @@ public class KMLStyler implements KmlFeature.Styler
                     public boolean singleTapConfirmedHelper(GeoPoint p)
                     {
                         u.clearRoute();
-                        return true;
+                        return false;
                     }
 
                     @Override
