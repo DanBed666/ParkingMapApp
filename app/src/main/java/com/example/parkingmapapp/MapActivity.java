@@ -1,6 +1,5 @@
 package com.example.parkingmapapp;
 
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +19,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import org.osmdroid.api.IMapController;
@@ -45,7 +46,7 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
 
-public class MapActivity extends AppCompatActivity implements MapEventsReceiver
+public class MapActivity extends AppCompatActivity
 {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView map = null;
@@ -53,9 +54,7 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
     Button find;
     Button settings;
     MyLocationNewOverlay mLocationOverlay;
-    InfoFragment fragment;
-    FragmentTransaction ft;
-    Utils u;
+    FragmentInterface listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -130,11 +129,6 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
             }
         });
 
-        fragment = new InfoFragment();
-
-        MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this);
-        map.getOverlays().add(mapEventsOverlay);
-
         settings.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -143,6 +137,15 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
                 startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
             }
         });
+
+        listener = new FragmentInterface()
+        {
+            @Override
+            public FragmentManager getSupportFM()
+            {
+                return getSupportFragmentManager();
+            }
+        };
     }
 
     @Override
@@ -225,44 +228,20 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
         map.getController().setCenter(location);
     }
 
-    public void findParkings(GeoPoint location)
-    {
+    public void findParkings(GeoPoint location) {
         OverpassAPIProvider overpassProvider = new OverpassAPIProvider();
         BoundingBox range = new BoundingBox(location.getLatitude() + 0.05, location.getLongitude() + 0.05,
                 location.getLatitude() - 0.05, location.getLongitude() - 0.05);
         String url = overpassProvider.urlForTagSearchKml("amenity=parking", range, 500, 30);
         KmlDocument kmlDocument = new KmlDocument();
         boolean ok = overpassProvider.addInKmlFolder(kmlDocument.mKmlRoot, url);
-        FolderOverlay kmlOverlay = (FolderOverlay) kmlDocument.mKmlRoot.buildOverlay(map, null, null, kmlDocument);
-        map.getOverlays().add(kmlOverlay);
-        map.getOverlays().add(kmlOverlay);
-    }
+        KMLStyler kmlStyler = new KMLStyler(getApplicationContext(), map, location, listener);
 
-    @Override
-    public boolean singleTapConfirmedHelper(GeoPoint p)
-    {
-        Log.i("SINGLE", "Single tap");
-        getSupportFragmentManager().beginTransaction().remove(fragment).commit();
-        u.clearRoute();
-
-        return true;
-    }
-
-    @Override
-    public boolean longPressHelper(GeoPoint p)
-    {
-        Log.i("LONG", "Long tap");
-
-        u = new Utils(getApplicationContext(), map, mLocationOverlay.getMyLocation(), p);
-        u.setMarker(p);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("OBJECT", u);
-        fragment.setArguments(bundle);
-
-        ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fragment, fragment);
-        ft.commit();
-
-        return true;
+        if (ok) {
+            FolderOverlay kmlOverlay = (FolderOverlay) kmlDocument.mKmlRoot.buildOverlay(map, null, kmlStyler, kmlDocument);
+            map.getOverlays().add(kmlOverlay);
+        } else {
+            Toast.makeText(getApplicationContext(), "Nie znaleziono parkingów w danym obszarze!", Toast.LENGTH_SHORT).show();
+        }
     }
 }

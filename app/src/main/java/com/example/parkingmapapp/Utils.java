@@ -48,23 +48,8 @@ public class Utils implements Serializable
         map.getOverlays().add(roadOverlay);
         map.invalidate();
     }
-
-    public void setMarker(GeoPoint endPoint)
-    {
-        marker = new Marker(map);
-        marker.setPosition(endPoint);
-        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        map.getOverlays().add(marker);
-
-        for (Overlay o : map.getOverlays())
-        {
-            Log.i("OVERLAY", o.toString());
-        }
-    }
-
     public void clearRoute()
     {
-        map.getOverlays().remove(marker);
         map.getOverlays().remove(roadOverlay);
         map.invalidate();
     }
