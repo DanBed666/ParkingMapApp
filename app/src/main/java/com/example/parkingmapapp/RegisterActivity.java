@@ -80,6 +80,15 @@ public class RegisterActivity extends AppCompatActivity
                 }
             }
         });
+
+        goToLogin.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            }
+        });
     }
 
     public void signUp(String email, String password, User user)

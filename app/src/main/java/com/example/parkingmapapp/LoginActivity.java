@@ -133,6 +133,7 @@ public class LoginActivity extends AppCompatActivity {
         if (user != null)
         {
             startActivity(new Intent(getApplicationContext(), MapActivity.class));
+            // Place this in register user place
             users.child(user.getUid()).setValue(userObj);
             Toast.makeText(getApplicationContext(), "Zalogowano pomyślnie", Toast.LENGTH_SHORT).show();
         }
