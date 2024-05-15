@@ -21,9 +21,16 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class RegisterActivity extends AppCompatActivity
 {
+    EditText nameET;
+    EditText surnameET;
     EditText emailET;
     EditText passwordET;
     Button register;
@@ -46,6 +53,8 @@ public class RegisterActivity extends AppCompatActivity
 
         mAuth = FirebaseAuth.getInstance();
 
+        nameET = findViewById(R.id.et_name);
+        surnameET = findViewById(R.id.et_surname);
         emailET = findViewById(R.id.et_email);
         passwordET = findViewById(R.id.et_password);
         register = findViewById(R.id.btn_register);
@@ -56,6 +65,8 @@ public class RegisterActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
+                String name = nameET.getText().toString();
+                String surname = surnameET.getText().toString();
                 String email = emailET.getText().toString();
                 String password = passwordET.getText().toString();
 
@@ -63,21 +74,15 @@ public class RegisterActivity extends AppCompatActivity
                 Log.i("PASS", password);
 
                 if (checkCredentials(email, password))
-                    signUp(email, password);
-            }
-        });
-
-        goToLogin.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                {
+                    User user = new User(name, surname);
+                    signUp(email, password, user);
+                }
             }
         });
     }
 
-    public void signUp(String email, String password)
+    public void signUp(String email, String password, User user)
     {
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>()
         {
@@ -87,7 +92,9 @@ public class RegisterActivity extends AppCompatActivity
                 if (task.isSuccessful())
                 {
                     Log.i("REJESTRACJA", "Zarejestrowano!");
-                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    intent.putExtra("USER", user);
+                    startActivity(intent);
                     sendConfirmMail();
                     finish();
                 }

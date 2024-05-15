@@ -21,6 +21,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
 
@@ -32,6 +34,9 @@ public class LoginActivity extends AppCompatActivity {
     TextView goToRegister;
     FirebaseAuth mAuth;
     TextView remind;
+    FirebaseDatabase database = FirebaseDatabase.getInstance("https://parkingmapapp-39ec0-default-rtdb.europe-west1.firebasedatabase.app/");
+    DatabaseReference users = database.getReference("users");
+    User userObj;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +56,8 @@ public class LoginActivity extends AppCompatActivity {
         remind = findViewById(R.id.tv_remind);
 
         mAuth = FirebaseAuth.getInstance();
+
+        userObj = (User) getIntent().getSerializableExtra("USER");
 
         register.setOnClickListener(new View.OnClickListener()
         {
@@ -126,6 +133,7 @@ public class LoginActivity extends AppCompatActivity {
         if (user != null)
         {
             startActivity(new Intent(getApplicationContext(), MapActivity.class));
+            users.child(user.getUid()).setValue(userObj);
             Toast.makeText(getApplicationContext(), "Zalogowano pomyślnie", Toast.LENGTH_SHORT).show();
         }
         else

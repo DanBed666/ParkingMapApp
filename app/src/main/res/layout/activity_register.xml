@@ -22,6 +22,20 @@
         android:inputType="textPassword"
         android:hint="Password"/>
 
+    <EditText
+        android:id="@+id/et_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:hint="Name"/>
+
+    <EditText
+        android:id="@+id/et_surname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:hint="Surname"/>
+
     <Button
         android:id="@+id/btn_register"
         android:text="Register"
