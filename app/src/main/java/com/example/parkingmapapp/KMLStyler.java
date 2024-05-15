@@ -55,6 +55,8 @@ public class KMLStyler implements KmlFeature.Styler
     public void onPoint(Marker marker, KmlPlacemark kmlPlacemark, KmlPoint kmlPoint)
     {
         String id = kmlPlacemark.getExtendedData("parking");
+        Log.i("LATITUDE", String.valueOf(kmlPoint.getPosition().getLatitude()));
+        Log.i("LONGITUDE", String.valueOf(kmlPoint.getPosition().getLongitude()));
 
         marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener()
         {
@@ -110,7 +112,51 @@ public class KMLStyler implements KmlFeature.Styler
     @Override
     public void onPolygon(Polygon polygon, KmlPlacemark kmlPlacemark, KmlPolygon kmlPolygon)
     {
+        String id = kmlPlacemark.getExtendedData("parking");
 
+        polygon.setOnClickListener(new Polygon.OnClickListener()
+        {
+            @Override
+            public boolean onClick(Polygon polygon, MapView mapView, GeoPoint eventPos)
+            {
+                fragment = new InfoFragment();
+                u = new Utils(context, map, startPoint, eventPos);
+
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("OBJECT", u);
+                bundle.putString("ID", id);
+                fragment.setArguments(bundle);
+
+                listener.getSupportFM().beginTransaction().
+                        setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                        .show(fragment)
+                        .replace(R.id.fragment, fragment)
+                        .commit();
+
+                MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(new MapEventsReceiver() {
+                    @Override
+                    public boolean singleTapConfirmedHelper(GeoPoint p)
+                    {
+                        u.clearRoute();
+                        listener.getSupportFM().beginTransaction().
+                                setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                                .hide(fragment)
+                                .commit();
+                        return false;
+                    }
+
+                    @Override
+                    public boolean longPressHelper(GeoPoint p)
+                    {
+                        return false;
+                    }
+                });
+
+                map.getOverlays().add(mapEventsOverlay);
+
+                return true;
+            }
+        });
     }
 
     @Override
