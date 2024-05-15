@@ -36,6 +36,9 @@ public class RegisterActivity extends AppCompatActivity
     Button register;
     TextView goToLogin;
     FirebaseAuth mAuth;
+    FirebaseDatabase database = FirebaseDatabase.getInstance("https://parkingmapapp-39ec0-default-rtdb.europe-west1.firebasedatabase.app/");
+    DatabaseReference users = database.getReference("users");
+    User userObj;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -75,8 +78,8 @@ public class RegisterActivity extends AppCompatActivity
 
                 if (checkCredentials(email, password))
                 {
-                    User user = new User(name, surname);
-                    signUp(email, password, user);
+                    userObj = new User(name, surname);
+                    signUp(email, password);
                 }
             }
         });
@@ -91,7 +94,7 @@ public class RegisterActivity extends AppCompatActivity
         });
     }
 
-    public void signUp(String email, String password, User user)
+    public void signUp(String email, String password)
     {
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>()
         {
@@ -101,9 +104,7 @@ public class RegisterActivity extends AppCompatActivity
                 if (task.isSuccessful())
                 {
                     Log.i("REJESTRACJA", "Zarejestrowano!");
-                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                    intent.putExtra("USER", user);
-                    startActivity(intent);
+                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                     sendConfirmMail();
                     finish();
                 }
@@ -135,6 +136,8 @@ public class RegisterActivity extends AppCompatActivity
     {
         FirebaseUser user = mAuth.getCurrentUser();
         assert user != null;
+
+        users.child(user.getUid()).setValue(userObj);
         user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>()
         {
             @Override
