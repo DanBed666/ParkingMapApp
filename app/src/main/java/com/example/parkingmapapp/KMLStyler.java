@@ -69,15 +69,21 @@ public class KMLStyler implements KmlFeature.Styler
                 bundle.putString("ID", id);
                 fragment.setArguments(bundle);
 
-                ft = listener.getSupportFM().beginTransaction();
-                ft.replace(R.id.fragment, fragment);
-                ft.commit();
+                listener.getSupportFM().beginTransaction().
+                        setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                        .show(fragment)
+                        .replace(R.id.fragment, fragment)
+                        .commit();
 
                 MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(new MapEventsReceiver() {
                     @Override
                     public boolean singleTapConfirmedHelper(GeoPoint p)
                     {
                         u.clearRoute();
+                        listener.getSupportFM().beginTransaction().
+                                setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                                .hide(fragment)
+                                .commit();
                         return false;
                     }
 
