@@ -19,6 +19,9 @@
         android:theme="@style/Theme.ParkingMapApp"
         tools:targetApi="31">
         <activity
+            android:name=".AddParking"
+            android:exported="false" />
+        <activity
             android:name=".RemindPasswordActivity"
             android:exported="false" />
         <activity

@@ -1,5 +1,6 @@
 package com.example.parkingmapapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -10,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,18 +66,26 @@ public class InfoFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         Button route;
+        Button add;
         TextView test;
+        TextView info;
 
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_info, container, false);
         route = v.findViewById(R.id.btn_route);
         test = v.findViewById(R.id.tv_test);
+        add = v.findViewById(R.id.btn_add);
+        info = v.findViewById(R.id.tv_info);
 
         assert getArguments() != null;
         Utils u = (Utils) getArguments().getSerializable("OBJECT");
         String id = getArguments().getString("ID");
+        String keyId = getArguments().getString("KEYID");
+        Parking p = (Parking) getArguments().getSerializable("PARKING");
 
         test.setText(id);
+        assert p != null;
+        info.setText(p.getSample());
 
         route.setOnClickListener(new View.OnClickListener()
         {
@@ -83,6 +94,18 @@ public class InfoFragment extends Fragment
             {
                 assert u != null;
                 u.setRoute();
+            }
+        });
+
+        add.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(requireActivity().getApplicationContext(), AddParking.class);
+                intent.putExtra("PARKING", p);
+                intent.putExtra("KEYID", keyId);
+                startActivity(intent);
             }
         });
 

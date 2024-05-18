@@ -15,11 +15,28 @@
         android:textAlignment="center"
         android:background="#FFF000"/>
 
+    <TextView
+        android:id="@+id/tv_info"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="lol"
+        android:textSize="28dp"
+        android:layout_marginTop="50dp"
+        android:textAlignment="center"
+        android:background="#FFF000"/>
+
     <Button
         android:id="@+id/btn_route"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:text="route" />
+        android:layout_marginTop="100dp"
+        android:text="route"/>
+
+    <Button
+        android:id="@+id/btn_add"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:text="add"/>
 
 </FrameLayout>
