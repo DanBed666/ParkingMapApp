@@ -3,6 +3,7 @@ package com.example.parkingmapapp;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -12,6 +13,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -30,6 +40,9 @@ public class InfoFragment extends Fragment
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    FirebaseDatabase database = FirebaseDatabase.getInstance("https://parkingmapapp-39ec0-default-rtdb.europe-west1.firebasedatabase.app/");
+    DatabaseReference parkings = database.getReference("parkings");
 
     public InfoFragment() {
         // Required empty public constructor
@@ -83,9 +96,7 @@ public class InfoFragment extends Fragment
         String keyId = getArguments().getString("KEYID");
         Parking p = (Parking) getArguments().getSerializable("PARKING");
 
-        test.setText(id);
-        assert p != null;
-        info.setText(p.getSample());
+        getInfo(keyId, info);
 
         route.setOnClickListener(new View.OnClickListener()
         {
@@ -110,5 +121,35 @@ public class InfoFragment extends Fragment
         });
 
         return v;
+    }
+
+    public void getInfo(String id, TextView info)
+    {
+        DatabaseReference p = parkings.child(id);
+        p.addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
+                DataSnapshot s = snapshot.child("sample");
+
+                if (s.exists())
+                {
+                    Log.i("SAMPLE", Objects.requireNonNull(s.getValue(String.class)));
+                    info.setText(s.getValue(String.class));
+                }
+                else
+                {
+                    Log.i("SAMPLE", "Brak danych");
+                    info.setText("Brak danych");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error)
+            {
+
+            }
+        });
     }
 }
