@@ -6,14 +6,6 @@
     tools:context=".InfoFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/tv_test"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment"
-        android:textSize="28dp"
-        android:textAlignment="center"
-        android:background="#FFF000"/>
 
     <TextView
         android:id="@+id/tv_info"
@@ -21,7 +13,6 @@
         android:layout_height="match_parent"
         android:text="lol"
         android:textSize="28dp"
-        android:layout_marginTop="50dp"
         android:textAlignment="center"
         android:background="#FFF000"/>
 
@@ -29,14 +20,21 @@
         android:id="@+id/btn_route"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="50dp"
         android:text="route"/>
 
     <Button
         android:id="@+id/btn_add"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="100dp"
         android:text="add"/>
+
+    <Button
+        android:id="@+id/btn_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:text="info"/>
 
 </FrameLayout>

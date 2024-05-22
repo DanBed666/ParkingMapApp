@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ParkingInfoActivity"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_parking"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="parking"
+        android:textSize="28dp"/>
+
+    <TextView
+        android:id="@+id/tv_capacity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="capacity"
+        android:textSize="28dp"/>
+
+    <TextView
+        android:id="@+id/tv_fee"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="fee"
+        android:textSize="28dp"/>
+
+    <TextView
+        android:id="@+id/tv_supervised"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="supervised"
+        android:textSize="28dp"/>
+
+    <TextView
+        android:id="@+id/tv_operator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="operator"
+        android:textSize="28dp"/>
+
+</LinearLayout>

@@ -63,25 +63,35 @@ public class KMLStyler implements KmlFeature.Styler
     public void onPoint(Marker marker, KmlPlacemark kmlPlacemark, KmlPoint kmlPoint)
     {
         String id = kmlPlacemark.mId;
-        String amenity = kmlPlacemark.getExtendedData("amenity");
         String pk = kmlPlacemark.getExtendedData("parking");
+        String cpc = kmlPlacemark.getExtendedData("capacity");;
+        String fee = kmlPlacemark.getExtendedData("fee");;
+        String svd = kmlPlacemark.getExtendedData("supervised");;
+        String ope = kmlPlacemark.getExtendedData("operator");;
 
-        parking = new Parking(amenity, pk);
+        parking = new Parking(pk, cpc, fee, svd, ope);
         DatabaseReference p = parkings.child(id);
 
-        p.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+        parkings.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task)
             {
                 if (task.isSuccessful())
                 {
-                    DataSnapshot dataSnapshot = task.getResult();
+                    DataSnapshot snapshot = task.getResult();
 
-                    if (!dataSnapshot.exists())
+                    for (DataSnapshot s : snapshot.getChildren())
                     {
-                        p.setValue(parking);
+                        if (!id.equals(s.getKey()))
+                        {
+                            p.setValue(parking);
+                        }
                     }
+                }
+                else
+                {
+                    Log.i("GUWNO", Objects.requireNonNull(Objects.requireNonNull(task.getException()).getMessage()));
                 }
             }
         });
@@ -101,7 +111,6 @@ public class KMLStyler implements KmlFeature.Styler
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("OBJECT", u);
                 bundle.putSerializable("PARKING", parking);
-                bundle.putString("ID", pk);
                 bundle.putString("KEYID", id);
                 fragment.setArguments(bundle);
 
@@ -146,25 +155,35 @@ public class KMLStyler implements KmlFeature.Styler
     public void onPolygon(Polygon polygon, KmlPlacemark kmlPlacemark, KmlPolygon kmlPolygon)
     {
         String id = kmlPlacemark.mId;
-        String amenity = kmlPlacemark.getExtendedData("amenity");
         String pk = kmlPlacemark.getExtendedData("parking");
+        String cpc = kmlPlacemark.getExtendedData("capacity");;
+        String fee = kmlPlacemark.getExtendedData("fee");;
+        String svd = kmlPlacemark.getExtendedData("supervised");;
+        String ope = kmlPlacemark.getExtendedData("operator");;
 
-        parking = new Parking(amenity, pk);
+        parking = new Parking(pk, cpc, fee, svd, ope);
         DatabaseReference p = parkings.child(id);
 
-        p.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+        parkings.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task)
             {
                 if (task.isSuccessful())
                 {
-                    DataSnapshot dataSnapshot = task.getResult();
+                    DataSnapshot snapshot = task.getResult();
 
-                    if (!dataSnapshot.exists())
+                    for (DataSnapshot s : snapshot.getChildren())
                     {
-                        p.setValue(parking);
+                        if (!id.equals(s.getKey()))
+                        {
+                            p.setValue(parking);
+                        }
                     }
+                }
+                else
+                {
+                    Log.i("GUWNO", Objects.requireNonNull(Objects.requireNonNull(task.getException()).getMessage()));
                 }
             }
         });
@@ -180,7 +199,6 @@ public class KMLStyler implements KmlFeature.Styler
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("OBJECT", u);
                 bundle.putSerializable("PARKING", parking);
-                bundle.putString("ID", pk);
                 bundle.putString("KEYID", id);
                 fragment.setArguments(bundle);
 
@@ -220,37 +238,5 @@ public class KMLStyler implements KmlFeature.Styler
     public void onTrack(Polyline polyline, KmlPlacemark kmlPlacemark, KmlTrack kmlTrack)
     {
 
-    }
-
-    public void getInfo(String id)
-    {
-        DatabaseReference p = parkings.child(id);
-        final String[] sample = {""};
-        p.addValueEventListener(new ValueEventListener()
-        {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot)
-            {
-                DataSnapshot s = snapshot.child("sample");
-
-                if (s.exists())
-                {
-                    Log.i("SAMPLE", Objects.requireNonNull(s.getValue(String.class)));
-                    parking.setSample(s.getValue(String.class));
-                }
-                else
-                {
-                    Log.i("SAMPLE", "Brak danych");
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error)
-            {
-
-            }
-        });
-
-        Log.i("SAMPLETEXT", parking.getSample());
     }
 }
