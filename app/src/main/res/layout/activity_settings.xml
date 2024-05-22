@@ -32,4 +32,10 @@
         android:layout_height="wrap_content"
         android:textSize="24dp"/>
 
+    <Button
+        android:id="@+id/btn_change"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="account settings"/>
+
 </LinearLayout>

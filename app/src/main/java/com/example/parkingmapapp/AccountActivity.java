@@ -1,10 +1,10 @@
 package com.example.parkingmapapp;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -22,46 +22,54 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class SettingsActivity extends AppCompatActivity
+import java.util.Objects;
+
+public class AccountActivity extends AppCompatActivity
 {
-    Button logout;
-    FirebaseAuth mAuth;
-    FirebaseUser user;
-    TextView email;
-    TextView name;
-    TextView surname;
+    EditText nameET;
+    EditText surnameET;
+    Button confirm;
     FirebaseDatabase database = FirebaseDatabase.getInstance("https://parkingmapapp-39ec0-default-rtdb.europe-west1.firebasedatabase.app/");
     DatabaseReference users = database.getReference("users");
-    Button settings;
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseUser user;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_settings);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) ->
-        {
+        setContentView(R.layout.activity_account);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        name = findViewById(R.id.tv_name);
-        surname = findViewById(R.id.tv_surname);
-        email = findViewById(R.id.tv_email);
-        mAuth = FirebaseAuth.getInstance();
+        nameET = findViewById(R.id.et_name);
+        surnameET = findViewById(R.id.et_surname);
+        confirm = findViewById(R.id.btn_confirm);
         user = mAuth.getCurrentUser();
-        logout = findViewById(R.id.btn_logout);
-        settings = findViewById(R.id.btn_change);
 
-        email.setText(user.getEmail());
+        assert user != null;
         users.child(user.getUid()).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot)
             {
-                name.setText(snapshot.child("name").getValue(String.class));
-                surname.setText(snapshot.child("surname").getValue(String.class));
+                DataSnapshot name = snapshot.child("name");
+                DataSnapshot surname = snapshot.child("surname");
+
+                if (name.exists() && surname.exists())
+                {
+                    nameET.setText(name.getValue(String.class));
+                    surnameET.setText(surname.getValue(String.class));
+                    Log.i("NAME", Objects.requireNonNull(name.getValue(String.class)));
+                    Log.i("SURNAME", Objects.requireNonNull(surname.getValue(String.class)));
+                }
+                else
+                {
+                    Log.i("BRAK", Objects.requireNonNull("BRAK"));
+                }
             }
 
             @Override
@@ -71,24 +79,18 @@ public class SettingsActivity extends AppCompatActivity
             }
         });
 
-        logout.setOnClickListener(new View.OnClickListener()
+        confirm.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                mAuth.signOut();
-                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                Toast.makeText(getApplicationContext(), "Wylogowano pomyślnie", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        });
+                String name = nameET.getText().toString();
+                String surname = surnameET.getText().toString();
+                User u = new User(name, surname);
 
-        settings.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                startActivity(new Intent(getApplicationContext(), AccountActivity.class));
+                users.child(user.getUid()).setValue(u);
+                finish();
+                Toast.makeText(getApplicationContext(), "Zmiany zostały zapisane!", Toast.LENGTH_SHORT).show();
             }
         });
     }
