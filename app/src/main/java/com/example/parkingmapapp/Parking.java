@@ -18,6 +18,11 @@ public class Parking implements Serializable
         this.operator = operator;
     }
 
+    public Parking(String pk)
+    {
+        this.pking = pk;
+    }
+
     public String getPking() {
         return pking;
     }

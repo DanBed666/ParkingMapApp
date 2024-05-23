@@ -69,30 +69,33 @@ public class KMLStyler implements KmlFeature.Styler
         String svd = kmlPlacemark.getExtendedData("supervised");;
         String ope = kmlPlacemark.getExtendedData("operator");;
 
-        parking = new Parking(pk, cpc, fee, svd, ope);
         DatabaseReference p = parkings.child(id);
 
-        parkings.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+        Log.i("KLUCZ", id + "   " + Objects.requireNonNull(p.getKey()));
+
+        parkings.addListenerForSingleValueEvent(new ValueEventListener()
         {
             @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task)
+            public void onDataChange(@NonNull DataSnapshot snapshot)
             {
-                if (task.isSuccessful())
-                {
-                    DataSnapshot snapshot = task.getResult();
+                Log.i("KLUCZ2", String.valueOf(snapshot.hasChild(id)));
 
-                    for (DataSnapshot s : snapshot.getChildren())
-                    {
-                        if (!id.equals(s.getKey()))
-                        {
-                            p.setValue(parking);
-                        }
-                    }
+                if (!snapshot.hasChild(id))
+                {
+                    Log.i("DODANO", "dodano");
+                    parking = new Parking(pk, cpc, fee, svd, ope);
+                    parkings.child(id).setValue(parking);
                 }
                 else
                 {
-                    Log.i("GUWNO", Objects.requireNonNull(Objects.requireNonNull(task.getException()).getMessage()));
+                    Log.i("NIEDODANO", "niedodano");
                 }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error)
+            {
+
             }
         });
 
@@ -161,30 +164,33 @@ public class KMLStyler implements KmlFeature.Styler
         String svd = kmlPlacemark.getExtendedData("supervised");;
         String ope = kmlPlacemark.getExtendedData("operator");;
 
-        parking = new Parking(pk, cpc, fee, svd, ope);
         DatabaseReference p = parkings.child(id);
 
-        parkings.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+        Log.i("KLUCZ", id + "   " + Objects.requireNonNull(p.getKey()));
+
+        parkings.addListenerForSingleValueEvent(new ValueEventListener()
         {
             @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task)
+            public void onDataChange(@NonNull DataSnapshot snapshot)
             {
-                if (task.isSuccessful())
-                {
-                    DataSnapshot snapshot = task.getResult();
+                Log.i("KLUCZ2", String.valueOf(snapshot.hasChild(id)));
 
-                    for (DataSnapshot s : snapshot.getChildren())
-                    {
-                        if (!id.equals(s.getKey()))
-                        {
-                            p.setValue(parking);
-                        }
-                    }
+                if (!snapshot.hasChild(id))
+                {
+                    Log.i("DODANO", "dodano");
+                    parking = new Parking(pk, cpc, fee, svd, ope);
+                    parkings.child(id).setValue(parking);
                 }
                 else
                 {
-                    Log.i("GUWNO", Objects.requireNonNull(Objects.requireNonNull(task.getException()).getMessage()));
+                    Log.i("NIEDODANO", "niedodano");
                 }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error)
+            {
+
             }
         });
 
