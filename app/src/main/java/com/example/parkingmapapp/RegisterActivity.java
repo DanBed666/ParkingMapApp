@@ -136,7 +136,7 @@ public class RegisterActivity extends AppCompatActivity
     {
         FirebaseUser user = mAuth.getCurrentUser();
         assert user != null;
-
+        
         users.child(user.getUid()).setValue(userObj);
         user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>()
         {
