@@ -26,4 +26,25 @@
         android:layout_marginTop="10dp"
         android:text="confirm"/>
 
+    <Button
+        android:id="@+id/btn_mailchange"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="change email"/>
+
+    <Button
+        android:id="@+id/btn_passchange"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="change password"/>
+
+    <Button
+        android:id="@+id/btn_delete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="delete account"/>
+
 </LinearLayout>

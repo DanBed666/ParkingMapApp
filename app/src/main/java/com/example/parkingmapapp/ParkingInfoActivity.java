@@ -17,6 +17,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Objects;
+
 public class ParkingInfoActivity extends AppCompatActivity
 {
     TextView parking;
@@ -48,12 +50,14 @@ public class ParkingInfoActivity extends AppCompatActivity
         String id = getIntent().getStringExtra("KEYID");
 
         assert id != null;
+        Log.i("PARKING_ID", id);
+
         parkings.child(id).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot)
             {
-                parking.setText(snapshot.child("parking").getValue(String.class));
+                parking.setText(snapshot.child("pking").getValue(String.class));
                 capacity.setText(snapshot.child("capacity").getValue(String.class));
                 fee.setText(snapshot.child("fee").getValue(String.class));
                 supervised.setText(snapshot.child("supervised").getValue(String.class));

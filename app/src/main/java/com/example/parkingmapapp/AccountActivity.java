@@ -33,6 +33,9 @@ public class AccountActivity extends AppCompatActivity
     DatabaseReference users = database.getReference("users");
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user;
+    Button changeMail;
+    Button changePass;
+    Button deleteAcc;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -48,6 +51,9 @@ public class AccountActivity extends AppCompatActivity
         nameET = findViewById(R.id.et_name);
         surnameET = findViewById(R.id.et_surname);
         confirm = findViewById(R.id.btn_confirm);
+        changeMail = findViewById(R.id.btn_mailchange);
+        changePass = findViewById(R.id.btn_passchange);
+        deleteAcc = findViewById(R.id.btn_delete);
         user = mAuth.getCurrentUser();
 
         assert user != null;
@@ -91,6 +97,33 @@ public class AccountActivity extends AppCompatActivity
                 users.child(user.getUid()).setValue(u);
                 finish();
                 Toast.makeText(getApplicationContext(), "Zmiany zostały zapisane!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        changeMail.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+
+            }
+        });
+
+        changePass.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+
+            }
+        });
+
+        deleteAcc.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+
             }
         });
     }

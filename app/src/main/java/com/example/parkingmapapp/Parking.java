@@ -3,7 +3,8 @@ package com.example.parkingmapapp;
 import java.io.Serializable;
 
 public class Parking implements Serializable
-{ String pking;
+{
+    String pking;
     String capacity;
     String fee;
     String supervised;
