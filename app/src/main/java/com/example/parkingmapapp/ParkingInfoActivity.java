@@ -25,6 +25,7 @@ import java.util.Objects;
 
 public class ParkingInfoActivity extends AppCompatActivity
 {
+    TextView name;
     TextView parking;
     TextView capacity;
     TextView fee;
@@ -46,6 +47,7 @@ public class ParkingInfoActivity extends AppCompatActivity
             return insets;
         });
 
+        name = findViewById(R.id.tv_name);
         parking = findViewById(R.id.tv_parking);
         capacity = findViewById(R.id.tv_capacity);
         fee = findViewById(R.id.tv_fee);
@@ -65,12 +67,14 @@ public class ParkingInfoActivity extends AppCompatActivity
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot)
             {
+                String nam = snapshot.child("name").getValue(String.class);
                 String pkg = snapshot.child("pking").getValue(String.class);
                 String cpc = snapshot.child("capacity").getValue(String.class);;
                 String f33 = snapshot.child("fee").getValue(String.class);;
                 String sup = snapshot.child("supervised").getValue(String.class);;
                 String ope = snapshot.child("operator").getValue(String.class);;
 
+                name.setText("Name: " + nam);
                 parking.setText("Parking: " + pkg);
                 capacity.setText("Capacity: " + cpc);
                 fee.setText("Fee: " + f33);

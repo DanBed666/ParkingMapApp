@@ -2,6 +2,7 @@ package com.example.parkingmapapp;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,6 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class EditParkingInfoActivity extends AppCompatActivity
 {
+    EditText name;
     EditText parking;
     EditText capacity;
     EditText fee;
@@ -43,6 +45,7 @@ public class EditParkingInfoActivity extends AppCompatActivity
             return insets;
         });
 
+        name = findViewById(R.id.et_name);
         parking = findViewById(R.id.et_parking);
         capacity = findViewById(R.id.et_capacity);
         fee = findViewById(R.id.et_fee);
@@ -50,7 +53,6 @@ public class EditParkingInfoActivity extends AppCompatActivity
         operator = findViewById(R.id.et_operator);
         edit = findViewById(R.id.btn_edit);
         String id = getIntent().getStringExtra("KEYID");
-        Parking p = (Parking) getIntent().getSerializableExtra("PARKING");
 
         assert id != null;
         parkings.child(id).addValueEventListener(new ValueEventListener()
@@ -59,12 +61,14 @@ public class EditParkingInfoActivity extends AppCompatActivity
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot)
             {
+                String nam = snapshot.child("name").getValue(String.class);
                 String pkg = snapshot.child("pking").getValue(String.class);
                 String cpc = snapshot.child("capacity").getValue(String.class);
                 String f33 = snapshot.child("fee").getValue(String.class);
                 String sup = snapshot.child("supervised").getValue(String.class);
                 String ope = snapshot.child("operator").getValue(String.class);
 
+                name.setText(nam);
                 parking.setText(pkg);
                 capacity.setText(cpc);
                 fee.setText(f33);
@@ -84,24 +88,16 @@ public class EditParkingInfoActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
+                String nam = name.getText().toString();
                 String pkg = parking.getText().toString();
                 String cpc = capacity.getText().toString();
                 String f33 = fee.getText().toString();
                 String sup = supervised.getText().toString();
                 String ope = operator.getText().toString();
 
-                assert p != null;
-                p.setPking(pkg);
-                p.setCapacity(cpc);
-                p.setFee(f33);
-                p.setSupervised(sup);
-                p.setOperator(ope);
-
-                parkings.child(id).child("pking").setValue(p.getPking());
-                parkings.child(id).child("capacity").setValue(p.getCapacity());
-                parkings.child(id).child("fee").setValue(p.getFee());
-                parkings.child(id).child("supervised").setValue(p.getSupervised());
-                parkings.child(id).child("operator").setValue(p.getOperator());
+                Parking parking = new Parking(nam, pkg, cpc, f33, sup, ope);
+                parkings.child(id).setValue(parking);
+                Log.i("EDIT", "zedytowano");
 
                 finish();
             }

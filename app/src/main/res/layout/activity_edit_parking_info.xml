@@ -9,6 +9,13 @@
     android:orientation="vertical">
 
     <EditText
+        android:id="@+id/et_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:hint="Name"/>
+
+    <EditText
         android:id="@+id/et_parking"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

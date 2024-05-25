@@ -45,9 +45,9 @@ public class AddParking extends AppCompatActivity
             {
                 String sampleText = sample.getText().toString();
                 assert p != null;
-                p.setSample(sampleText);
+                //p.setSample(sampleText);
                 assert id != null;
-                users.child(id).child("sample").setValue(p.getSample());
+                //users.child(id).child("sample").setValue(p.getSample());
                 finish();
             }
         });

@@ -80,20 +80,17 @@ public class InfoFragment extends Fragment
     {
         Button route;
         Button add;
-        TextView test;
         TextView info;
         Button infosp;
 
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_info, container, false);
         route = v.findViewById(R.id.btn_route);
-        add = v.findViewById(R.id.btn_add);
         info = v.findViewById(R.id.tv_info);
         infosp = v.findViewById(R.id.btn_info);
 
         assert getArguments() != null;
         Utils u = (Utils) getArguments().getSerializable("OBJECT");
-        String id = getArguments().getString("ID");
         String keyId = getArguments().getString("KEYID");
         Parking p = (Parking) getArguments().getSerializable("PARKING");
 
@@ -108,19 +105,6 @@ public class InfoFragment extends Fragment
                 u.setRoute();
             }
         });
-
-        add.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                Intent intent = new Intent(requireActivity().getApplicationContext(), AddParking.class);
-                intent.putExtra("PARKING", p);
-                intent.putExtra("KEYID", keyId);
-                startActivity(intent);
-            }
-        });
-
         infosp.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -144,7 +128,7 @@ public class InfoFragment extends Fragment
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot)
             {
-                DataSnapshot s = snapshot.child("sample");
+                DataSnapshot s = snapshot.child("name");
 
                 if (s.exists())
                 {
@@ -153,7 +137,7 @@ public class InfoFragment extends Fragment
                 }
                 else
                 {
-                    Log.i("SAMPLE", "Brak danych");
+                    Log.i("SAMPLE", "Brak");
                     info.setText("Brak danych");
                 }
             }

@@ -4,25 +4,24 @@ import java.io.Serializable;
 
 public class Parking implements Serializable
 {
+    String name;
     String pking;
     String capacity;
     String fee;
     String supervised;
     String operator;
-    String sample;
 
-    public Parking(String parking, String capacity, String fee, String supervised, String operator) {
+    public Parking(String name, String parking, String capacity, String fee, String supervised, String operator)
+    {
+        this.name = name;
         this.pking = parking;
         this.capacity = capacity;
         this.fee = fee;
         this.supervised = supervised;
         this.operator = operator;
     }
-
-    public Parking(String pk)
-    {
-        this.pking = pk;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
     public String getPking() {
         return pking;
@@ -62,13 +61,5 @@ public class Parking implements Serializable
 
     public void setOperator(String operator) {
         this.operator = operator;
-    }
-
-    public String getSample() {
-        return sample;
-    }
-
-    public void setSample(String sample) {
-        this.sample = sample;
     }
 }

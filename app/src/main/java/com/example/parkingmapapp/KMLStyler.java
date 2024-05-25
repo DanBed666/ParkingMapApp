@@ -63,6 +63,7 @@ public class KMLStyler implements KmlFeature.Styler
     public void onPoint(Marker marker, KmlPlacemark kmlPlacemark, KmlPoint kmlPoint)
     {
         String id = kmlPlacemark.mId;
+        String nm = "Brak";
         String pk = kmlPlacemark.getExtendedData("parking");
         String cpc = kmlPlacemark.getExtendedData("capacity");;
         String fee = kmlPlacemark.getExtendedData("fee");;
@@ -83,7 +84,7 @@ public class KMLStyler implements KmlFeature.Styler
                 if (!snapshot.hasChild(id))
                 {
                     Log.i("DODANO", "dodano");
-                    parking = new Parking(pk, cpc, fee, svd, ope);
+                    parking = new Parking(nm, pk, cpc, fee, svd, ope);
                     parkings.child(id).setValue(parking);
                 }
                 else
@@ -158,6 +159,7 @@ public class KMLStyler implements KmlFeature.Styler
     public void onPolygon(Polygon polygon, KmlPlacemark kmlPlacemark, KmlPolygon kmlPolygon)
     {
         String id = kmlPlacemark.mId;
+        String nm = "Brak";
         String pk = kmlPlacemark.getExtendedData("parking");
         String cpc = kmlPlacemark.getExtendedData("capacity");;
         String fee = kmlPlacemark.getExtendedData("fee");;
@@ -178,7 +180,7 @@ public class KMLStyler implements KmlFeature.Styler
                 if (!snapshot.hasChild(id))
                 {
                     Log.i("DODANO", "dodano");
-                    parking = new Parking(pk, cpc, fee, svd, ope);
+                    parking = new Parking(nm, pk, cpc, fee, svd, ope);
                     parkings.child(id).setValue(parking);
                 }
                 else
