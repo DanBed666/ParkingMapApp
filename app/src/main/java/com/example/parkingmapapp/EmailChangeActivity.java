@@ -85,7 +85,7 @@ public class EmailChangeActivity extends AppCompatActivity
                         }
                         else
                         {
-                            Toast.makeText(getApplicationContext(), "Błąd w trakcie zmiany maila", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Niepoprawne passy", Toast.LENGTH_SHORT).show();
                             Log.e("ERROR", Objects.requireNonNull(Objects.requireNonNull(task.getException()).getMessage()));
                         }
                     }

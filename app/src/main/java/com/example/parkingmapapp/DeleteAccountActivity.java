@@ -1,24 +1,94 @@
 package com.example.parkingmapapp;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class DeleteAccountActivity extends AppCompatActivity {
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
+import java.util.Objects;
+
+public class DeleteAccountActivity extends AppCompatActivity
+{
+    EditText email;
+    EditText oldPassword;
+    Button delete;
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_delete_account);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) ->
+        {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+
+        email = findViewById(R.id.et_email);
+        oldPassword = findViewById(R.id.old_pass);
+        delete = findViewById(R.id.btn_delete);
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        delete.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                assert user != null;
+                String emailAdr = email.getText().toString();
+                String passwordOld = oldPassword.getText().toString();
+                AuthCredential credential = EmailAuthProvider.getCredential(emailAdr, passwordOld);
+                user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>()
+                {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task)
+                    {
+                        if (task.isSuccessful())
+                        {
+                            user.delete().addOnCompleteListener(new OnCompleteListener<Void>()
+                            {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task)
+                                {
+                                    if (task.isSuccessful())
+                                    {
+                                        mAuth.signOut();
+                                        Toast.makeText(getApplicationContext(), "Konto zostało usunięte!", Toast.LENGTH_SHORT).show();
+                                    }
+                                    else
+                                    {
+                                        Toast.makeText(getApplicationContext(), "Błąd w trakcie usuwania konta!", Toast.LENGTH_SHORT).show();
+                                        Log.e("ERROR", Objects.requireNonNull(Objects.requireNonNull(task.getException()).getMessage()));
+                                    }
+                                }
+                            });
+                        }
+                        else
+                        {
+                            Toast.makeText(getApplicationContext(), "Niepoprawne passy", Toast.LENGTH_SHORT).show();
+                            Log.e("ERROR", Objects.requireNonNull(Objects.requireNonNull(task.getException()).getMessage()));
+                        }
+                    }
+                });
+            }
         });
     }
 }
