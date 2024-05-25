@@ -5,49 +5,49 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ParkingInfoActivity"
+    tools:context=".EditParkingInfoActivity"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tv_parking"
+    <EditText
+        android:id="@+id/et_parking"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="parking"
-        android:textSize="28dp"/>
+        android:layout_marginTop="10dp"
+        android:hint="Parking"/>
 
-    <TextView
-        android:id="@+id/tv_capacity"
+    <EditText
+        android:id="@+id/et_capacity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="capacity"
-        android:textSize="28dp"/>
+        android:layout_marginTop="10dp"
+        android:hint="Capacity"/>
 
-    <TextView
-        android:id="@+id/tv_fee"
+    <EditText
+        android:id="@+id/et_fee"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="fee"
-        android:textSize="28dp"/>
+        android:layout_marginTop="10dp"
+        android:hint="Fee"/>
 
-    <TextView
-        android:id="@+id/tv_supervised"
+    <EditText
+        android:id="@+id/et_supervised"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="supervised"
-        android:textSize="28dp"/>
+        android:layout_marginTop="10dp"
+        android:hint="Supervised"/>
 
-    <TextView
-        android:id="@+id/tv_operator"
+    <EditText
+        android:id="@+id/et_operator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="operator"
-        android:textSize="28dp"/>
+        android:layout_marginTop="10dp"
+        android:hint="Operator"/>
 
     <Button
         android:id="@+id/btn_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="EDYTUJ"/>
+        android:text="EDIT"/>
 
 </LinearLayout>

@@ -128,6 +128,7 @@ public class InfoFragment extends Fragment
             {
                 Intent intent = new Intent(requireActivity().getApplicationContext(), ParkingInfoActivity.class);
                 intent.putExtra("KEYID", keyId);
+                intent.putExtra("PARKING", p);
                 startActivity(intent);
             }
         });
