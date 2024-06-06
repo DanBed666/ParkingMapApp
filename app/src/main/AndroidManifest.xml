@@ -19,6 +19,9 @@
         android:theme="@style/Theme.ParkingMapApp"
         tools:targetApi="31">
         <activity
+            android:name=".FindParkingsOptionsActivity"
+            android:exported="false" />
+        <activity
             android:name=".AddParkingActivity"
             android:exported="false" />
         <activity
