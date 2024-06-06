@@ -22,6 +22,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.kml.KmlDocument;
 import org.osmdroid.bonuspack.kml.KmlFeature;
@@ -47,7 +50,7 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
 
-public class MapActivity extends AppCompatActivity
+public class MapActivity extends AppCompatActivity implements MapEventsReceiver
 {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView map = null;
@@ -147,6 +150,9 @@ public class MapActivity extends AppCompatActivity
                 return getSupportFragmentManager();
             }
         };
+
+        MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this);
+        map.getOverlays().add(mapEventsOverlay);
     }
 
     @Override
@@ -246,5 +252,19 @@ public class MapActivity extends AppCompatActivity
         {
             Toast.makeText(getApplicationContext(), "Nie znaleziono parkingów w danym obszarze!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public boolean singleTapConfirmedHelper(GeoPoint p)
+    {
+        Toast.makeText(getApplicationContext(), "single", Toast.LENGTH_SHORT).show();
+        return true;
+    }
+
+    @Override
+    public boolean longPressHelper(GeoPoint p)
+    {
+        startActivity(new Intent(getApplicationContext(), AddParkingActivity.class));
+        return true;
     }
 }
