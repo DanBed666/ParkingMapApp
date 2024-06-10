@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -53,7 +54,7 @@ import java.util.ArrayList;
 public class MapActivity extends AppCompatActivity implements MapEventsReceiver
 {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
-    private MapView map = null;
+    MapView map;
     Button location;
     Button find;
     Button settings;
@@ -124,15 +125,6 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
             }
         });
 
-        find.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                findParkings(mLocationOverlay.getMyLocation());
-            }
-        });
-
         settings.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -153,6 +145,24 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
 
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this);
         map.getOverlays().add(mapEventsOverlay);
+        find.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                FindParksOptionsFragment fragment = new FindParksOptionsFragment();
+                Utils u = new Utils(getApplicationContext(), map, mLocationOverlay.getMyLocation(), listener);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("OBJECT", u);
+                fragment.setArguments(bundle);
+
+                getSupportFragmentManager().beginTransaction().
+                        setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                        .show(fragment)
+                        .replace(R.id.fragment, fragment)
+                        .commit();
+            }
+        });
     }
 
     @Override
@@ -215,7 +225,6 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
     }
-
     public void showMyLocation()
     {
         mLocationOverlay.enableFollowLocation();
@@ -233,25 +242,6 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
     public void navToLocation(GeoPoint location)
     {
         map.getController().setCenter(location);
-    }
-
-    public void findParkings(GeoPoint location) {
-        OverpassAPIProvider overpassProvider = new OverpassAPIProvider();
-        BoundingBox range = new BoundingBox(location.getLatitude() + 0.05, location.getLongitude() + 0.05,
-                location.getLatitude() - 0.05, location.getLongitude() - 0.05);
-        String url = overpassProvider.urlForTagSearchKml("amenity=parking", range, 500, 30);
-        KmlDocument kmlDocument = new KmlDocument();
-        boolean ok = overpassProvider.addInKmlFolder(kmlDocument.mKmlRoot, url);
-        KMLStyler kmlStyler = new KMLStyler(getApplicationContext(), map, location, listener);
-
-        if (ok)
-        {
-            FolderOverlay kmlOverlay = (FolderOverlay) kmlDocument.mKmlRoot.buildOverlay(map, null, kmlStyler, kmlDocument);
-            map.getOverlays().add(kmlOverlay);
-        } else
-        {
-            Toast.makeText(getApplicationContext(), "Nie znaleziono parkingów w danym obszarze!", Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override

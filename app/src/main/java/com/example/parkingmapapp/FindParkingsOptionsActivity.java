@@ -1,5 +1,6 @@
 package com.example.parkingmapapp;
 
+import android.app.Application;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -36,12 +37,15 @@ public class FindParkingsOptionsActivity extends AppCompatActivity
         capacityET = findViewById(R.id.et_capacity);
         find = findViewById(R.id.btn_find);
 
+        Utils u = (Utils) getIntent().getSerializableExtra("UTILS");
+
         find.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-
+                assert u != null;
+                u.findParkings();
             }
         });
     }

@@ -4,15 +4,20 @@ import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import org.osmdroid.bonuspack.kml.KmlDocument;
+import org.osmdroid.bonuspack.location.OverpassAPIProvider;
 import org.osmdroid.bonuspack.routing.OSRMRoadManager;
 import org.osmdroid.bonuspack.routing.Road;
 import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.config.Configuration;
+import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.FolderOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.Polyline;
@@ -27,6 +32,7 @@ public class Utils implements Serializable, Parcelable
     MapView map;
     GeoPoint endPoint;
     Polyline roadOverlay;
+    FragmentInterface listener;
 
     public Utils(Context c, MapView m, GeoPoint start, GeoPoint end)
     {
@@ -34,6 +40,22 @@ public class Utils implements Serializable, Parcelable
         map = m;
         startPoint = start;
         endPoint = end;
+    }
+
+    public Utils(Context c, MapView m, GeoPoint start, FragmentInterface end)
+    {
+        ctx = c;
+        map = m;
+        startPoint = start;
+        listener = end;
+    }
+
+    public FragmentInterface getListener() {
+        return listener;
+    }
+
+    public void setListener(FragmentInterface listener) {
+        this.listener = listener;
     }
 
     protected Utils(Parcel in) {
@@ -80,5 +102,26 @@ public class Utils implements Serializable, Parcelable
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeParcelable(startPoint, flags);
         dest.writeParcelable(endPoint, flags);
+    }
+
+    public void findParkings()
+    {
+        GeoPoint location = startPoint;
+        OverpassAPIProvider overpassProvider = new OverpassAPIProvider();
+        BoundingBox range = new BoundingBox(location.getLatitude() + 0.05, location.getLongitude() + 0.05,
+                location.getLatitude() - 0.05, location.getLongitude() - 0.05);
+        String url = overpassProvider.urlForTagSearchKml("amenity=parking", range, 500, 30);
+        KmlDocument kmlDocument = new KmlDocument();
+        boolean ok = overpassProvider.addInKmlFolder(kmlDocument.mKmlRoot, url);
+        KMLStyler kmlStyler = new KMLStyler(ctx, map, location, listener);
+
+        if (ok)
+        {
+            FolderOverlay kmlOverlay = (FolderOverlay) kmlDocument.mKmlRoot.buildOverlay(map, null, kmlStyler, kmlDocument);
+            map.getOverlays().add(kmlOverlay);
+        } else
+        {
+            Toast.makeText(ctx, "Nie znaleziono parkingów w danym obszarze!", Toast.LENGTH_SHORT).show();
+        }
     }
 }
