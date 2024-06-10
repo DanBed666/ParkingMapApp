@@ -159,7 +159,7 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
                 getSupportFragmentManager().beginTransaction().
                         setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                         .show(fragment)
-                        .replace(R.id.fragment, fragment)
+                        .replace(R.id.fragment2, fragment)
                         .commit();
             }
         });

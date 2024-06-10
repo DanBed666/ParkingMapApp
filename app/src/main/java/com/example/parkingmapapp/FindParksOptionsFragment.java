@@ -85,7 +85,8 @@ public class FindParksOptionsFragment extends Fragment {
             {
                 assert u != null;
                 u.findParkings();
-                requireActivity().getFragmentManager().popBackStack();
+                assert getFragmentManager() != null;
+                getFragmentManager().beginTransaction().remove(FindParksOptionsFragment.this).commit();
             }
         });
 

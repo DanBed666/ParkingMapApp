@@ -1,74 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="500dp"
+    android:layout_height="match_parent"
     tools:context=".FindParksOptionsFragment"
-    android:orientation="vertical"
     android:background="#FFF000">
 
-    <Button
-        android:id="@+id/btn_find"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="SZUKAJ"
-        android:layout_marginTop="10dp"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:ignore="UselessParent">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="28dp"
-        android:textAlignment="center"
-        android:text="Supervised"/>
-
-    <RadioGroup
-        android:id="@+id/rg_sup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <RadioButton
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="yes"/>
+            android:textSize="28dp"
+            android:textAlignment="center"
+            android:text="Supervised"/>
 
-        <RadioButton
+        <RadioGroup
+            android:id="@+id/rg_sup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="yes"/>
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="no"/>
+
+        </RadioGroup>
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="no"/>
+            android:textSize="28dp"
+            android:textAlignment="center"
+            android:layout_marginTop="28dp"
+            android:text="Fee"/>
 
-    </RadioGroup>
+        <RadioGroup
+            android:id="@+id/rg_fee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="28dp"
-        android:textAlignment="center"
-        android:layout_marginTop="28dp"
-        android:text="Fee"/>
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="yes"/>
 
-    <RadioGroup
-        android:id="@+id/rg_fee"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="no"/>
 
-        <RadioButton
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/et_capacity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="yes"/>
+            android:hint="Max capacity"
+            android:layout_marginTop="10dp"/>
 
-        <RadioButton
+        <Button
+            android:id="@+id/btn_find"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="no"/>
+            android:text="SZUKAJ"
+            android:layout_marginTop="10dp"/>
 
-    </RadioGroup>
+    </LinearLayout>
 
-    <EditText
-        android:id="@+id/et_capacity"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Max capacity"
-        android:layout_marginTop="10dp"/>
-
-</LinearLayout>
+</FrameLayout>
