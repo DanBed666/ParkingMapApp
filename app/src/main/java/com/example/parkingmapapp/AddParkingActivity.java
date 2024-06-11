@@ -19,6 +19,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.osmdroid.util.GeoPoint;
+
 import java.util.Objects;
 import java.util.Random;
 
@@ -54,6 +56,8 @@ public class AddParkingActivity extends AppCompatActivity
         operatorET = findViewById(R.id.et_operator);
         createET = findViewById(R.id.btn_create);
 
+        GeoPoint location = getIntent().getParcelableExtra("LOCATION");
+
         createET.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -66,7 +70,7 @@ public class AddParkingActivity extends AppCompatActivity
                 String supervised = supervisedET.getText().toString();
                 String operator = operatorET.getText().toString();
 
-                Parking newParking = new Parking(name, parking, capacity, fee, supervised, operator);
+                Parking newParking = new Parking(name, parking, capacity, fee, supervised, operator, location);
                 parkings.child(generateId()).setValue(newParking).addOnCompleteListener(new OnCompleteListener<Void>()
                 {
                     @Override

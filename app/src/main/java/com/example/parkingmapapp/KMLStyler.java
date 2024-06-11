@@ -61,7 +61,7 @@ public class KMLStyler implements KmlFeature.Styler
     @Override
     public void onPoint(Marker marker, KmlPlacemark kmlPlacemark, KmlPoint kmlPoint)
     {
-        String id = addParkings(kmlPlacemark);
+        String id = addParkings(kmlPlacemark, kmlPoint.getPosition());
 
         marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener()
         {
@@ -83,7 +83,7 @@ public class KMLStyler implements KmlFeature.Styler
     @Override
     public void onPolygon(Polygon polygon, KmlPlacemark kmlPlacemark, KmlPolygon kmlPolygon)
     {
-        String id = addParkings(kmlPlacemark);
+        String id = addParkings(kmlPlacemark, kmlPolygon.getBoundingBox().getCenter());
 
         polygon.setOnClickListener(new Polygon.OnClickListener()
         {
@@ -103,7 +103,7 @@ public class KMLStyler implements KmlFeature.Styler
 
     }
 
-    public String addParkings(KmlPlacemark kmlPlacemark)
+    public String addParkings(KmlPlacemark kmlPlacemark, GeoPoint loc)
     {
         String id = kmlPlacemark.mId;
         String nm = "Brak";
@@ -127,7 +127,7 @@ public class KMLStyler implements KmlFeature.Styler
                 if (!snapshot.hasChild(id))
                 {
                     Log.i("DODANO", "dodano");
-                    parking = new Parking(nm, pk, cpc, fee, svd, ope);
+                    parking = new Parking(nm, pk, cpc, fee, svd, ope, loc);
                     parkings.child(id).setValue(parking);
                 }
                 else

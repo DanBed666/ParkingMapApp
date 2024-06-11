@@ -254,7 +254,9 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
     @Override
     public boolean longPressHelper(GeoPoint p)
     {
-        startActivity(new Intent(getApplicationContext(), AddParkingActivity.class));
+        Intent intent = new Intent(getApplicationContext(), AddParkingActivity.class);
+        intent.putExtra("LOCATION", (Parcelable) p);
+        startActivity(intent);
         return true;
     }
 }

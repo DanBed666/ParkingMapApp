@@ -20,6 +20,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.osmdroid.util.GeoPoint;
+
 public class EditParkingInfoActivity extends AppCompatActivity
 {
     EditText name;
@@ -29,6 +31,7 @@ public class EditParkingInfoActivity extends AppCompatActivity
     EditText supervised;
     EditText operator;
     Button edit;
+    GeoPoint loc;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance("https://parkingmapapp-39ec0-default-rtdb.europe-west1.firebasedatabase.app/");
     DatabaseReference parkings = database.getReference("parkings");
@@ -67,6 +70,7 @@ public class EditParkingInfoActivity extends AppCompatActivity
                 String f33 = snapshot.child("fee").getValue(String.class);
                 String sup = snapshot.child("supervised").getValue(String.class);
                 String ope = snapshot.child("operator").getValue(String.class);
+                loc = snapshot.child("location").getValue(GeoPoint.class);
 
                 name.setText(nam);
                 parking.setText(pkg);
@@ -95,7 +99,7 @@ public class EditParkingInfoActivity extends AppCompatActivity
                 String sup = supervised.getText().toString();
                 String ope = operator.getText().toString();
 
-                Parking parking = new Parking(nam, pkg, cpc, f33, sup, ope);
+                Parking parking = new Parking(nam, pkg, cpc, f33, sup, ope, loc);
                 parkings.child(id).setValue(parking);
                 Log.i("EDIT", "zedytowano");
 

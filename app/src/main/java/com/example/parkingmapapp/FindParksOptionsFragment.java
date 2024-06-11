@@ -77,6 +77,7 @@ public class FindParksOptionsFragment extends Fragment {
         RadioGroup feeRG;
         RadioGroup supervisedRG;
         EditText capacityET;
+        EditText parkingET;
         Button find;
 
         // Inflate the layout for this fragment
@@ -84,6 +85,7 @@ public class FindParksOptionsFragment extends Fragment {
         feeRG = v.findViewById(R.id.rg_fee);
         supervisedRG = v.findViewById(R.id.rg_sup);
         capacityET = v.findViewById(R.id.et_capacity);
+        parkingET = v.findViewById(R.id.et_parking);
         find = v.findViewById(R.id.btn_find);
 
         assert getArguments() != null;
@@ -115,14 +117,11 @@ public class FindParksOptionsFragment extends Fragment {
                                 {
                                     Log.i("KIDOS", Objects.requireNonNull(snapshot.getKey()));
                                     String parking = snapshot.child("pking").getValue(String.class);
+                                    String pkgQ = parkingET.getText().toString();
 
-                                    if (parking != null)
+                                    if (pkgQ.equals(parking))
                                     {
-                                        Log.i("PARKING", parking);
-                                    }
-                                    else
-                                    {
-                                        Log.i("PARKING", "brak");
+                                        Log.i("QUERY", "GUT");
                                     }
                                 }
 
