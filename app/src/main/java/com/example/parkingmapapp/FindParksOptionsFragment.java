@@ -2,14 +2,22 @@ package com.example.parkingmapapp;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 
@@ -28,6 +36,9 @@ public class FindParksOptionsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    FirebaseDatabase database = FirebaseDatabase.getInstance("https://parkingmapapp-39ec0-default-rtdb.europe-west1.firebasedatabase.app/");
+    DatabaseReference parkings = database.getReference("parkings");
 
     public FindParksOptionsFragment() {
         // Required empty public constructor
@@ -87,6 +98,49 @@ public class FindParksOptionsFragment extends Fragment {
                 u.findParkings();
                 assert getFragmentManager() != null;
                 getFragmentManager().beginTransaction().remove(FindParksOptionsFragment.this).commit();
+
+                parkings.addValueEventListener(new ValueEventListener()
+                {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot)
+                    {
+                        Log.i("ILE", String.valueOf(snapshot.getChildrenCount()));
+
+                        for (DataSnapshot s : snapshot.getChildren())
+                        {
+                            parkings.child(Objects.requireNonNull(s.getKey())).addValueEventListener(new ValueEventListener()
+                            {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot)
+                                {
+                                    Log.i("KIDOS", Objects.requireNonNull(snapshot.getKey()));
+                                    String parking = snapshot.child("pking").getValue(String.class);
+
+                                    if (parking != null)
+                                    {
+                                        Log.i("PARKING", parking);
+                                    }
+                                    else
+                                    {
+                                        Log.i("PARKING", "brak");
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error)
+                                {
+
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error)
+                    {
+
+                    }
+                });
             }
         });
 
