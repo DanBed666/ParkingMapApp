@@ -70,7 +70,8 @@ public class AddParkingActivity extends AppCompatActivity
                 String supervised = supervisedET.getText().toString();
                 String operator = operatorET.getText().toString();
 
-                Parking newParking = new Parking(name, parking, capacity, fee, supervised, operator, location);
+                assert location != null;
+                Parking newParking = new Parking(name, parking, capacity, fee, supervised, operator, location.getLatitude(), location.getLongitude());
                 parkings.child(generateId()).setValue(newParking).addOnCompleteListener(new OnCompleteListener<Void>()
                 {
                     @Override

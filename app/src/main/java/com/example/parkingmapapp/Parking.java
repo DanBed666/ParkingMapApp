@@ -12,24 +12,35 @@ public class Parking implements Serializable
     String fee;
     String supervised;
     String operator;
-    GeoPoint location;
+    double latitude;
+    double longtitude;
 
-    public Parking(String name, String pking, String capacity, String fee, String supervised, String operator, GeoPoint location) {
+    public Parking(String name, String pking, String capacity, String fee, String supervised, String operator, double latitude, double longtitude)
+    {
         this.name = name;
         this.pking = pking;
         this.capacity = capacity;
         this.fee = fee;
         this.supervised = supervised;
         this.operator = operator;
-        this.location = location;
+        this.latitude = latitude;
+        this.longtitude = longtitude;
     }
 
-    public GeoPoint getLocation() {
-        return location;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public void setLocation(GeoPoint location) {
-        this.location = location;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongtitude() {
+        return longtitude;
+    }
+
+    public void setLongtitude(double longtitude) {
+        this.longtitude = longtitude;
     }
 
     public String getName() { return name; }

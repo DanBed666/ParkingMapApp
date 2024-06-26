@@ -56,6 +56,8 @@ public class EditParkingInfoActivity extends AppCompatActivity
         operator = findViewById(R.id.et_operator);
         edit = findViewById(R.id.btn_edit);
         String id = getIntent().getStringExtra("KEYID");
+        final Double[] latitude = new Double[1];
+        final Double[] longitude = new Double[1];
 
         assert id != null;
         parkings.child(id).addValueEventListener(new ValueEventListener()
@@ -70,7 +72,8 @@ public class EditParkingInfoActivity extends AppCompatActivity
                 String f33 = snapshot.child("fee").getValue(String.class);
                 String sup = snapshot.child("supervised").getValue(String.class);
                 String ope = snapshot.child("operator").getValue(String.class);
-                loc = snapshot.child("location").getValue(GeoPoint.class);
+                latitude[0] = snapshot.child("latitude").getValue(Double.class);
+                longitude[0] = snapshot.child("longtitude").getValue(Double.class);
 
                 name.setText(nam);
                 parking.setText(pkg);
@@ -99,7 +102,7 @@ public class EditParkingInfoActivity extends AppCompatActivity
                 String sup = supervised.getText().toString();
                 String ope = operator.getText().toString();
 
-                Parking parking = new Parking(nam, pkg, cpc, f33, sup, ope, loc);
+                Parking parking = new Parking(nam, pkg, cpc, f33, sup, ope, latitude[0], longitude[0]);
                 parkings.child(id).setValue(parking);
                 Log.i("EDIT", "zedytowano");
 

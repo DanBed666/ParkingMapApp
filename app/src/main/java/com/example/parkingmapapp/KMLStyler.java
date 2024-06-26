@@ -105,6 +105,8 @@ public class KMLStyler implements KmlFeature.Styler
 
     public String addParkings(KmlPlacemark kmlPlacemark, GeoPoint loc)
     {
+        Log.i("WYKONUJE", "TAK");
+
         String id = kmlPlacemark.mId;
         String nm = "Brak";
         String pk = kmlPlacemark.getExtendedData("parking");
@@ -112,10 +114,23 @@ public class KMLStyler implements KmlFeature.Styler
         String fee = kmlPlacemark.getExtendedData("fee");
         String svd = kmlPlacemark.getExtendedData("supervised");
         String ope = kmlPlacemark.getExtendedData("operator");
+        double lat = 0;
+        double lon = 0;
+
+        for (GeoPoint g : kmlPlacemark.mGeometry.mCoordinates)
+        {
+            Log.i("GEOLAT", String.valueOf(g.getLatitude()));
+            Log.i("GEOLON", String.valueOf(g.getLongitude()));
+            lat = g.getLatitude();
+            lon = g.getLongitude();
+        }
 
         DatabaseReference p = parkings.child(id);
 
         Log.i("KLUCZ", id + "   " + Objects.requireNonNull(p.getKey()));
+
+        double finalLat = lat;
+        double finalLon = lon;
 
         parkings.addListenerForSingleValueEvent(new ValueEventListener()
         {
@@ -127,7 +142,7 @@ public class KMLStyler implements KmlFeature.Styler
                 if (!snapshot.hasChild(id))
                 {
                     Log.i("DODANO", "dodano");
-                    parking = new Parking(nm, pk, cpc, fee, svd, ope, loc);
+                    parking = new Parking(nm, pk, cpc, fee, svd, ope, finalLon, finalLat);
                     parkings.child(id).setValue(parking);
                 }
                 else
@@ -148,6 +163,7 @@ public class KMLStyler implements KmlFeature.Styler
 
     public void addFragment(GeoPoint geoPoint, String id)
     {
+        Log.i("WYKONUJE2", "TAK2");
         fragment = new InfoFragment();
         u = new Utils(context, map, startPoint, geoPoint);
 
