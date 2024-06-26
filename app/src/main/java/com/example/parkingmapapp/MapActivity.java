@@ -257,6 +257,11 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
         Intent intent = new Intent(getApplicationContext(), AddParkingActivity.class);
         intent.putExtra("LOCATION", (Parcelable) p);
         startActivity(intent);
+
+        Marker m = new Marker(map);
+        m.setPosition(p);
+        map.getOverlays().add(m);
+
         return true;
     }
 }
