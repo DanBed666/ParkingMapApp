@@ -43,6 +43,7 @@ public class InfoFragment extends Fragment
 
     FirebaseDatabase database = FirebaseDatabase.getInstance("https://parkingmapapp-39ec0-default-rtdb.europe-west1.firebasedatabase.app/");
     DatabaseReference parkings = database.getReference("parkings");
+    DatabaseReference addedparkings = database.getReference("addedparkings");
 
     public InfoFragment() {
         // Required empty public constructor
@@ -124,6 +125,33 @@ public class InfoFragment extends Fragment
     {
         DatabaseReference p = parkings.child(id);
         p.addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
+                DataSnapshot s = snapshot.child("name");
+
+                if (s.exists())
+                {
+                    Log.i("SAMPLE", Objects.requireNonNull(s.getValue(String.class)));
+                    info.setText(s.getValue(String.class));
+                }
+                else
+                {
+                    Log.i("SAMPLE", "Brak");
+                    info.setText("Brak danych");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error)
+            {
+
+            }
+        });
+
+        DatabaseReference p2 = addedparkings.child(id);
+        p2.addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot)

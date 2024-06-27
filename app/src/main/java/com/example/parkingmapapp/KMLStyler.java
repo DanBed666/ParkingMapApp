@@ -216,6 +216,7 @@ public class KMLStyler implements KmlFeature.Styler
                  for (DataSnapshot s : snapshot.getChildren())
                  {
                      Log.i("IDBASE", Objects.requireNonNull(s.getKey()));
+
                      addedparkings.child(s.getKey()).addValueEventListener(new ValueEventListener()
                      {
                          @Override
@@ -227,7 +228,19 @@ public class KMLStyler implements KmlFeature.Styler
                              Marker marker = new Marker(map);
 
                              if (latitude != null && longtitude != null)
-                                marker.setPosition(new GeoPoint(latitude, longtitude));
+                             {
+                                 GeoPoint geoPoint = new GeoPoint(latitude, longtitude);
+                                 marker.setPosition(geoPoint);
+                                 marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener()
+                                 {
+                                     @Override
+                                     public boolean onMarkerClick(Marker marker, MapView mapView)
+                                     {
+                                         addFragment(geoPoint, s.getKey());
+                                         return true;
+                                     }
+                                 });
+                             }
 
                              map.getOverlays().add(marker);
                          }

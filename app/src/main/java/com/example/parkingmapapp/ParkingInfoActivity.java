@@ -34,6 +34,7 @@ public class ParkingInfoActivity extends AppCompatActivity
     Button edit;
     FirebaseDatabase database = FirebaseDatabase.getInstance("https://parkingmapapp-39ec0-default-rtdb.europe-west1.firebasedatabase.app/");
     DatabaseReference parkings = database.getReference("parkings");
+    DatabaseReference addedparkings = database.getReference("addedparkings");
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -62,6 +63,34 @@ public class ParkingInfoActivity extends AppCompatActivity
         Log.i("PARKING_ID", id);
 
         parkings.child(id).addValueEventListener(new ValueEventListener()
+        {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
+                String nam = snapshot.child("name").getValue(String.class);
+                String pkg = snapshot.child("pking").getValue(String.class);
+                String cpc = snapshot.child("capacity").getValue(String.class);;
+                String f33 = snapshot.child("fee").getValue(String.class);;
+                String sup = snapshot.child("supervised").getValue(String.class);;
+                String ope = snapshot.child("operator").getValue(String.class);;
+
+                name.setText("Name: " + nam);
+                parking.setText("Parking: " + pkg);
+                capacity.setText("Capacity: " + cpc);
+                fee.setText("Fee: " + f33);
+                supervised.setText("Supervised: " + sup);
+                operator.setText("Operator: " + ope);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error)
+            {
+
+            }
+        });
+
+        addedparkings.child(id).addValueEventListener(new ValueEventListener()
         {
             @SuppressLint("SetTextI18n")
             @Override

@@ -8,7 +8,11 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.JsonObject;
+
 import org.osmdroid.bonuspack.kml.KmlDocument;
+import org.osmdroid.bonuspack.kml.KmlFeature;
+import org.osmdroid.bonuspack.kml.Style;
 import org.osmdroid.bonuspack.location.OverpassAPIProvider;
 import org.osmdroid.bonuspack.routing.OSRMRoadManager;
 import org.osmdroid.bonuspack.routing.Road;
@@ -23,6 +27,7 @@ import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.Polyline;
 
 import java.io.Serializable;
+import java.io.Writer;
 import java.util.ArrayList;
 
 public class Utils implements Serializable, Parcelable
