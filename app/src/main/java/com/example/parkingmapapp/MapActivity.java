@@ -58,6 +58,7 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
     Button location;
     Button find;
     Button settings;
+    Button clear;
     MyLocationNewOverlay mLocationOverlay;
     FragmentInterface listener;
 
@@ -115,6 +116,7 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
         location = findViewById(R.id.btn_location);
         find = findViewById(R.id.btn_find);
         settings = findViewById(R.id.btn_settings);
+        clear = findViewById(R.id.btn_clear);
 
         location.setOnClickListener(new View.OnClickListener()
         {
@@ -131,6 +133,17 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
             public void onClick(View v)
             {
                 startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+            }
+        });
+
+        clear.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                map.getOverlays().removeIf(o -> o instanceof Marker);
+                map.getOverlays().removeIf(o -> o instanceof FolderOverlay);
+                map.invalidate();
             }
         });
 
