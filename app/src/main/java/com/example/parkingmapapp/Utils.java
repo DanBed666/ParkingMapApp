@@ -104,13 +104,13 @@ public class Utils implements Serializable, Parcelable
         dest.writeParcelable(endPoint, flags);
     }
 
-    public void findParkings()
+    public void findParkings(String tag)
     {
         GeoPoint location = startPoint;
         OverpassAPIProvider overpassProvider = new OverpassAPIProvider();
         BoundingBox range = new BoundingBox(location.getLatitude() + 0.05, location.getLongitude() + 0.05,
                 location.getLatitude() - 0.05, location.getLongitude() - 0.05);
-        String url = overpassProvider.urlForTagSearchKml("amenity=parking", range, 500, 30);
+        String url = overpassProvider.urlForTagSearchKml(tag, range, 500, 30);
         KmlDocument kmlDocument = new KmlDocument();
         boolean ok = overpassProvider.addInKmlFolder(kmlDocument.mKmlRoot, url);
         KMLStyler kmlStyler = new KMLStyler(ctx, map, location, listener);

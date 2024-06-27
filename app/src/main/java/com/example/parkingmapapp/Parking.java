@@ -15,8 +15,7 @@ public class Parking implements Serializable
     double latitude;
     double longtitude;
 
-    public Parking(String name, String pking, String capacity, String fee, String supervised, String operator, double latitude, double longtitude)
-    {
+    public Parking(String name, String pking, String capacity, String fee, String supervised, String operator, double latitude, double longtitude) {
         this.name = name;
         this.pking = pking;
         this.capacity = capacity;

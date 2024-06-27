@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.google.firebase.database.DataSnapshot;
@@ -91,13 +92,32 @@ public class FindParksOptionsFragment extends Fragment {
         assert getArguments() != null;
         Utils u = (Utils) getArguments().getSerializable("OBJECT");
 
+        final String[] supervised = new String[1];
+
         find.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
+                int selectedId = supervisedRG.getCheckedRadioButtonId();
+
+                if (selectedId != -1)
+                {
+                    RadioButton radioButton = supervisedRG.findViewById(selectedId);
+                    supervised[0] = radioButton.getText().toString();
+                }
+
                 assert u != null;
-                u.findParkings();
+
+                if (supervised[0].equals("no"))
+                {
+                    u.findParkings("amenity=parking");
+                }
+                else
+                {
+                    u.findParkings("amenity=parking][supervised=yes");
+                }
+
                 assert getFragmentManager() != null;
                 getFragmentManager().beginTransaction().remove(FindParksOptionsFragment.this).commit();
 
@@ -118,11 +138,6 @@ public class FindParksOptionsFragment extends Fragment {
                                     Log.i("KIDOS", Objects.requireNonNull(snapshot.getKey()));
                                     String parking = snapshot.child("pking").getValue(String.class);
                                     String pkgQ = parkingET.getText().toString();
-
-                                    if (pkgQ.equals(parking))
-                                    {
-                                        Log.i("QUERY", "GUT");
-                                    }
                                 }
 
                                 @Override

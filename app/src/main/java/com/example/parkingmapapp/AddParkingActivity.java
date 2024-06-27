@@ -34,7 +34,7 @@ public class AddParkingActivity extends AppCompatActivity
     EditText operatorET;
     Button createET;
     FirebaseDatabase database = FirebaseDatabase.getInstance("https://parkingmapapp-39ec0-default-rtdb.europe-west1.firebasedatabase.app/");
-    DatabaseReference parkings = database.getReference("parkings");
+    DatabaseReference parkings = database.getReference("addedparkings");
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {

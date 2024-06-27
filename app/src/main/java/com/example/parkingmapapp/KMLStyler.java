@@ -42,6 +42,7 @@ public class KMLStyler implements KmlFeature.Styler
     FragmentInterface listener;
     FirebaseDatabase database = FirebaseDatabase.getInstance("https://parkingmapapp-39ec0-default-rtdb.europe-west1.firebasedatabase.app/");
     DatabaseReference parkings = database.getReference("parkings");
+    DatabaseReference addedparkings = database.getReference("addedparkings");
     Parking parking;
 
     public KMLStyler(Context ctx, MapView m, GeoPoint s, FragmentInterface l)
@@ -142,7 +143,7 @@ public class KMLStyler implements KmlFeature.Styler
                 if (!snapshot.hasChild(id))
                 {
                     Log.i("DODANO", "dodano");
-                    parking = new Parking(nm, pk, cpc, fee, svd, ope, finalLon, finalLat);
+                    parking = new Parking(nm, pk, cpc, fee, svd, ope, finalLat, finalLon);
                     parkings.child(id).setValue(parking);
                 }
                 else
@@ -157,6 +158,8 @@ public class KMLStyler implements KmlFeature.Styler
 
             }
         });
+
+        setMarker();
 
         return id;
     }
@@ -200,5 +203,48 @@ public class KMLStyler implements KmlFeature.Styler
         });
 
         map.getOverlays().add(mapEventsOverlay);
+    }
+
+    public void setMarker()
+    {
+         addedparkings.addValueEventListener(new ValueEventListener()
+         {
+             @Override
+             public void onDataChange(@NonNull DataSnapshot snapshot)
+             {
+                 for (DataSnapshot s : snapshot.getChildren())
+                 {
+                     Log.i("IDBASE", Objects.requireNonNull(s.getKey()));
+                     addedparkings.child(s.getKey()).addValueEventListener(new ValueEventListener()
+                     {
+                         @Override
+                         public void onDataChange(@NonNull DataSnapshot snapshot)
+                         {
+                             Double latitude = snapshot.child("latitude").getValue(Double.class);
+                             Double longtitude = snapshot.child("longtitude").getValue(Double.class);
+
+                             Marker marker = new Marker(map);
+
+                             if (latitude != null && longtitude != null)
+                                marker.setPosition(new GeoPoint(latitude, longtitude));
+
+                             map.getOverlays().add(marker);
+                         }
+
+                         @Override
+                         public void onCancelled(@NonNull DatabaseError error)
+                         {
+
+                         }
+                     });
+                 }
+             }
+
+             @Override
+             public void onCancelled(@NonNull DatabaseError error)
+             {
+
+             }
+         });
     }
 }
