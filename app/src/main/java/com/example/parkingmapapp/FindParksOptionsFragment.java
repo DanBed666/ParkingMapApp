@@ -39,7 +39,7 @@ public class FindParksOptionsFragment extends Fragment {
     private String mParam2;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance("https://parkingmapapp-39ec0-default-rtdb.europe-west1.firebasedatabase.app/");
-    DatabaseReference parkings = database.getReference("parkings");
+    DatabaseReference addedparkings = database.getReference("addedparkings");
 
     public FindParksOptionsFragment() {
         // Required empty public constructor
@@ -121,7 +121,7 @@ public class FindParksOptionsFragment extends Fragment {
                 assert getFragmentManager() != null;
                 getFragmentManager().beginTransaction().remove(FindParksOptionsFragment.this).commit();
 
-                parkings.addValueEventListener(new ValueEventListener()
+                addedparkings.addValueEventListener(new ValueEventListener()
                 {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot)
@@ -130,7 +130,7 @@ public class FindParksOptionsFragment extends Fragment {
 
                         for (DataSnapshot s : snapshot.getChildren())
                         {
-                            parkings.child(Objects.requireNonNull(s.getKey())).addValueEventListener(new ValueEventListener()
+                            addedparkings.child(Objects.requireNonNull(s.getKey())).addValueEventListener(new ValueEventListener()
                             {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot)

@@ -119,13 +119,10 @@ public class KMLStyler implements KmlFeature.Styler
         double lat = 0;
         double lon = 0;
 
-        for (GeoPoint g : kmlPlacemark.mGeometry.mCoordinates)
-        {
-            Log.i("GEOLAT", String.valueOf(g.getLatitude()));
-            Log.i("GEOLON", String.valueOf(g.getLongitude()));
-            lat = g.getLatitude();
-            lon = g.getLongitude();
-        }
+        Log.i("GEOLAT", String.valueOf(loc.getLatitude()));
+        Log.i("GEOLON", String.valueOf(loc.getLongitude()));
+        lat = loc.getLatitude();
+        lon = loc.getLongitude();
 
         DatabaseReference p = parkings.child(id);
 
