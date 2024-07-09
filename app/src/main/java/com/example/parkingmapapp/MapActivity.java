@@ -309,7 +309,7 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
         m.setPosition(p);
         map.getOverlays().add(m);
 
-        db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        db.collection("usersy").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task)
