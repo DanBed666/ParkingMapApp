@@ -17,6 +17,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,6 +28,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class RegisterActivity extends AppCompatActivity
 {
@@ -39,6 +43,7 @@ public class RegisterActivity extends AppCompatActivity
     FirebaseDatabase database = FirebaseDatabase.getInstance("https://parkingmapapp-39ec0-default-rtdb.europe-west1.firebasedatabase.app/");
     DatabaseReference users = database.getReference("users");
     User userObj;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -137,7 +142,7 @@ public class RegisterActivity extends AppCompatActivity
         FirebaseUser user = mAuth.getCurrentUser();
         assert user != null;
         
-        users.child(user.getUid()).setValue(userObj);
+        addUser(userObj);
         user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>()
         {
             @Override
@@ -151,6 +156,25 @@ public class RegisterActivity extends AppCompatActivity
                 {
                     Log.i("BŁĄD", "Błąd potwierdzenie!");
                 }
+            }
+        });
+    }
+
+    public void addUser(User user)
+    {
+        db.collection("users").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>()
+        {
+            @Override
+            public void onSuccess(DocumentReference documentReference)
+            {
+                Log.d("TEST", "DocumentSnapshot added with ID: " + documentReference.getId());
+            }
+        }).addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+                Log.d("ERROR", "Error: " + e.getMessage());
             }
         });
     }

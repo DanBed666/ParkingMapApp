@@ -15,6 +15,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -22,6 +24,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Objects;
 
@@ -37,6 +41,7 @@ public class AccountActivity extends AppCompatActivity
     Button changeMail;
     Button changePass;
     Button deleteAcc;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -95,7 +100,7 @@ public class AccountActivity extends AppCompatActivity
                 String surname = surnameET.getText().toString();
                 User u = new User(name, surname);
 
-                users.child(user.getUid()).setValue(u);
+                addUser(u);
                 finish();
                 Toast.makeText(getApplicationContext(), "Zmiany zostały zapisane!", Toast.LENGTH_SHORT).show();
             }
@@ -125,6 +130,25 @@ public class AccountActivity extends AppCompatActivity
             public void onClick(View v)
             {
                 startActivity(new Intent(getApplicationContext(), DeleteAccountActivity.class));
+            }
+        });
+    }
+
+    public void addUser(User user)
+    {
+        db.collection("users").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>()
+        {
+            @Override
+            public void onSuccess(DocumentReference documentReference)
+            {
+                Log.d("TEST", "DocumentSnapshot added with ID: " + documentReference.getId());
+            }
+        }).addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+                Log.d("ERROR", "Error: " + e.getMessage());
             }
         });
     }
