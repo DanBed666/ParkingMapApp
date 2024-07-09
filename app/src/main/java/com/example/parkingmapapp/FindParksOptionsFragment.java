@@ -92,72 +92,81 @@ public class FindParksOptionsFragment extends Fragment {
         assert getArguments() != null;
         Utils u = (Utils) getArguments().getSerializable("OBJECT");
 
-        final String[] supervised = new String[1];
-
         find.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                int selectedId = supervisedRG.getCheckedRadioButtonId();
-
-                if (selectedId != -1)
-                {
-                    RadioButton radioButton = supervisedRG.findViewById(selectedId);
-                    supervised[0] = radioButton.getText().toString();
-                }
-
                 assert u != null;
-
-                if (supervised[0].equals("no"))
-                {
-                    u.findParkings("amenity=parking");
-                }
-                else
-                {
-                    u.findParkings("amenity=parking][supervised=yes");
-                }
+                String choose = getChooseYN(supervisedRG);
+                u.findParkings(String.format("amenity=parking][supervised=%s", choose));
 
                 assert getFragmentManager() != null;
                 getFragmentManager().beginTransaction().remove(FindParksOptionsFragment.this).commit();
-
-                addedparkings.addValueEventListener(new ValueEventListener()
-                {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot)
-                    {
-                        Log.i("ILE", String.valueOf(snapshot.getChildrenCount()));
-
-                        for (DataSnapshot s : snapshot.getChildren())
-                        {
-                            addedparkings.child(Objects.requireNonNull(s.getKey())).addValueEventListener(new ValueEventListener()
-                            {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot)
-                                {
-                                    Log.i("KIDOS", Objects.requireNonNull(snapshot.getKey()));
-                                    String parking = snapshot.child("pking").getValue(String.class);
-                                    String pkgQ = parkingET.getText().toString();
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error)
-                                {
-
-                                }
-                            });
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error)
-                    {
-
-                    }
-                });
             }
         });
 
         return v;
+    }
+
+    public String getChooseYN(RadioGroup radioGroup)
+    {
+        String wybor = "";
+        String supervised;
+        int supervisedId = radioGroup.getCheckedRadioButtonId();
+
+        if (supervisedId != -1)
+        {
+            RadioButton radioButton = radioGroup.findViewById(supervisedId);
+            supervised = radioButton.getText().toString();
+
+            if (supervised.equals("Tak"))
+            {
+                wybor = "yes";
+            }
+            else if (supervised.equals("Nie"))
+            {
+                wybor = "no";
+            }
+        }
+
+        return wybor;
+    }
+
+    public void databaseFilter()
+    {
+        addedparkings.addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
+                Log.i("ILE", String.valueOf(snapshot.getChildrenCount()));
+
+                for (DataSnapshot s : snapshot.getChildren())
+                {
+                    addedparkings.child(Objects.requireNonNull(s.getKey())).addValueEventListener(new ValueEventListener()
+                    {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot)
+                        {
+                            Log.i("KIDOS", Objects.requireNonNull(snapshot.getKey()));
+                            String parking = snapshot.child("supervised").getValue(String.class);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error)
+                        {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error)
+            {
+
+            }
+        });
     }
 }

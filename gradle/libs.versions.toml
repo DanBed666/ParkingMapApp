@@ -12,6 +12,7 @@ osmdroidAndroid = "6.1.18"
 googleServices = "4.4.1"
 firebaseAuth = "22.3.1"
 firebaseDatabase = "21.0.0"
+firebaseFirestore = "25.0.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -26,6 +27,7 @@ osmdroid-android = { module = "org.osmdroid:osmdroid-android", version.ref = "os
 google-services = { group = "com.google.gms", name = "google-services", version.ref = "googleServices" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
