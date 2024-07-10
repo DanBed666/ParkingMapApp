@@ -15,8 +15,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -26,7 +28,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.Map;
 import java.util.Objects;
 
 public class AccountActivity extends AppCompatActivity
@@ -63,7 +68,28 @@ public class AccountActivity extends AppCompatActivity
         user = mAuth.getCurrentUser();
 
         assert user != null;
-        users.child(user.getUid()).addValueEventListener(new ValueEventListener()
+
+        db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task)
+            {
+                if (task.isSuccessful())
+                {
+                    for (QueryDocumentSnapshot document : task.getResult())
+                    {
+                        Log.d("LOL", document.getId() + " => " + document.getData());
+                        Log.i("XD", "xd");
+                    }
+                }
+                else
+                {
+                    Log.w("ERR", "Error getting documents.", task.getException());
+                }
+            }
+        });
+
+        /*users.child(user.getUid()).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot)
@@ -91,6 +117,8 @@ public class AccountActivity extends AppCompatActivity
             }
         });
 
+         */
+
         confirm.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -98,7 +126,7 @@ public class AccountActivity extends AppCompatActivity
             {
                 String name = nameET.getText().toString();
                 String surname = surnameET.getText().toString();
-                User u = new User(name, surname);
+                User u = new User(user.getUid(), name, surname);
 
                 addUser(u);
                 finish();

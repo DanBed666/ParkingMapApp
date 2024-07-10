@@ -83,7 +83,6 @@ public class RegisterActivity extends AppCompatActivity
 
                 if (checkCredentials(email, password))
                 {
-                    userObj = new User(name, surname);
                     signUp(email, password);
                 }
             }
@@ -141,8 +140,7 @@ public class RegisterActivity extends AppCompatActivity
     {
         FirebaseUser user = mAuth.getCurrentUser();
         assert user != null;
-        
-        addUser(userObj);
+
         user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>()
         {
             @Override
@@ -156,25 +154,6 @@ public class RegisterActivity extends AppCompatActivity
                 {
                     Log.i("BŁĄD", "Błąd potwierdzenie!");
                 }
-            }
-        });
-    }
-
-    public void addUser(User user)
-    {
-        db.collection("users").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>()
-        {
-            @Override
-            public void onSuccess(DocumentReference documentReference)
-            {
-                Log.d("TEST", "DocumentSnapshot added with ID: " + documentReference.getId());
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Log.d("ERROR", "Error: " + e.getMessage());
             }
         });
     }

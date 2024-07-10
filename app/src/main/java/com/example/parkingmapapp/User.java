@@ -4,14 +4,24 @@ import java.io.Serializable;
 
 public class User implements Serializable
 {
+    String uId;
     String name;
     String surname;
 
-    public User(String name, String surname) {
+    public User(String uId, String name, String surname)
+    {
+        this.uId = uId;
         this.name = name;
         this.surname = surname;
     }
 
+    public String getuId() {
+        return uId;
+    }
+
+    public void setuId(String uId) {
+        this.uId = uId;
+    }
     public String getName() {
         return name;
     }

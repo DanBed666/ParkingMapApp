@@ -15,11 +15,16 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Objects;
 
@@ -35,6 +40,7 @@ public class ParkingInfoActivity extends AppCompatActivity
     FirebaseDatabase database = FirebaseDatabase.getInstance("https://parkingmapapp-39ec0-default-rtdb.europe-west1.firebasedatabase.app/");
     DatabaseReference parkings = database.getReference("parkings");
     DatabaseReference addedparkings = database.getReference("addedparkings");
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -61,6 +67,25 @@ public class ParkingInfoActivity extends AppCompatActivity
 
         assert id != null;
         Log.i("PARKING_ID", id);
+
+        db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task)
+            {
+                if (task.isSuccessful())
+                {
+                    for (QueryDocumentSnapshot document : task.getResult())
+                    {
+                        Log.d("LOL", document.getId() + " => " + document.getData());
+                    }
+                }
+                else
+                {
+                    Log.w("ERR", "Error getting documents.", task.getException());
+                }
+            }
+        });
 
         parkings.child(id).addValueEventListener(new ValueEventListener()
         {

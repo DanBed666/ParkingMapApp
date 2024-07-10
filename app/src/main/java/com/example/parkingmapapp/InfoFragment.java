@@ -20,6 +20,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Map;
 import java.util.Objects;
@@ -44,6 +45,7 @@ public class InfoFragment extends Fragment
     FirebaseDatabase database = FirebaseDatabase.getInstance("https://parkingmapapp-39ec0-default-rtdb.europe-west1.firebasedatabase.app/");
     DatabaseReference parkings = database.getReference("parkings");
     DatabaseReference addedparkings = database.getReference("addedparkings");
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public InfoFragment() {
         // Required empty public constructor

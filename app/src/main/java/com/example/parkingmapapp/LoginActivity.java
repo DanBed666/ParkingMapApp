@@ -17,12 +17,16 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Objects;
 
@@ -34,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
     TextView goToRegister;
     FirebaseAuth mAuth;
     TextView remind;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +107,8 @@ public class LoginActivity extends AppCompatActivity {
                     assert user != null;
                     if (user.isEmailVerified())
                     {
+                        User userObj = new User(user.getUid(), "Daniel", "Dawid");
+                        addUser(userObj);
                         updateUI(user);
                         finish();
                     }
@@ -144,5 +151,24 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    public void addUser(User user)
+    {
+        db.collection("users").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>()
+        {
+            @Override
+            public void onSuccess(DocumentReference documentReference)
+            {
+                Log.d("TEST", "DocumentSnapshot added with ID: " + documentReference.getId());
+            }
+        }).addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+                Log.d("ERROR", "Error: " + e.getMessage());
+            }
+        });
     }
 }
