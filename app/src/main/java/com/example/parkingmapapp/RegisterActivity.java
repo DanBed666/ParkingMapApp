@@ -73,8 +73,6 @@ public class RegisterActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                String name = nameET.getText().toString();
-                String surname = surnameET.getText().toString();
                 String email = emailET.getText().toString();
                 String password = passwordET.getText().toString();
 
@@ -93,7 +91,8 @@ public class RegisterActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -107,7 +106,14 @@ public class RegisterActivity extends AppCompatActivity
             {
                 if (task.isSuccessful())
                 {
+                    String name = nameET.getText().toString();
+                    String surname = surnameET.getText().toString();
                     Log.i("REJESTRACJA", "Zarejestrowano!");
+
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    assert user != null;
+                    User userObj = new User(user.getUid(), name, surname);
+                    addUser(userObj);
                     startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                     sendConfirmMail();
                     finish();
@@ -154,6 +160,25 @@ public class RegisterActivity extends AppCompatActivity
                 {
                     Log.i("BŁĄD", "Błąd potwierdzenie!");
                 }
+            }
+        });
+    }
+
+    public void addUser(User user)
+    {
+        db.collection("users").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>()
+        {
+            @Override
+            public void onSuccess(DocumentReference documentReference)
+            {
+                Log.d("TEST", "DocumentSnapshot added with ID: " + documentReference.getId());
+            }
+        }).addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+                Log.d("ERROR", "Error: " + e.getMessage());
             }
         });
     }

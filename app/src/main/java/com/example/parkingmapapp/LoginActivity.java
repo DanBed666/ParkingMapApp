@@ -55,8 +55,8 @@ public class LoginActivity extends AppCompatActivity {
         register = findViewById(R.id.btn_register);
         goToRegister = findViewById(R.id.tv_register);
         remind = findViewById(R.id.tv_remind);
-
         mAuth = FirebaseAuth.getInstance();
+
         register.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -107,8 +107,6 @@ public class LoginActivity extends AppCompatActivity {
                     assert user != null;
                     if (user.isEmailVerified())
                     {
-                        User userObj = new User(user.getUid(), "Daniel", "Dawid");
-                        addUser(userObj);
                         updateUI(user);
                         finish();
                     }

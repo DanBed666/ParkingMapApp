@@ -30,7 +30,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-public class SettingsActivity extends AppCompatActivity
+import java.util.Objects;
+
+public class SettingsActivity extends AppCompatActivity implements RefreshActivity
 {
     Button logout;
     FirebaseAuth mAuth;
@@ -42,6 +44,7 @@ public class SettingsActivity extends AppCompatActivity
     DatabaseReference users = database.getReference("users");
     Button settings;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    String documentId;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -77,8 +80,11 @@ public class SettingsActivity extends AppCompatActivity
                     {
                         Log.d("LOL2", document.getId() + " => " + document.getData());
                         Log.i("XD2", "xd");
-                        //name.setText();
-                        //surname.setText();
+                        String nameDb = (String) document.getData().get("name");
+                        String surnameDb = (String) document.getData().get("surname");
+                        name.setText(nameDb);
+                        surname.setText(surnameDb);
+                        documentId = document.getId();
                     }
                 }
                 else
@@ -131,8 +137,16 @@ public class SettingsActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                startActivity(new Intent(getApplicationContext(), AccountActivity.class));
+                Intent intent = new Intent(getApplicationContext(), AccountActivity.class);
+                intent.putExtra("DOCUMENTID", documentId);
+                startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public void refresh()
+    {
+        recreate();
     }
 }

@@ -8,6 +8,12 @@ public class User implements Serializable
     String name;
     String surname;
 
+    public User(String name, String surname)
+    {
+        this.name = name;
+        this.surname = surname;
+    }
+
     public User(String uId, String name, String surname)
     {
         this.uId = uId;

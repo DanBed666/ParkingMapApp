@@ -31,6 +31,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -47,6 +48,7 @@ public class AccountActivity extends AppCompatActivity
     Button changePass;
     Button deleteAcc;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    String documentId;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -68,8 +70,9 @@ public class AccountActivity extends AppCompatActivity
         user = mAuth.getCurrentUser();
 
         assert user != null;
+        documentId = getIntent().getStringExtra("DOCUMENTID");
 
-        db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        db.collection("users").whereEqualTo("uId", user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task)
@@ -80,6 +83,10 @@ public class AccountActivity extends AppCompatActivity
                     {
                         Log.d("LOL", document.getId() + " => " + document.getData());
                         Log.i("XD", "xd");
+                        String nameDb = (String) document.getData().get("name");
+                        String surnameDb = (String) document.getData().get("surname");
+                        nameET.setText(nameDb);
+                        surnameET.setText(surnameDb);
                     }
                 }
                 else
@@ -164,12 +171,15 @@ public class AccountActivity extends AppCompatActivity
 
     public void addUser(User user)
     {
-        db.collection("users").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>()
+        Map<String, Object> mapa = new HashMap<>();
+        mapa.put("name", user.getName());
+        mapa.put("surname", user.getSurname());
+        db.collection("users").document(documentId).update(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
         {
             @Override
-            public void onSuccess(DocumentReference documentReference)
+            public void onSuccess(Void documentReference)
             {
-                Log.d("TEST", "DocumentSnapshot added with ID: " + documentReference.getId());
+                Log.d("TEST", "DocumentSnapshot added with ID");
             }
         }).addOnFailureListener(new OnFailureListener()
         {
