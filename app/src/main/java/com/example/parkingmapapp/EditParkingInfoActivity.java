@@ -102,7 +102,7 @@ public class EditParkingInfoActivity extends AppCompatActivity
                 String sup = supervised.getText().toString();
                 String ope = operator.getText().toString();
 
-                Parking parking = new Parking(nam, pkg, cpc, f33, sup, ope, latitude[0], longitude[0]);
+                Parking parking = new Parking("456", nam, pkg, cpc, f33, sup, ope, latitude[0], longitude[0]);
                 parkings.child(id).setValue(parking);
                 Log.i("EDIT", "zedytowano");
 

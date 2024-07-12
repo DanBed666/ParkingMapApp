@@ -68,7 +68,7 @@ public class ParkingInfoActivity extends AppCompatActivity
         assert id != null;
         Log.i("PARKING_ID", id);
 
-        db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        db.collection("parkings").whereEqualTo("id", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task)
@@ -78,6 +78,20 @@ public class ParkingInfoActivity extends AppCompatActivity
                     for (QueryDocumentSnapshot document : task.getResult())
                     {
                         Log.d("LOL", document.getId() + " => " + document.getData());
+                        Log.i("XD", document.getId() + " => " + document.getData());
+                        String nam = (String) document.getData().get("name");
+                        String pkg = (String) document.getData().get("pking");
+                        String cpc = (String) document.getData().get("capacity");
+                        String f33 = (String) document.getData().get("fee");
+                        String sup = (String) document.getData().get("supervised");
+                        String ope = (String) document.getData().get("operator");
+
+                        name.setText("Name: " + nam);
+                        parking.setText("Parking: " + pkg);
+                        capacity.setText("Capacity: " + cpc);
+                        fee.setText("Fee: " + f33);
+                        supervised.setText("Supervised: " + sup);
+                        operator.setText("Operator: " + ope);
                     }
                 }
                 else
@@ -86,6 +100,8 @@ public class ParkingInfoActivity extends AppCompatActivity
                 }
             }
         });
+
+        /*
 
         parkings.child(id).addValueEventListener(new ValueEventListener()
         {
@@ -115,6 +131,8 @@ public class ParkingInfoActivity extends AppCompatActivity
             }
         });
 
+
+
         addedparkings.child(id).addValueEventListener(new ValueEventListener()
         {
             @SuppressLint("SetTextI18n")
@@ -142,6 +160,9 @@ public class ParkingInfoActivity extends AppCompatActivity
 
             }
         });
+
+
+         */
 
         edit.setOnClickListener(new View.OnClickListener()
         {

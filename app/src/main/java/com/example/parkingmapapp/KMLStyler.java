@@ -136,6 +136,8 @@ public class KMLStyler implements KmlFeature.Styler
         double finalLat = lat;
         double finalLon = lon;
 
+        /*
+
         parkings.addListenerForSingleValueEvent(new ValueEventListener()
         {
             @Override
@@ -161,6 +163,8 @@ public class KMLStyler implements KmlFeature.Styler
 
             }
         });
+        
+         */
 
         setMarker();
 
@@ -189,7 +193,7 @@ public class KMLStyler implements KmlFeature.Styler
         double finalLat = lat;
         double finalLon = lon;
 
-        parking = new Parking(nm, pk, cpc, fee, svd, ope, finalLat, finalLon);
+        parking = new Parking(id, nm, pk, cpc, fee, svd, ope, finalLat, finalLon);
 
         db.collection("parkings").add(parking).addOnSuccessListener(new OnSuccessListener<DocumentReference>()
         {

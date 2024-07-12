@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 public class Parking implements Serializable
 {
+    String id;
     String name;
     String pking;
     String capacity;
@@ -15,7 +16,9 @@ public class Parking implements Serializable
     double latitude;
     double longtitude;
 
-    public Parking(String name, String pking, String capacity, String fee, String supervised, String operator, double latitude, double longtitude) {
+    public Parking(String id, String name, String pking, String capacity, String fee, String supervised, String operator, double latitude, double longtitude)
+    {
+        this.id = id;
         this.name = name;
         this.pking = pking;
         this.capacity = capacity;
@@ -24,6 +27,14 @@ public class Parking implements Serializable
         this.operator = operator;
         this.latitude = latitude;
         this.longtitude = longtitude;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public double getLatitude() {
