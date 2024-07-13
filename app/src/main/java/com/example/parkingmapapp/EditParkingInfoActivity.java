@@ -14,13 +14,23 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.osmdroid.util.GeoPoint;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class EditParkingInfoActivity extends AppCompatActivity
 {
@@ -32,7 +42,9 @@ public class EditParkingInfoActivity extends AppCompatActivity
     EditText operator;
     Button edit;
     GeoPoint loc;
-
+    String id;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    String documentId;
     FirebaseDatabase database = FirebaseDatabase.getInstance("https://parkingmapapp-39ec0-default-rtdb.europe-west1.firebasedatabase.app/");
     DatabaseReference parkings = database.getReference("parkings");
     @Override
@@ -55,11 +67,14 @@ public class EditParkingInfoActivity extends AppCompatActivity
         supervised = findViewById(R.id.et_supervised);
         operator = findViewById(R.id.et_operator);
         edit = findViewById(R.id.btn_edit);
-        String id = getIntent().getStringExtra("KEYID");
+        id = getIntent().getStringExtra("KEYID");
+        documentId = getIntent().getStringExtra("DOCUMENTID");
         final Double[] latitude = new Double[1];
         final Double[] longitude = new Double[1];
 
         assert id != null;
+
+        /*
         parkings.child(id).addValueEventListener(new ValueEventListener()
         {
             @SuppressLint("SetTextI18n")
@@ -90,6 +105,43 @@ public class EditParkingInfoActivity extends AppCompatActivity
             }
         });
 
+         */
+
+        db.collection("parkings").whereEqualTo("id", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task)
+            {
+                if (task.isSuccessful())
+                {
+                    for (QueryDocumentSnapshot document : task.getResult())
+                    {
+                        Log.d("LOL", document.getId() + " => " + document.getData());
+                        Log.i("XD", document.getId() + " => " + document.getData());
+                        String nam = (String) document.getData().get("name");
+                        String pkg = (String) document.getData().get("pking");
+                        String cpc = (String) document.getData().get("capacity");
+                        String f33 = (String) document.getData().get("fee");
+                        String sup = (String) document.getData().get("supervised");
+                        String ope = (String) document.getData().get("operator");
+                        latitude[0] = (Double) document.getData().get("latitude");
+                        longitude[0] = (Double) document.getData().get("longtitude");
+
+                        name.setText("Name: " + nam);
+                        parking.setText("Parking: " + pkg);
+                        capacity.setText("Capacity: " + cpc);
+                        fee.setText("Fee: " + f33);
+                        supervised.setText("Supervised: " + sup);
+                        operator.setText("Operator: " + ope);
+                    }
+                }
+                else
+                {
+                    Log.w("ERR", "Error getting documents.", task.getException());
+                }
+            }
+        });
+
         edit.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -102,11 +154,50 @@ public class EditParkingInfoActivity extends AppCompatActivity
                 String sup = supervised.getText().toString();
                 String ope = operator.getText().toString();
 
+                Parking parking = new Parking(id, nam, pkg, cpc, f33, sup, ope, latitude[0], longitude[0]);
+                editParking(parking);
+
+                /*
+                String nam = name.getText().toString();
+                String pkg = parking.getText().toString();
+                String cpc = capacity.getText().toString();
+                String f33 = fee.getText().toString();
+                String sup = supervised.getText().toString();
+                String ope = operator.getText().toString();
+
                 Parking parking = new Parking("456", nam, pkg, cpc, f33, sup, ope, latitude[0], longitude[0]);
                 parkings.child(id).setValue(parking);
                 Log.i("EDIT", "zedytowano");
 
+                 */
+
                 finish();
+            }
+        });
+    }
+
+    public void editParking(Parking parking)
+    {
+        Map<String, Object> mapa = new HashMap<>();
+        mapa.put("name", parking.getName());
+        mapa.put("pking", parking.getPking());
+        mapa.put("capacity", parking.getCapacity());
+        mapa.put("fee", parking.getFee());
+        mapa.put("supervised", parking.getSupervised());
+        mapa.put("operator", parking.getOperator());
+        db.collection("users").document(documentId).update(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
+        {
+            @Override
+            public void onSuccess(Void documentReference)
+            {
+                Log.d("TEST", "DocumentSnapshot added with ID");
+            }
+        }).addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+                Log.d("ERROR", "Error: " + e.getMessage());
             }
         });
     }

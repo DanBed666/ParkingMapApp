@@ -273,28 +273,6 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
     public boolean singleTapConfirmedHelper(GeoPoint p)
     {
         Toast.makeText(getApplicationContext(), "single", Toast.LENGTH_SHORT).show();
-
-        Map<String, Object> user = new HashMap<>();
-        user.put("first", "Ada");
-        user.put("last", "Lovelace");
-        user.put("born", 1815);
-
-        db.collection("users").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>()
-        {
-            @Override
-            public void onSuccess(DocumentReference documentReference)
-            {
-                Log.d("TEST", "DocumentSnapshot added with ID: " + documentReference.getId());
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Log.d("ERROR", "Error: " + e.getMessage());
-            }
-        });
-
         return true;
     }
 
@@ -308,25 +286,6 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
         Marker m = new Marker(map);
         m.setPosition(p);
         map.getOverlays().add(m);
-
-        db.collection("usersy").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
-        {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task)
-            {
-                if (task.isSuccessful())
-                {
-                    for (QueryDocumentSnapshot document : task.getResult())
-                    {
-                        Log.d("LOL", document.getId() + " => " + document.getData());
-                    }
-                }
-                else
-                {
-                    Log.w("ERR", "Error getting documents.", task.getException());
-                }
-            }
-        });
 
         return true;
     }

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -22,7 +23,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -41,6 +45,8 @@ public class ParkingInfoActivity extends AppCompatActivity
     DatabaseReference parkings = database.getReference("parkings");
     DatabaseReference addedparkings = database.getReference("addedparkings");
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    String documentId;
+    String id;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -62,44 +68,17 @@ public class ParkingInfoActivity extends AppCompatActivity
         operator = findViewById(R.id.tv_operator);
         edit = findViewById(R.id.btn_edit);
 
-        String id = getIntent().getStringExtra("KEYID");
+        id = getIntent().getStringExtra("KEYID");
         Parking p = (Parking) getIntent().getSerializableExtra("PARKING");
 
         assert id != null;
         Log.i("PARKING_ID", id);
 
-        db.collection("parkings").whereEqualTo("id", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
-        {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task)
-            {
-                if (task.isSuccessful())
-                {
-                    for (QueryDocumentSnapshot document : task.getResult())
-                    {
-                        Log.d("LOL", document.getId() + " => " + document.getData());
-                        Log.i("XD", document.getId() + " => " + document.getData());
-                        String nam = (String) document.getData().get("name");
-                        String pkg = (String) document.getData().get("pking");
-                        String cpc = (String) document.getData().get("capacity");
-                        String f33 = (String) document.getData().get("fee");
-                        String sup = (String) document.getData().get("supervised");
-                        String ope = (String) document.getData().get("operator");
+        getElementsFromDB("parkings");
+        getElementsFromDB("addedarkings");
+        updateElementsFromDB("parkings");
+        updateElementsFromDB("addedparkings");
 
-                        name.setText("Name: " + nam);
-                        parking.setText("Parking: " + pkg);
-                        capacity.setText("Capacity: " + cpc);
-                        fee.setText("Fee: " + f33);
-                        supervised.setText("Supervised: " + sup);
-                        operator.setText("Operator: " + ope);
-                    }
-                }
-                else
-                {
-                    Log.w("ERR", "Error getting documents.", task.getException());
-                }
-            }
-        });
 
         /*
 
@@ -172,7 +151,76 @@ public class ParkingInfoActivity extends AppCompatActivity
                 Intent intent = new Intent(getApplicationContext(), EditParkingInfoActivity.class);
                 intent.putExtra("KEYID", id);
                 intent.putExtra("PARKING", p);
+                intent.putExtra("DOCUMENTID", documentId);
                 startActivity(intent);
+            }
+        });
+    }
+
+    public void getElementsFromDB(String col)
+    {
+        db.collection(col).whereEqualTo("id", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task)
+            {
+                if (task.isSuccessful())
+                {
+                    for (QueryDocumentSnapshot document : task.getResult())
+                    {
+                        Log.d("LOL", document.getId() + " => " + document.getData());
+                        Log.i("XD", document.getId() + " => " + document.getData());
+                        String nam = (String) document.getData().get("name");
+                        String pkg = (String) document.getData().get("pking");
+                        String cpc = (String) document.getData().get("capacity");
+                        String f33 = (String) document.getData().get("fee");
+                        String sup = (String) document.getData().get("supervised");
+                        String ope = (String) document.getData().get("operator");
+
+                        name.setText("Name: " + nam);
+                        parking.setText("Parking: " + pkg);
+                        capacity.setText("Capacity: " + cpc);
+                        fee.setText("Fee: " + f33);
+                        supervised.setText("Supervised: " + sup);
+                        operator.setText("Operator: " + ope);
+
+                        documentId = document.getId();
+                    }
+                }
+                else
+                {
+                    Log.w("ERR", "Error getting documents.", task.getException());
+                }
+            }
+        });
+    }
+
+    public void updateElementsFromDB(String col)
+    {
+        db.collection(col).whereEqualTo("id", id).addSnapshotListener(new EventListener<QuerySnapshot>()
+        {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error)
+            {
+                assert value != null;
+                for (DocumentChange d : value.getDocumentChanges())
+                {
+                    Log.i("TYP", String.valueOf(d.getType()));
+
+                    String nam = (String) d.getDocument().get("name");
+                    String pkg = (String) d.getDocument().get("pking");
+                    String cpc = (String) d.getDocument().get("capacity");
+                    String f33 = (String) d.getDocument().get("fee");
+                    String sup = (String) d.getDocument().get("supervised");
+                    String ope = (String) d.getDocument().get("operator");
+
+                    name.setText("Name: " + nam);
+                    parking.setText("Parking: " + pkg);
+                    capacity.setText("Capacity: " + cpc);
+                    fee.setText("Fee: " + f33);
+                    supervised.setText("Supervised: " + sup);
+                    operator.setText("Operator: " + ope);
+                }
             }
         });
     }

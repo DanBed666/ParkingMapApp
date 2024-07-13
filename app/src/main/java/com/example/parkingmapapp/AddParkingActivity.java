@@ -15,9 +15,13 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.osmdroid.util.GeoPoint;
 
@@ -33,6 +37,7 @@ public class AddParkingActivity extends AppCompatActivity
     EditText supervisedET;
     EditText operatorET;
     Button createET;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseDatabase database = FirebaseDatabase.getInstance("https://parkingmapapp-39ec0-default-rtdb.europe-west1.firebasedatabase.app/");
     DatabaseReference parkings = database.getReference("addedparkings");
     @Override
@@ -71,7 +76,9 @@ public class AddParkingActivity extends AppCompatActivity
                 String operator = operatorET.getText().toString();
 
                 assert location != null;
-                Parking newParking = new Parking("123", name, parking, capacity, fee, supervised, operator, location.getLatitude(), location.getLongitude());
+                Parking newParking = new Parking(generateId(), name, parking, capacity, fee, supervised, operator, location.getLatitude(), location.getLongitude());
+
+                /*
                 parkings.child(generateId()).setValue(newParking).addOnCompleteListener(new OnCompleteListener<Void>()
                 {
                     @Override
@@ -88,6 +95,24 @@ public class AddParkingActivity extends AppCompatActivity
                             Log.e("ERRORPARK", Objects.requireNonNull(Objects.requireNonNull(task.getException()).getMessage()));
                             finish();
                         }
+                    }
+                });
+
+                 */
+
+                db.collection("addedparkings").add(newParking).addOnSuccessListener(new OnSuccessListener<DocumentReference>()
+                {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference)
+                    {
+                        Log.d("TEST", "DocumentSnapshot added with ID: " + documentReference.getId());
+                    }
+                }).addOnFailureListener(new OnFailureListener()
+                {
+                    @Override
+                    public void onFailure(@NonNull Exception e)
+                    {
+                        Log.d("ERROR", "Error: " + e.getMessage());
                     }
                 });
             }
