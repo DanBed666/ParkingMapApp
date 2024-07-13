@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -25,8 +26,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -98,6 +102,25 @@ public class SettingsActivity extends AppCompatActivity implements RefreshActivi
             public void onFailure(@NonNull Exception e)
             {
                 Log.e("ERR2", "Error getting documents.", e);
+            }
+        });
+
+        db.collection("users").whereEqualTo("uId", user.getUid()).addSnapshotListener(new EventListener<QuerySnapshot>()
+        {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error)
+            {
+                assert value != null;
+                for (DocumentChange d : value.getDocumentChanges())
+                {
+                    Log.i("TYP", String.valueOf(d.getType()));
+                    String nameDb = (String) d.getDocument().get("name");
+                    String surnameDb = (String) d.getDocument().get("surname");
+                    Log.i("EXDE", (String) Objects.requireNonNull(d.getDocument().get("name")));
+                    Log.i("EXDE", (String) Objects.requireNonNull(d.getDocument().get("surname")));
+                    name.setText(nameDb);
+                    surname.setText(surnameDb);
+                }
             }
         });
 
