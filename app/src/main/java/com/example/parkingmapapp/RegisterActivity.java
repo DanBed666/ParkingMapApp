@@ -182,4 +182,9 @@ public class RegisterActivity extends AppCompatActivity
             }
         });
     }
+
+    public void ifExists()
+    {
+
+    }
 }

@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -16,8 +16,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.osmdroid.bonuspack.kml.KmlFeature;
 import org.osmdroid.bonuspack.kml.KmlLineString;
@@ -28,7 +31,6 @@ import org.osmdroid.bonuspack.kml.KmlTrack;
 import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.FolderOverlay;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Overlay;
@@ -68,7 +70,9 @@ public class KMLStyler implements KmlFeature.Styler
     @Override
     public void onPoint(Marker marker, KmlPlacemark kmlPlacemark, KmlPoint kmlPoint)
     {
-        String id = addParkings2(kmlPlacemark, kmlPoint.getPosition());
+        DatabaseManager databaseManager = new DatabaseManager(kmlPlacemark, startPoint);
+        String id = databaseManager.addParkings2();
+        howManyRecords();
 
         marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener()
         {
@@ -90,7 +94,10 @@ public class KMLStyler implements KmlFeature.Styler
     @Override
     public void onPolygon(Polygon polygon, KmlPlacemark kmlPlacemark, KmlPolygon kmlPolygon)
     {
-        String id = addParkings2(kmlPlacemark, kmlPolygon.getBoundingBox().getCenter());
+
+        DatabaseManager databaseManager = new DatabaseManager(kmlPlacemark, startPoint);
+        String id = databaseManager.addParkings2();
+        howManyRecords();
 
         polygon.setOnClickListener(new Polygon.OnClickListener()
         {
@@ -110,110 +117,16 @@ public class KMLStyler implements KmlFeature.Styler
 
     }
 
-    public String addParkings(KmlPlacemark kmlPlacemark, GeoPoint loc)
+    public void howManyRecords()
     {
-        Log.i("WYKONUJE", "TAK");
-
-        String id = kmlPlacemark.mId;
-        String nm = "Brak";
-        String pk = kmlPlacemark.getExtendedData("parking");
-        String cpc = kmlPlacemark.getExtendedData("capacity");
-        String fee = kmlPlacemark.getExtendedData("fee");
-        String svd = kmlPlacemark.getExtendedData("supervised");
-        String ope = kmlPlacemark.getExtendedData("operator");
-        double lat = 0;
-        double lon = 0;
-
-        Log.i("GEOLAT", String.valueOf(loc.getLatitude()));
-        Log.i("GEOLON", String.valueOf(loc.getLongitude()));
-        lat = loc.getLatitude();
-        lon = loc.getLongitude();
-
-        DatabaseReference p = parkings.child(id);
-
-        Log.i("KLUCZ", id + "   " + Objects.requireNonNull(p.getKey()));
-
-        double finalLat = lat;
-        double finalLon = lon;
-
-        /*
-
-        parkings.addListenerForSingleValueEvent(new ValueEventListener()
+        db.collection("parkings").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot)
+            public void onComplete(@NonNull Task<QuerySnapshot> task)
             {
-                Log.i("KLUCZ2", String.valueOf(snapshot.hasChild(id)));
-
-                if (!snapshot.hasChild(id))
-                {
-                    Log.i("DODANO", "dodano");
-                    parking = new Parking(nm, pk, cpc, fee, svd, ope, finalLat, finalLon);
-                    parkings.child(id).setValue(parking);
-                }
-                else
-                {
-                    Log.i("NIEDODANO", "niedodano");
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error)
-            {
-
+                Log.i("ILE", String.valueOf(task.getResult().size()));
             }
         });
-        
-         */
-
-        setMarker();
-
-        return id;
-    }
-
-    public String addParkings2(KmlPlacemark kmlPlacemark, GeoPoint loc)
-    {
-        Log.i("WYKONUJE", "TAK");
-
-        String id = kmlPlacemark.mId;
-        String nm = "Brak";
-        String pk = kmlPlacemark.getExtendedData("parking");
-        String cpc = kmlPlacemark.getExtendedData("capacity");
-        String fee = kmlPlacemark.getExtendedData("fee");
-        String svd = kmlPlacemark.getExtendedData("supervised");
-        String ope = kmlPlacemark.getExtendedData("operator");
-        double lat = 0;
-        double lon = 0;
-
-        Log.i("GEOLAT", String.valueOf(loc.getLatitude()));
-        Log.i("GEOLON", String.valueOf(loc.getLongitude()));
-        lat = loc.getLatitude();
-        lon = loc.getLongitude();
-
-        double finalLat = lat;
-        double finalLon = lon;
-
-        parking = new Parking(id, nm, pk, cpc, fee, svd, ope, finalLat, finalLon);
-
-        db.collection("parkings").add(parking).addOnSuccessListener(new OnSuccessListener<DocumentReference>()
-        {
-            @Override
-            public void onSuccess(DocumentReference documentReference)
-            {
-                Log.d("TEST", "DocumentSnapshot added with ID: " + documentReference.getId());
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Log.d("ERROR", "Error: " + e.getMessage());
-            }
-        });
-
-        setMarker();
-
-        return id;
     }
 
     public void addFragment(GeoPoint geoPoint, String id)
@@ -256,7 +169,6 @@ public class KMLStyler implements KmlFeature.Styler
 
         map.getOverlays().add(mapEventsOverlay);
     }
-
     public void setMarker()
     {
          addedparkings.addValueEventListener(new ValueEventListener()
