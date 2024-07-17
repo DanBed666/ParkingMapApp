@@ -4,9 +4,13 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import org.osmdroid.bonuspack.kml.KmlPlacemark;
 import org.osmdroid.util.GeoPoint;
@@ -24,7 +28,7 @@ public class DatabaseManager
         loc = l;
     }
 
-    public String addParkings2()
+    public void addParkings2()
     {
         Log.i("WYKONUJE", "TAK");
 
@@ -49,8 +53,6 @@ public class DatabaseManager
 
         Parking parking = new Parking(id, nm, pk, cpc, fee, svd, ope, finalLat, finalLon);
         addRecord(id, parking);
-
-        return id;
     }
 
     public void addRecord(String id, Parking parking)
@@ -68,6 +70,34 @@ public class DatabaseManager
             public void onFailure(@NonNull Exception e)
             {
                 Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
+            }
+        });
+    }
+
+    public void checkIfExists(String id)
+    {
+        db.collection("parkings").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task)
+            {
+                if (task.isSuccessful())
+                {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists())
+                    {
+                        Log.i("REKORD", "istnieje " + id);
+                    }
+                    else
+                    {
+                        Log.i("REKORD", "nie istnieje " + id);
+                        addParkings2();
+                    }
+                }
+                else
+                {
+                    Log.d("ERROR", "Failed with: ", task.getException());
+                }
             }
         });
     }

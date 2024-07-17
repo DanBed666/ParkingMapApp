@@ -127,12 +127,12 @@ public class EditParkingInfoActivity extends AppCompatActivity
                         latitude[0] = (Double) document.getData().get("latitude");
                         longitude[0] = (Double) document.getData().get("longtitude");
 
-                        name.setText("Name: " + nam);
-                        parking.setText("Parking: " + pkg);
-                        capacity.setText("Capacity: " + cpc);
-                        fee.setText("Fee: " + f33);
-                        supervised.setText("Supervised: " + sup);
-                        operator.setText("Operator: " + ope);
+                        name.setText(nam);
+                        parking.setText(pkg);
+                        capacity.setText(cpc);
+                        fee.setText(f33);
+                        supervised.setText(sup);
+                        operator.setText(ope);
                     }
                 }
                 else
@@ -185,7 +185,8 @@ public class EditParkingInfoActivity extends AppCompatActivity
         mapa.put("fee", parking.getFee());
         mapa.put("supervised", parking.getSupervised());
         mapa.put("operator", parking.getOperator());
-        db.collection("users").document(documentId).update(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
+
+        db.collection("parkings").document(documentId).update(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
         {
             @Override
             public void onSuccess(Void documentReference)

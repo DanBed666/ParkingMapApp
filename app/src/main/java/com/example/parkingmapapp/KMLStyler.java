@@ -70,8 +70,9 @@ public class KMLStyler implements KmlFeature.Styler
     @Override
     public void onPoint(Marker marker, KmlPlacemark kmlPlacemark, KmlPoint kmlPoint)
     {
+        String id = kmlPlacemark.mId;
         DatabaseManager databaseManager = new DatabaseManager(kmlPlacemark, startPoint);
-        String id = databaseManager.addParkings2();
+        databaseManager.checkIfExists(id);
         howManyRecords();
 
         marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener()
@@ -80,6 +81,7 @@ public class KMLStyler implements KmlFeature.Styler
             public boolean onMarkerClick(Marker marker, MapView mapView)
             {
                 addFragment(marker.getPosition(), id);
+                Log.i("IDPOINT", id);
 
                 return true;
             }
@@ -94,9 +96,9 @@ public class KMLStyler implements KmlFeature.Styler
     @Override
     public void onPolygon(Polygon polygon, KmlPlacemark kmlPlacemark, KmlPolygon kmlPolygon)
     {
-
+        String id = kmlPlacemark.mId;
         DatabaseManager databaseManager = new DatabaseManager(kmlPlacemark, startPoint);
-        String id = databaseManager.addParkings2();
+        databaseManager.checkIfExists(id);
         howManyRecords();
 
         polygon.setOnClickListener(new Polygon.OnClickListener()
@@ -105,6 +107,7 @@ public class KMLStyler implements KmlFeature.Styler
             public boolean onClick(Polygon polygon, MapView mapView, GeoPoint eventPos)
             {
                 addFragment(eventPos, id);
+                Log.i("IDPOINT", id);
 
                 return true;
             }

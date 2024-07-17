@@ -111,7 +111,7 @@ public class Utils implements Serializable, Parcelable
 
     public void findParkings(String tag)
     {
-        startPoint = new GeoPoint(53.428, 14.553);
+        //startPoint = new GeoPoint(53.428, 14.553);
         GeoPoint location = startPoint;
         OverpassAPIProvider overpassProvider = new OverpassAPIProvider();
         BoundingBox range = new BoundingBox(location.getLatitude() + 0.05, location.getLongitude() + 0.05,

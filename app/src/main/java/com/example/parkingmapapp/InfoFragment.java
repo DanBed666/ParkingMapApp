@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -20,7 +21,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Map;
 import java.util.Objects;
@@ -125,6 +130,23 @@ public class InfoFragment extends Fragment
 
     public void getInfo(String id, TextView info)
     {
+        db.collection("parkings").whereEqualTo("id", id).addSnapshotListener(new EventListener<QuerySnapshot>()
+        {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error)
+            {
+                assert value != null;
+                for (DocumentChange d : value.getDocumentChanges())
+                {
+                    Log.i("TYP", String.valueOf(d.getType()));
+                    String nameDb = (String) d.getDocument().get("name");
+                    Log.i("EXDE", (String) Objects.requireNonNull(d.getDocument().get("name")));
+                    info.setText(nameDb);
+                }
+            }
+        });
+
+        /*
         DatabaseReference p = parkings.child(id);
         p.addValueEventListener(new ValueEventListener()
         {
@@ -178,5 +200,7 @@ public class InfoFragment extends Fragment
 
             }
         });
+
+         */
     }
 }
