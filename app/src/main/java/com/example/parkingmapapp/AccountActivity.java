@@ -40,8 +40,6 @@ public class AccountActivity extends AppCompatActivity
     EditText nameET;
     EditText surnameET;
     Button confirm;
-    FirebaseDatabase database = FirebaseDatabase.getInstance("https://parkingmapapp-39ec0-default-rtdb.europe-west1.firebasedatabase.app/");
-    DatabaseReference users = database.getReference("users");
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user;
     Button changeMail;
@@ -95,37 +93,6 @@ public class AccountActivity extends AppCompatActivity
                 }
             }
         });
-
-        /*users.child(user.getUid()).addValueEventListener(new ValueEventListener()
-        {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot)
-            {
-                DataSnapshot name = snapshot.child("name");
-                DataSnapshot surname = snapshot.child("surname");
-
-                if (name.exists() && surname.exists())
-                {
-                    nameET.setText(name.getValue(String.class));
-                    surnameET.setText(surname.getValue(String.class));
-                    Log.i("NAME", Objects.requireNonNull(name.getValue(String.class)));
-                    Log.i("SURNAME", Objects.requireNonNull(surname.getValue(String.class)));
-                }
-                else
-                {
-                    Log.i("BRAK", Objects.requireNonNull("BRAK"));
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error)
-            {
-
-            }
-        });
-
-         */
-
         confirm.setOnClickListener(new View.OnClickListener()
         {
             @Override

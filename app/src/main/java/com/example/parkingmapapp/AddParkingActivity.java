@@ -38,8 +38,6 @@ public class AddParkingActivity extends AppCompatActivity
     EditText operatorET;
     Button createET;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    FirebaseDatabase database = FirebaseDatabase.getInstance("https://parkingmapapp-39ec0-default-rtdb.europe-west1.firebasedatabase.app/");
-    DatabaseReference parkings = database.getReference("addedparkings");
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -77,29 +75,6 @@ public class AddParkingActivity extends AppCompatActivity
 
                 assert location != null;
                 Parking newParking = new Parking(generateId(), name, parking, capacity, fee, supervised, operator, location.getLatitude(), location.getLongitude());
-
-                /*
-                parkings.child(generateId()).setValue(newParking).addOnCompleteListener(new OnCompleteListener<Void>()
-                {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task)
-                    {
-                        if (task.isSuccessful())
-                        {
-                            Toast.makeText(getApplicationContext(), "Dodano nowy parking", Toast.LENGTH_SHORT).show();
-                            finish();
-                        }
-                        else
-                        {
-                            Toast.makeText(getApplicationContext(), "Nie udało się dodać parkingu", Toast.LENGTH_SHORT).show();
-                            Log.e("ERRORPARK", Objects.requireNonNull(Objects.requireNonNull(task.getException()).getMessage()));
-                            finish();
-                        }
-                    }
-                });
-
-                 */
-
                 db.collection("addedparkings").add(newParking).addOnSuccessListener(new OnSuccessListener<DocumentReference>()
                 {
                     @Override

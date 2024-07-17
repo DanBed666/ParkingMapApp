@@ -1,20 +1,15 @@
 package com.example.parkingmapapp;
 
 import android.util.Log;
-
 import androidx.annotation.NonNull;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
-
 import org.osmdroid.bonuspack.kml.KmlPlacemark;
 import org.osmdroid.util.GeoPoint;
-
 import java.util.Objects;
 
 public class DatabaseManager

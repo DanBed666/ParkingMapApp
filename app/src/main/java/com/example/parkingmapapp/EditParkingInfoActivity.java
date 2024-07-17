@@ -41,12 +41,9 @@ public class EditParkingInfoActivity extends AppCompatActivity
     EditText supervised;
     EditText operator;
     Button edit;
-    GeoPoint loc;
     String id;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String documentId;
-    FirebaseDatabase database = FirebaseDatabase.getInstance("https://parkingmapapp-39ec0-default-rtdb.europe-west1.firebasedatabase.app/");
-    DatabaseReference parkings = database.getReference("parkings");
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -73,40 +70,6 @@ public class EditParkingInfoActivity extends AppCompatActivity
         final Double[] longitude = new Double[1];
 
         assert id != null;
-
-        /*
-        parkings.child(id).addValueEventListener(new ValueEventListener()
-        {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot)
-            {
-                String nam = snapshot.child("name").getValue(String.class);
-                String pkg = snapshot.child("pking").getValue(String.class);
-                String cpc = snapshot.child("capacity").getValue(String.class);
-                String f33 = snapshot.child("fee").getValue(String.class);
-                String sup = snapshot.child("supervised").getValue(String.class);
-                String ope = snapshot.child("operator").getValue(String.class);
-                latitude[0] = snapshot.child("latitude").getValue(Double.class);
-                longitude[0] = snapshot.child("longtitude").getValue(Double.class);
-
-                name.setText(nam);
-                parking.setText(pkg);
-                capacity.setText(cpc);
-                fee.setText(f33);
-                supervised.setText(sup);
-                operator.setText(ope);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error)
-            {
-
-            }
-        });
-
-         */
-
         db.collection("parkings").whereEqualTo("id", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
             @Override
@@ -156,20 +119,6 @@ public class EditParkingInfoActivity extends AppCompatActivity
 
                 Parking parking = new Parking(id, nam, pkg, cpc, f33, sup, ope, latitude[0], longitude[0]);
                 editParking(parking);
-
-                /*
-                String nam = name.getText().toString();
-                String pkg = parking.getText().toString();
-                String cpc = capacity.getText().toString();
-                String f33 = fee.getText().toString();
-                String sup = supervised.getText().toString();
-                String ope = operator.getText().toString();
-
-                Parking parking = new Parking("456", nam, pkg, cpc, f33, sup, ope, latitude[0], longitude[0]);
-                parkings.child(id).setValue(parking);
-                Log.i("EDIT", "zedytowano");
-
-                 */
 
                 finish();
             }

@@ -37,10 +37,6 @@ public class FindParksOptionsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
-    FirebaseDatabase database = FirebaseDatabase.getInstance("https://parkingmapapp-39ec0-default-rtdb.europe-west1.firebasedatabase.app/");
-    DatabaseReference addedparkings = database.getReference("addedparkings");
-
     public FindParksOptionsFragment() {
         // Required empty public constructor
     }
@@ -132,42 +128,5 @@ public class FindParksOptionsFragment extends Fragment {
         }
 
         return wybor;
-    }
-
-    public void databaseFilter()
-    {
-        addedparkings.addValueEventListener(new ValueEventListener()
-        {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot)
-            {
-                Log.i("ILE", String.valueOf(snapshot.getChildrenCount()));
-
-                for (DataSnapshot s : snapshot.getChildren())
-                {
-                    addedparkings.child(Objects.requireNonNull(s.getKey())).addValueEventListener(new ValueEventListener()
-                    {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot)
-                        {
-                            Log.i("KIDOS", Objects.requireNonNull(snapshot.getKey()));
-                            String parking = snapshot.child("supervised").getValue(String.class);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error)
-                        {
-
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error)
-            {
-
-            }
-        });
     }
 }

@@ -48,7 +48,6 @@ public class KMLStyler implements KmlFeature.Styler
     GeoPoint startPoint;
     FragmentInterface listener;
     FirebaseDatabase database = FirebaseDatabase.getInstance("https://parkingmapapp-39ec0-default-rtdb.europe-west1.firebasedatabase.app/");
-    DatabaseReference parkings = database.getReference("parkings");
     DatabaseReference addedparkings = database.getReference("addedparkings");
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     Parking parking;
@@ -172,6 +171,8 @@ public class KMLStyler implements KmlFeature.Styler
 
         map.getOverlays().add(mapEventsOverlay);
     }
+
+    //to do setMarker
     public void setMarker()
     {
          addedparkings.addValueEventListener(new ValueEventListener()

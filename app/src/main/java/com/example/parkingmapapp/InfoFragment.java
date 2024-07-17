@@ -46,10 +46,6 @@ public class InfoFragment extends Fragment
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
-    FirebaseDatabase database = FirebaseDatabase.getInstance("https://parkingmapapp-39ec0-default-rtdb.europe-west1.firebasedatabase.app/");
-    DatabaseReference parkings = database.getReference("parkings");
-    DatabaseReference addedparkings = database.getReference("addedparkings");
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public InfoFragment() {
@@ -145,62 +141,5 @@ public class InfoFragment extends Fragment
                 }
             }
         });
-
-        /*
-        DatabaseReference p = parkings.child(id);
-        p.addValueEventListener(new ValueEventListener()
-        {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot)
-            {
-                DataSnapshot s = snapshot.child("name");
-
-                if (s.exists())
-                {
-                    Log.i("SAMPLE", Objects.requireNonNull(s.getValue(String.class)));
-                    info.setText(s.getValue(String.class));
-                }
-                else
-                {
-                    Log.i("SAMPLE", "Brak");
-                    info.setText("Brak danych");
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error)
-            {
-
-            }
-        });
-
-        DatabaseReference p2 = addedparkings.child(id);
-        p2.addValueEventListener(new ValueEventListener()
-        {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot)
-            {
-                DataSnapshot s = snapshot.child("name");
-
-                if (s.exists())
-                {
-                    Log.i("SAMPLE", Objects.requireNonNull(s.getValue(String.class)));
-                    info.setText(s.getValue(String.class));
-                }
-                else
-                {
-                    Log.i("SAMPLE", "Brak");
-                    info.setText("Brak danych");
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error)
-            {
-
-            }
-        });
-
-         */
     }
 }

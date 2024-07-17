@@ -36,7 +36,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Objects;
 
-public class SettingsActivity extends AppCompatActivity implements RefreshActivity
+public class SettingsActivity extends AppCompatActivity
 {
     Button logout;
     FirebaseAuth mAuth;
@@ -44,8 +44,6 @@ public class SettingsActivity extends AppCompatActivity implements RefreshActivi
     TextView email;
     TextView name;
     TextView surname;
-    FirebaseDatabase database = FirebaseDatabase.getInstance("https://parkingmapapp-39ec0-default-rtdb.europe-west1.firebasedatabase.app/");
-    DatabaseReference users = database.getReference("users");
     Button settings;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String documentId;
@@ -123,26 +121,6 @@ public class SettingsActivity extends AppCompatActivity implements RefreshActivi
                 }
             }
         });
-
-        /*
-        users.child(user.getUid()).addValueEventListener(new ValueEventListener()
-        {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot)
-            {
-                name.setText(snapshot.child("name").getValue(String.class));
-                surname.setText(snapshot.child("surname").getValue(String.class));
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error)
-            {
-
-            }
-        });
-        */
-
-
         logout.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -165,11 +143,5 @@ public class SettingsActivity extends AppCompatActivity implements RefreshActivi
                 startActivity(intent);
             }
         });
-    }
-
-    @Override
-    public void refresh()
-    {
-        recreate();
     }
 }

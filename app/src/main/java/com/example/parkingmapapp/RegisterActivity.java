@@ -40,9 +40,6 @@ public class RegisterActivity extends AppCompatActivity
     Button register;
     TextView goToLogin;
     FirebaseAuth mAuth;
-    FirebaseDatabase database = FirebaseDatabase.getInstance("https://parkingmapapp-39ec0-default-rtdb.europe-west1.firebasedatabase.app/");
-    DatabaseReference users = database.getReference("users");
-    User userObj;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState)
