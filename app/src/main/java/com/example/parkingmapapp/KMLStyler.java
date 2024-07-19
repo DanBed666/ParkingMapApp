@@ -41,17 +41,12 @@ import java.util.Objects;
 
 public class KMLStyler implements KmlFeature.Styler
 {
-    InfoFragment fragment;
-    Utils u;
     Context context;
     MapView map;
     GeoPoint startPoint;
     FragmentInterface listener;
-    FirebaseDatabase database = FirebaseDatabase.getInstance("https://parkingmapapp-39ec0-default-rtdb.europe-west1.firebasedatabase.app/");
-    DatabaseReference addedparkings = database.getReference("addedparkings");
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    Parking parking;
-
+    FragmentInfoManager fragmentInfoManager;
     public KMLStyler(Context ctx, MapView m, GeoPoint s, FragmentInterface l)
     {
         context = ctx;
@@ -70,7 +65,7 @@ public class KMLStyler implements KmlFeature.Styler
     public void onPoint(Marker marker, KmlPlacemark kmlPlacemark, KmlPoint kmlPoint)
     {
         String id = kmlPlacemark.mId;
-        DatabaseManager databaseManager = new DatabaseManager(kmlPlacemark, startPoint);
+        DatabaseManager databaseManager = new DatabaseManager(kmlPlacemark, kmlPoint.getPosition());
         databaseManager.checkIfExists(id);
         howManyRecords();
 
@@ -79,7 +74,8 @@ public class KMLStyler implements KmlFeature.Styler
             @Override
             public boolean onMarkerClick(Marker marker, MapView mapView)
             {
-                addFragment(marker.getPosition(), id);
+                fragmentInfoManager = new FragmentInfoManager(context, map, startPoint, listener);
+                fragmentInfoManager.addFragment(marker.getPosition(), id);
                 Log.i("IDPOINT", id);
 
                 return true;
@@ -96,7 +92,7 @@ public class KMLStyler implements KmlFeature.Styler
     public void onPolygon(Polygon polygon, KmlPlacemark kmlPlacemark, KmlPolygon kmlPolygon)
     {
         String id = kmlPlacemark.mId;
-        DatabaseManager databaseManager = new DatabaseManager(kmlPlacemark, startPoint);
+        DatabaseManager databaseManager = new DatabaseManager(kmlPlacemark, kmlPolygon.getBoundingBox().getCenter());
         databaseManager.checkIfExists(id);
         howManyRecords();
 
@@ -105,7 +101,8 @@ public class KMLStyler implements KmlFeature.Styler
             @Override
             public boolean onClick(Polygon polygon, MapView mapView, GeoPoint eventPos)
             {
-                addFragment(eventPos, id);
+                fragmentInfoManager = new FragmentInfoManager(context, map, startPoint, listener);
+                fragmentInfoManager.addFragment(eventPos, id);
                 Log.i("IDPOINT", id);
 
                 return true;
@@ -129,103 +126,5 @@ public class KMLStyler implements KmlFeature.Styler
                 Log.i("ILE", String.valueOf(task.getResult().size()));
             }
         });
-    }
-
-    public void addFragment(GeoPoint geoPoint, String id)
-    {
-        Log.i("WYKONUJE2", "TAK2");
-        fragment = new InfoFragment();
-        u = new Utils(context, map, startPoint, geoPoint);
-
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("OBJECT", u);
-        bundle.putSerializable("PARKING", parking);
-        bundle.putString("KEYID", id);
-        fragment.setArguments(bundle);
-        Log.i("IDFRAG", id);
-
-        listener.getSupportFM().beginTransaction().
-                setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                .show(fragment)
-                .replace(R.id.fragment, fragment)
-                .commit();
-
-        MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(new MapEventsReceiver() {
-            @Override
-            public boolean singleTapConfirmedHelper(GeoPoint p)
-            {
-                u.clearRoute();
-                listener.getSupportFM().beginTransaction().
-                        setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                        .hide(fragment)
-                        .commit();
-                return false;
-            }
-
-            @Override
-            public boolean longPressHelper(GeoPoint p)
-            {
-                return false;
-            }
-        });
-
-        map.getOverlays().add(mapEventsOverlay);
-    }
-
-    //to do setMarker
-    public void setMarker()
-    {
-         addedparkings.addValueEventListener(new ValueEventListener()
-         {
-             @Override
-             public void onDataChange(@NonNull DataSnapshot snapshot)
-             {
-                 for (DataSnapshot s : snapshot.getChildren())
-                 {
-                     Log.i("IDBASE", Objects.requireNonNull(s.getKey()));
-
-                     addedparkings.child(s.getKey()).addValueEventListener(new ValueEventListener()
-                     {
-                         @Override
-                         public void onDataChange(@NonNull DataSnapshot snapshot)
-                         {
-                             Double latitude = snapshot.child("latitude").getValue(Double.class);
-                             Double longtitude = snapshot.child("longtitude").getValue(Double.class);
-
-                             Marker marker = new Marker(map);
-
-                             if (latitude != null && longtitude != null)
-                             {
-                                 GeoPoint geoPoint = new GeoPoint(latitude, longtitude);
-                                 marker.setPosition(geoPoint);
-                                 marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener()
-                                 {
-                                     @Override
-                                     public boolean onMarkerClick(Marker marker, MapView mapView)
-                                     {
-                                         addFragment(geoPoint, s.getKey());
-                                         return true;
-                                     }
-                                 });
-                             }
-
-                             map.getOverlays().add(marker);
-                         }
-
-                         @Override
-                         public void onCancelled(@NonNull DatabaseError error)
-                         {
-
-                         }
-                     });
-                 }
-             }
-
-             @Override
-             public void onCancelled(@NonNull DatabaseError error)
-             {
-
-             }
-         });
     }
 }

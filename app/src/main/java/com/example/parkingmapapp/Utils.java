@@ -1,13 +1,21 @@
 package com.example.parkingmapapp;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.JsonObject;
 
 import org.osmdroid.bonuspack.kml.KmlDocument;
@@ -38,6 +46,8 @@ public class Utils implements Serializable, Parcelable
     GeoPoint endPoint;
     Polyline roadOverlay;
     FragmentInterface listener;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FragmentInfoManager fragmentInfoManager;
 
     public Utils(Context c, MapView m, GeoPoint start, GeoPoint end)
     {
@@ -129,5 +139,48 @@ public class Utils implements Serializable, Parcelable
         {
             Toast.makeText(ctx, "Nie znaleziono parkingów w danym obszarze!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void findParkingsDB()
+    {
+        Log.i("FINDDB", "wykonuje");
+        Query q = db.collection("parkings").whereEqualTo("fee", "yes").whereEqualTo("supervised", "yes");
+        q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task)
+            {
+                if (task.isSuccessful())
+                {
+                    for (DocumentSnapshot ds : task.getResult().getDocuments())
+                    {
+                        Marker marker = new Marker(map);
+                        Double latitude = ds.getDouble("latitude");
+                        Double longtitude = ds.getDouble("longtitude");
+
+                        Log.i("WYNIK", ds.getId());
+
+                        if (latitude != null && longtitude != null)
+                        {
+                            GeoPoint position = new GeoPoint(latitude, longtitude);
+                            marker.setPosition(position);
+                            Log.i("MARKER", position.getLatitude() + " " + position.getLongitude());
+                            marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener()
+                            {
+                                @Override
+                                public boolean onMarkerClick(Marker marker, MapView mapView)
+                                {
+                                    fragmentInfoManager = new FragmentInfoManager(ctx, map, startPoint, listener);
+                                    fragmentInfoManager.addFragment(position, ds.getId());
+                                    return true;
+                                }
+                            });
+
+                            map.getOverlays().add(marker);
+                        }
+                    }
+                }
+            }
+        });
     }
 }

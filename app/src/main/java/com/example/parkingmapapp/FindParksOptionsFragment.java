@@ -96,7 +96,9 @@ public class FindParksOptionsFragment extends Fragment {
                 assert u != null;
                 String choose = getChooseYN(supervisedRG);
                 //u.findParkings(String.format("amenity=parking][supervised=%s", choose));
-                u.findParkings("amenity=parking][fee=no][supervised=no");
+                //u.findParkings("amenity=parking][fee=no][supervised=no");
+                u.findParkingsDB();
+                Log.i("FIND", "click!");
 
                 assert getFragmentManager() != null;
                 getFragmentManager().beginTransaction().remove(FindParksOptionsFragment.this).commit();
