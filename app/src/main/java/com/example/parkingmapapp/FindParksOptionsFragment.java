@@ -19,7 +19,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FieldPath;
+import com.google.firebase.firestore.Filter;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -37,6 +45,8 @@ public class FindParksOptionsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    String findingTag = "amenity=parking";
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     public FindParksOptionsFragment() {
         // Required empty public constructor
     }
@@ -94,10 +104,25 @@ public class FindParksOptionsFragment extends Fragment {
             public void onClick(View v)
             {
                 assert u != null;
-                String choose = getChooseYN(supervisedRG);
-                //u.findParkings(String.format("amenity=parking][supervised=%s", choose));
-                //u.findParkings("amenity=parking][fee=no][supervised=no");
-                u.findParkingsDB();
+                Query q = db.collection("parkings");
+
+                if (feeRG.getCheckedRadioButtonId() != -1)
+                {
+                    findingTag += String.format("][fee=%s", getChooseYN(feeRG));
+                    q = q.whereEqualTo("fee", getChooseYN(feeRG));
+                }
+
+                if (supervisedRG.getCheckedRadioButtonId() != -1)
+                {
+                    findingTag += String.format("][supervised=%s", getChooseYN(supervisedRG));
+                    q = q.whereEqualTo("supervised", getChooseYN(supervisedRG));
+                }
+
+                Log.i("TAGF", findingTag);
+                u.findParkings(findingTag);
+
+                u.findParkingsDB(q);
+
                 Log.i("FIND", "click!");
 
                 assert getFragmentManager() != null;
@@ -111,22 +136,19 @@ public class FindParksOptionsFragment extends Fragment {
     public String getChooseYN(RadioGroup radioGroup)
     {
         String wybor = "";
-        String supervised;
-        int supervisedId = radioGroup.getCheckedRadioButtonId();
+        String option;
+        int optionId = radioGroup.getCheckedRadioButtonId();
 
-        if (supervisedId != -1)
+        RadioButton radioButton = radioGroup.findViewById(optionId);
+        option = radioButton.getText().toString();
+
+        if (option.equals("Tak"))
         {
-            RadioButton radioButton = radioGroup.findViewById(supervisedId);
-            supervised = radioButton.getText().toString();
-
-            if (supervised.equals("Tak"))
-            {
-                wybor = "yes";
-            }
-            else if (supervised.equals("Nie"))
-            {
-                wybor = "no";
-            }
+            wybor = "yes";
+        }
+        else if (option.equals("Nie"))
+        {
+            wybor = "no";
         }
 
         return wybor;

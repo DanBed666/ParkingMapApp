@@ -74,7 +74,7 @@ public class AddParkingActivity extends AppCompatActivity
                 String operator = operatorET.getText().toString();
 
                 assert location != null;
-                Parking newParking = new Parking(generateId(), name, parking, capacity, fee, supervised, operator, location.getLatitude(), location.getLongitude());
+                Parking newParking = new Parking(generateId(), name, parking, capacity, fee, supervised, operator, location.getLatitude(), location.getLongitude(), true);
                 db.collection("addedparkings").add(newParking).addOnSuccessListener(new OnSuccessListener<DocumentReference>()
                 {
                     @Override

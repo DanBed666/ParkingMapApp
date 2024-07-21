@@ -46,7 +46,7 @@ public class DatabaseManager
         double finalLat = lat;
         double finalLon = lon;
 
-        Parking parking = new Parking(id, nm, pk, cpc, fee, svd, ope, finalLat, finalLon);
+        Parking parking = new Parking(id, nm, pk, cpc, fee, svd, ope, finalLat, finalLon, false);
         addRecord(id, parking);
     }
 
@@ -79,6 +79,7 @@ public class DatabaseManager
                 if (task.isSuccessful())
                 {
                     DocumentSnapshot document = task.getResult();
+
                     if (document.exists())
                     {
                         Log.i("REKORD", "istnieje " + id);
@@ -95,5 +96,37 @@ public class DatabaseManager
                 }
             }
         });
+    }
+
+    public boolean checkIfEdited(String id)
+    {
+        final boolean[] edited = {false};
+
+        db.collection("parkings").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task)
+            {
+                if (task.isSuccessful())
+                {
+                    DocumentSnapshot document = task.getResult();
+
+                    if (Boolean.TRUE.equals(document.getBoolean("edited")))
+                    {
+                        edited[0] = true;
+                    }
+                    else
+                    {
+
+                    }
+                }
+                else
+                {
+                    Log.d("ERROR", "Failed with: ", task.getException());
+                }
+            }
+        });
+
+        return edited[0];
     }
 }

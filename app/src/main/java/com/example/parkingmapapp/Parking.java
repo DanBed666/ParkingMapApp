@@ -15,8 +15,9 @@ public class Parking implements Serializable
     String operator;
     double latitude;
     double longtitude;
+    boolean edited;
 
-    public Parking(String id, String name, String pking, String capacity, String fee, String supervised, String operator, double latitude, double longtitude)
+    public Parking(String id, String name, String pking, String capacity, String fee, String supervised, String operator, double latitude, double longtitude, boolean edited)
     {
         this.id = id;
         this.name = name;
@@ -27,6 +28,7 @@ public class Parking implements Serializable
         this.operator = operator;
         this.latitude = latitude;
         this.longtitude = longtitude;
+        this.edited = edited;
     }
 
     public String getId() {
@@ -94,5 +96,11 @@ public class Parking implements Serializable
 
     public void setOperator(String operator) {
         this.operator = operator;
+    }
+    public boolean isEdited() {
+        return edited;
+    }
+    public void setEdited(boolean edited) {
+        this.edited = edited;
     }
 }

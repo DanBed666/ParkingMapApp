@@ -96,6 +96,11 @@ public class KMLStyler implements KmlFeature.Styler
         databaseManager.checkIfExists(id);
         howManyRecords();
 
+        Marker marker = new Marker(map);
+        double latitude;
+        double longitude;
+        marker.setPosition();
+
         polygon.setOnClickListener(new Polygon.OnClickListener()
         {
             @Override

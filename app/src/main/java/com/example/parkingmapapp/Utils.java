@@ -141,10 +141,9 @@ public class Utils implements Serializable, Parcelable
         }
     }
 
-    public void findParkingsDB()
+    public void findParkingsDB(Query q)
     {
         Log.i("FINDDB", "wykonuje");
-        Query q = db.collection("parkings").whereEqualTo("fee", "yes").whereEqualTo("supervised", "yes");
         q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
             @Override
