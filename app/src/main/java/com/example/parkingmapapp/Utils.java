@@ -32,11 +32,13 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.FolderOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Overlay;
+import org.osmdroid.views.overlay.Polygon;
 import org.osmdroid.views.overlay.Polyline;
 
 import java.io.Serializable;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Utils implements Serializable, Parcelable
 {
@@ -135,7 +137,8 @@ public class Utils implements Serializable, Parcelable
         {
             FolderOverlay kmlOverlay = (FolderOverlay) kmlDocument.mKmlRoot.buildOverlay(map, null, kmlStyler, kmlDocument);
             map.getOverlays().add(kmlOverlay);
-        } else
+        }
+        else
         {
             Toast.makeText(ctx, "Nie znaleziono parkingów w danym obszarze!", Toast.LENGTH_SHORT).show();
         }

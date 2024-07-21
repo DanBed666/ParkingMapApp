@@ -1,6 +1,7 @@
 package com.example.parkingmapapp;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -58,7 +59,7 @@ public class KMLStyler implements KmlFeature.Styler
     @Override
     public void onFeature(Overlay overlay, KmlFeature kmlFeature)
     {
-
+        map.getOverlays().remove(overlay);
     }
 
     @Override
@@ -85,40 +86,43 @@ public class KMLStyler implements KmlFeature.Styler
     @Override
     public void onLineString(Polyline polyline, KmlPlacemark kmlPlacemark, KmlLineString kmlLineString)
     {
-
+        map.getOverlays().remove(polyline);
     }
 
     @Override
     public void onPolygon(Polygon polygon, KmlPlacemark kmlPlacemark, KmlPolygon kmlPolygon)
     {
+        polygon.setVisible(false);
         String id = kmlPlacemark.mId;
         DatabaseManager databaseManager = new DatabaseManager(kmlPlacemark, kmlPolygon.getBoundingBox().getCenter());
         databaseManager.checkIfExists(id);
         howManyRecords();
 
         Marker marker = new Marker(map);
-        double latitude;
-        double longitude;
-        marker.setPosition();
+        double latitude = kmlPolygon.getBoundingBox().getCenterLatitude();
+        double longitude = kmlPolygon.getBoundingBox().getCenterLongitude();
+        marker.setPosition(new GeoPoint(latitude, longitude));
 
-        polygon.setOnClickListener(new Polygon.OnClickListener()
+        marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener()
         {
             @Override
-            public boolean onClick(Polygon polygon, MapView mapView, GeoPoint eventPos)
+            public boolean onMarkerClick(Marker marker, MapView mapView)
             {
                 fragmentInfoManager = new FragmentInfoManager(context, map, startPoint, listener);
-                fragmentInfoManager.addFragment(eventPos, id);
+                fragmentInfoManager.addFragment(marker.getPosition(), id);
                 Log.i("IDPOINT", id);
 
                 return true;
             }
         });
+
+        map.getOverlays().add(marker);
     }
 
     @Override
     public void onTrack(Polyline polyline, KmlPlacemark kmlPlacemark, KmlTrack kmlTrack)
     {
-
+        map.getOverlays().remove(polyline);
     }
 
     public void howManyRecords()
