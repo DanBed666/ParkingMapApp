@@ -8,12 +8,15 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.JsonObject;
@@ -38,6 +41,7 @@ import org.osmdroid.views.overlay.Polyline;
 import java.io.Serializable;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Utils implements Serializable, Parcelable
@@ -49,7 +53,9 @@ public class Utils implements Serializable, Parcelable
     Polyline roadOverlay;
     FragmentInterface listener;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    SampleClass sampleClass;
     FragmentInfoManager fragmentInfoManager;
+    List<String> idToRemove = new ArrayList<>();
 
     public Utils(Context c, MapView m, GeoPoint start, GeoPoint end)
     {
@@ -57,6 +63,7 @@ public class Utils implements Serializable, Parcelable
         map = m;
         startPoint = start;
         endPoint = end;
+        sampleClass = new SampleClass();
     }
 
     public Utils(Context c, MapView m, GeoPoint start, FragmentInterface end)
@@ -65,6 +72,7 @@ public class Utils implements Serializable, Parcelable
         map = m;
         startPoint = start;
         listener = end;
+        sampleClass = new SampleClass();
     }
 
     public FragmentInterface getListener() {
@@ -130,8 +138,41 @@ public class Utils implements Serializable, Parcelable
                 location.getLatitude() - 0.05, location.getLongitude() - 0.05);
         String url = overpassProvider.urlForTagSearchKml(tag, range, 500, 30);
         KmlDocument kmlDocument = new KmlDocument();
-        boolean ok = overpassProvider.addInKmlFolder(kmlDocument.mKmlRoot, url);
+
+        overpassProvider.addInKmlFolder(kmlDocument.mKmlRoot, url);
         KMLStyler kmlStyler = new KMLStyler(ctx, map, location, listener);
+
+        for (KmlFeature kmlFeature : kmlDocument.mKmlRoot.mItems)
+        {
+            checkIfEdited(kmlFeature.mId, new isEdited()
+            {
+                @Override
+                public void isParkingEdited(boolean edited)
+                {
+                    Log.i("CALLBACK", kmlFeature.mId + " " + edited);
+
+                    if (edited)
+                    {
+                        //kmlDocument.mKmlRoot.mItems.removeIf(kmlFeature1 -> kmlFeature1.mId.equals(kmlFeature.mId));
+                    }
+                    else
+                    {
+                        Marker marker = new Marker(map);
+                        GeoPoint point = new GeoPoint(kmlFeature.getBoundingBox().getCenterLatitude(), kmlFeature.getBoundingBox().getCenterLongitude());
+                        marker.setPosition(point);
+                        DatabaseManager databaseManager = new DatabaseManager(kmlFeature, point);
+                        databaseManager.checkIfExists(kmlFeature.mId);
+                        kmlStyler.addFragment(marker, kmlFeature.mId);
+
+                        map.getOverlays().add(marker);
+                    }
+
+                    Log.i("SIZERR8", String.valueOf(kmlDocument.mKmlRoot.mItems.size()));
+                }
+            });
+        }
+
+        /*
 
         if (ok)
         {
@@ -142,6 +183,8 @@ public class Utils implements Serializable, Parcelable
         {
             Toast.makeText(ctx, "Nie znaleziono parkingów w danym obszarze!", Toast.LENGTH_SHORT).show();
         }
+
+         */
     }
 
     public void findParkingsDB(Query q)
@@ -181,6 +224,37 @@ public class Utils implements Serializable, Parcelable
                             map.getOverlays().add(marker);
                         }
                     }
+                }
+            }
+        });
+    }
+
+    public void checkIfEdited(String id, isEdited callback)
+    {
+        db.collection("parkings").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task)
+            {
+                if (task.isSuccessful())
+                {
+                    DocumentSnapshot document = task.getResult();
+
+                    if (Boolean.TRUE.equals(document.getBoolean("edited")))
+                    {
+                        Log.i("EDITED", "edytowano " + document.getBoolean("edited"));
+                        sampleClass.checkIfEdited(document.getId());
+                        callback.isParkingEdited(true);
+                    }
+                    else
+                    {
+                        Log.i("EDITED", "nie edytowano " + document.getBoolean("edited"));
+                        callback.isParkingEdited(false);
+                    }
+                }
+                else
+                {
+                    Log.d("ERROR", "Failed with: ", task.getException());
                 }
             }
         });

@@ -134,6 +134,7 @@ public class EditParkingInfoActivity extends AppCompatActivity
         mapa.put("fee", parking.getFee());
         mapa.put("supervised", parking.getSupervised());
         mapa.put("operator", parking.getOperator());
+        mapa.put("edited", parking.isEdited());
 
         db.collection("parkings").document(documentId).update(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
         {

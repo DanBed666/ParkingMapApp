@@ -8,6 +8,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import org.osmdroid.bonuspack.kml.KmlFeature;
 import org.osmdroid.bonuspack.kml.KmlPlacemark;
 import org.osmdroid.util.GeoPoint;
 import java.util.Objects;
@@ -15,9 +17,9 @@ import java.util.Objects;
 public class DatabaseManager
 {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    KmlPlacemark kmlPlacemark;
+    KmlFeature kmlPlacemark;
     GeoPoint loc;
-    public DatabaseManager(KmlPlacemark kml, GeoPoint l)
+    public DatabaseManager(KmlFeature kml, GeoPoint l)
     {
         kmlPlacemark = kml;
         loc = l;
@@ -113,11 +115,12 @@ public class DatabaseManager
 
                     if (Boolean.TRUE.equals(document.getBoolean("edited")))
                     {
+                        Log.i("EDIT", "edytowano");
                         edited[0] = true;
                     }
                     else
                     {
-
+                        Log.i("EDIT", "nie edytowano");
                     }
                 }
                 else
