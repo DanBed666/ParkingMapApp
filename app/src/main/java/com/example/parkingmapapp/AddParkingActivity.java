@@ -66,6 +66,7 @@ public class AddParkingActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
+                String id = generateId();
                 String name = nameET.getText().toString();
                 String parking = parkingET.getText().toString();
                 String capacity = capacityET.getText().toString();
@@ -74,22 +75,25 @@ public class AddParkingActivity extends AppCompatActivity
                 String operator = operatorET.getText().toString();
 
                 assert location != null;
-                Parking newParking = new Parking(generateId(), name, parking, capacity, fee, supervised, operator, location.getLatitude(), location.getLongitude(), true);
-                db.collection("addedparkings").add(newParking).addOnSuccessListener(new OnSuccessListener<DocumentReference>()
+                Parking newParking = new Parking(id, name, parking, capacity, fee, supervised, operator, location.getLatitude(), location.getLongitude(), true);
+
+                db.collection("parkings").document(id).set(newParking).addOnSuccessListener(new OnSuccessListener<Void>()
                 {
                     @Override
-                    public void onSuccess(DocumentReference documentReference)
+                    public void onSuccess(Void unused)
                     {
-                        Log.d("TEST", "DocumentSnapshot added with ID: " + documentReference.getId());
+                        Log.i("CREATEDADD", "created");
                     }
                 }).addOnFailureListener(new OnFailureListener()
                 {
                     @Override
                     public void onFailure(@NonNull Exception e)
                     {
-                        Log.d("ERROR", "Error: " + e.getMessage());
+                        Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
                     }
                 });
+
+                finish();
             }
         });
     }

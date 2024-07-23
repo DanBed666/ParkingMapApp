@@ -99,37 +99,4 @@ public class DatabaseManager
             }
         });
     }
-
-    public boolean checkIfEdited(String id)
-    {
-        final boolean[] edited = {false};
-
-        db.collection("parkings").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
-        {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task)
-            {
-                if (task.isSuccessful())
-                {
-                    DocumentSnapshot document = task.getResult();
-
-                    if (Boolean.TRUE.equals(document.getBoolean("edited")))
-                    {
-                        Log.i("EDIT", "edytowano");
-                        edited[0] = true;
-                    }
-                    else
-                    {
-                        Log.i("EDIT", "nie edytowano");
-                    }
-                }
-                else
-                {
-                    Log.d("ERROR", "Failed with: ", task.getException());
-                }
-            }
-        });
-
-        return edited[0];
-    }
 }

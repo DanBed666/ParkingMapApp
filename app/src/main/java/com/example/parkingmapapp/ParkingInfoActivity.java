@@ -41,9 +41,6 @@ public class ParkingInfoActivity extends AppCompatActivity
     TextView supervised;
     TextView operator;
     Button edit;
-    FirebaseDatabase database = FirebaseDatabase.getInstance("https://parkingmapapp-39ec0-default-rtdb.europe-west1.firebasedatabase.app/");
-    DatabaseReference parkings = database.getReference("parkings");
-    DatabaseReference addedparkings = database.getReference("addedparkings");
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String documentId;
     String id;
@@ -75,9 +72,7 @@ public class ParkingInfoActivity extends AppCompatActivity
         Log.i("PARKING_ID", id);
 
         getElementsFromDB("parkings");
-        getElementsFromDB("addedarkings");
         updateElementsFromDB("parkings");
-        updateElementsFromDB("addedparkings");
         edit.setOnClickListener(new View.OnClickListener()
         {
             @Override
