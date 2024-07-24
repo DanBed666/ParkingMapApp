@@ -103,6 +103,20 @@ public class KMLStyler implements KmlFeature.Styler
         double latitude = kmlPolygon.getBoundingBox().getCenterLatitude();
         double longitude = kmlPolygon.getBoundingBox().getCenterLongitude();
         marker.setPosition(new GeoPoint(latitude, longitude));
+        marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener()
+        {
+            @Override
+            public boolean onMarkerClick(Marker marker, MapView mapView)
+            {
+                fragmentInfoManager = new FragmentInfoManager(context, map, startPoint, listener);
+                fragmentInfoManager.addFragment(marker.getPosition(), id);
+                Log.i("IDPOINT", id);
+
+                return true;
+            }
+        });
+
+        map.getOverlays().add(marker);
     }
 
     @Override
