@@ -1,29 +1,21 @@
 package com.example.parkingmapapp;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.res.ResourcesCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.gson.JsonObject;
 
 import org.osmdroid.bonuspack.kml.KmlDocument;
-import org.osmdroid.bonuspack.kml.KmlFeature;
-import org.osmdroid.bonuspack.kml.Style;
 import org.osmdroid.bonuspack.location.OverpassAPIProvider;
 import org.osmdroid.bonuspack.routing.OSRMRoadManager;
 import org.osmdroid.bonuspack.routing.Road;
@@ -34,15 +26,11 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.FolderOverlay;
 import org.osmdroid.views.overlay.Marker;
-import org.osmdroid.views.overlay.Overlay;
-import org.osmdroid.views.overlay.Polygon;
 import org.osmdroid.views.overlay.Polyline;
 
 import java.io.Serializable;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class Utils implements Serializable, Parcelable
 {
@@ -53,9 +41,7 @@ public class Utils implements Serializable, Parcelable
     Polyline roadOverlay;
     FragmentInterface listener;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    SampleClass sampleClass;
     FragmentInfoManager fragmentInfoManager;
-    List<String> idToRemove = new ArrayList<>();
 
     public Utils(Context c, MapView m, GeoPoint start, GeoPoint end)
     {
@@ -63,7 +49,6 @@ public class Utils implements Serializable, Parcelable
         map = m;
         startPoint = start;
         endPoint = end;
-        sampleClass = new SampleClass();
     }
 
     public Utils(Context c, MapView m, GeoPoint start, FragmentInterface end)
@@ -72,7 +57,6 @@ public class Utils implements Serializable, Parcelable
         map = m;
         startPoint = start;
         listener = end;
-        sampleClass = new SampleClass();
     }
 
     public FragmentInterface getListener() {
@@ -139,52 +123,33 @@ public class Utils implements Serializable, Parcelable
         String url = overpassProvider.urlForTagSearchKml(tag, range, 500, 30);
         KmlDocument kmlDocument = new KmlDocument();
 
-        overpassProvider.addInKmlFolder(kmlDocument.mKmlRoot, url);
+        boolean ok = overpassProvider.addInKmlFolder(kmlDocument.mKmlRoot, url);
         KMLStyler kmlStyler = new KMLStyler(ctx, map, location, listener);
 
-        for (KmlFeature kmlFeature : kmlDocument.mKmlRoot.mItems)
+        howManyRecords(new IsParkingEdited()
         {
-            checkIfEdited(kmlFeature.mId, new isEdited()
+            @Override
+            public void idsToRemove(List<String> ids)
             {
-                @Override
-                public void isParkingEdited(boolean edited)
+                for (String id : ids)
                 {
-                    Log.i("CALLBACK", kmlFeature.mId + " " + edited);
-
-                    if (edited)
-                    {
-                        //kmlDocument.mKmlRoot.mItems.removeIf(kmlFeature1 -> kmlFeature1.mId.equals(kmlFeature.mId));
-                    }
-                    else
-                    {
-                        Marker marker = new Marker(map);
-                        GeoPoint point = new GeoPoint(kmlFeature.getBoundingBox().getCenterLatitude(), kmlFeature.getBoundingBox().getCenterLongitude());
-                        marker.setPosition(point);
-                        DatabaseManager databaseManager = new DatabaseManager(kmlFeature, point);
-                        databaseManager.checkIfExists(kmlFeature.mId);
-                        kmlStyler.addFragment(marker, kmlFeature.mId);
-
-                        map.getOverlays().add(marker);
-                    }
-
-                    Log.i("SIZERR8", String.valueOf(kmlDocument.mKmlRoot.mItems.size()));
+                    kmlDocument.mKmlRoot.mItems.removeIf(kmlFeature -> kmlFeature.mId.equals(id));
+                    Log.i("USUNIETO", id);
                 }
-            });
-        }
 
-        /*
+                if (ok)
+                {
+                    FolderOverlay kmlOverlay = (FolderOverlay) kmlDocument.mKmlRoot.buildOverlay(map, null, kmlStyler, kmlDocument);
+                    map.getOverlays().add(kmlOverlay);
+                }
+                else
+                {
+                    Toast.makeText(ctx, "Nie znaleziono parkingów w danym obszarze!", Toast.LENGTH_SHORT).show();
+                }
 
-        if (ok)
-        {
-            FolderOverlay kmlOverlay = (FolderOverlay) kmlDocument.mKmlRoot.buildOverlay(map, null, kmlStyler, kmlDocument);
-            map.getOverlays().add(kmlOverlay);
-        }
-        else
-        {
-            Toast.makeText(ctx, "Nie znaleziono parkingów w danym obszarze!", Toast.LENGTH_SHORT).show();
-        }
-
-         */
+                Log.i("KONIEC", "koniecpol");
+            }
+        });
     }
 
     public void findParkingsDB(Query q)
@@ -229,33 +194,24 @@ public class Utils implements Serializable, Parcelable
         });
     }
 
-    public void checkIfEdited(String id, isEdited callback)
+    public void howManyRecords(IsParkingEdited callback)
     {
-        db.collection("parkings").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+        db.collection("parkings").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
+            List<String> ideks = new ArrayList<>();
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task)
+            public void onComplete(@NonNull Task<QuerySnapshot> task)
             {
-                if (task.isSuccessful())
+                for (DocumentSnapshot ds : task.getResult().getDocuments())
                 {
-                    DocumentSnapshot document = task.getResult();
+                    if (Boolean.TRUE.equals(ds.getBoolean("edited")))
+                    {
+                        ideks.add(ds.getId());
+                    }
+                }
 
-                    if (Boolean.TRUE.equals(document.getBoolean("edited")))
-                    {
-                        Log.i("EDITED", "edytowano " + document.getBoolean("edited"));
-                        sampleClass.checkIfEdited(document.getId());
-                        callback.isParkingEdited(true);
-                    }
-                    else
-                    {
-                        Log.i("EDITED", "nie edytowano " + document.getBoolean("edited"));
-                        callback.isParkingEdited(false);
-                    }
-                }
-                else
-                {
-                    Log.d("ERROR", "Failed with: ", task.getException());
-                }
+                Log.i("ROZMIAREK", String.valueOf(ideks.size()));
+                callback.idsToRemove(ideks);
             }
         });
     }

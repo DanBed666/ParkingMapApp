@@ -122,20 +122,4 @@ public class KMLStyler implements KmlFeature.Styler
             }
         });
     }
-
-    public void addFragment(Marker marker, String id)
-    {
-        marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener()
-        {
-            @Override
-            public boolean onMarkerClick(Marker marker, MapView mapView)
-            {
-                fragmentInfoManager = new FragmentInfoManager(context, map, startPoint, listener);
-                fragmentInfoManager.addFragment(marker.getPosition(), id);
-                Log.i("IDPOINT", id);
-
-                return true;
-            }
-        });
-    }
 }
