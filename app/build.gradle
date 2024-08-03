@@ -43,4 +43,9 @@ dependencies {
     androidTestImplementation libs.espresso.core
     implementation libs.osmdroid.android
     implementation libs.osmbonuspack
+    implementation libs.frames.android
+    implementation libs.pro
+    implementation libs.stripe.java
+    implementation libs.stripe.android
+    implementation libs.volley
 }

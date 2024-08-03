@@ -23,8 +23,6 @@ import java.util.Objects;
 public class RemindPasswordActivity extends AppCompatActivity
 {
     FirebaseAuth mAuth;
-    Button remind;
-    EditText emailET;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -37,6 +35,9 @@ public class RemindPasswordActivity extends AppCompatActivity
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        Button remind;
+        EditText emailET;
 
         mAuth = FirebaseAuth.getInstance();
         remind = findViewById(R.id.btn_remind);

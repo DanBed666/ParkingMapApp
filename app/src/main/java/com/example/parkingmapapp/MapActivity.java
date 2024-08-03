@@ -66,13 +66,8 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
 {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     MapView map;
-    Button location;
-    Button find;
-    Button settings;
-    Button clear;
     MyLocationNewOverlay mLocationOverlay;
     FragmentInterface listener;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -124,6 +119,11 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        Button location;
+        Button find;
+        Button settings;
+        Button clear;
 
         location = findViewById(R.id.btn_location);
         find = findViewById(R.id.btn_find);

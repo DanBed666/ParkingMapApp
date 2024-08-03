@@ -25,11 +25,6 @@ import java.util.Objects;
 
 public class EmailChangeActivity extends AppCompatActivity
 {
-    EditText email;
-    EditText password;
-    EditText newEmail;
-    Button changeEmail;
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -41,6 +36,12 @@ public class EmailChangeActivity extends AppCompatActivity
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        EditText email;
+        EditText password;
+        EditText newEmail;
+        Button changeEmail;
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
         email = findViewById(R.id.et_email);
         password = findViewById(R.id.old_pass);

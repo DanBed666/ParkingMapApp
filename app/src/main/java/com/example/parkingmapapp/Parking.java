@@ -6,16 +6,16 @@ import java.io.Serializable;
 
 public class Parking implements Serializable
 {
-    String id;
-    String name;
-    String pking;
-    String capacity;
-    String fee;
-    String supervised;
-    String operator;
-    double latitude;
-    double longtitude;
-    boolean edited;
+    private String id;
+    private String name;
+    private String pking;
+    private String capacity;
+    private String fee;
+    private String supervised;
+    private String operator;
+    private double latitude;
+    private double longtitude;
+    private boolean edited;
 
     public Parking(String id, String name, String pking, String capacity, String fee, String supervised, String operator, double latitude, double longtitude, boolean edited)
     {

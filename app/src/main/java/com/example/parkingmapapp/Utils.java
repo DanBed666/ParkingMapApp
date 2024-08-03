@@ -59,14 +59,6 @@ public class Utils implements Serializable, Parcelable
         listener = end;
     }
 
-    public FragmentInterface getListener() {
-        return listener;
-    }
-
-    public void setListener(FragmentInterface listener) {
-        this.listener = listener;
-    }
-
     protected Utils(Parcel in) {
         startPoint = in.readParcelable(GeoPoint.class.getClassLoader());
         endPoint = in.readParcelable(GeoPoint.class.getClassLoader());

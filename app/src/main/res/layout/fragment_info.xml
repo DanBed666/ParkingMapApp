@@ -30,4 +30,11 @@
         android:layout_marginTop="100dp"
         android:text="info"/>
 
+    <Button
+        android:id="@+id/btn_reservation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:text="rezerwacja"/>
+
 </FrameLayout>

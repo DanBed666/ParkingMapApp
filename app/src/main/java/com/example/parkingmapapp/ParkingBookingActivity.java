@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,16 +11,15 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class MainActivity extends AppCompatActivity
+public class ParkingBookingActivity extends AppCompatActivity
 {
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-
-        setContentView(R.layout.activity_main);
-
+        setContentView(R.layout.activity_parking_booking);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) ->
         {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -30,14 +27,16 @@ public class MainActivity extends AppCompatActivity
             return insets;
         });
 
-        Button start;
-        start = findViewById(R.id.btn_start);
-        start.setOnClickListener(new View.OnClickListener()
+        Button pay;
+        pay = findViewById(R.id.pay);
+
+        pay.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
+                Intent intent = new Intent(getApplicationContext(), PaymentActivity.class);
+                startActivity(intent);
             }
         });
     }

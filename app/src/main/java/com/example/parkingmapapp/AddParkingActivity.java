@@ -30,14 +30,6 @@ import java.util.Random;
 
 public class AddParkingActivity extends AppCompatActivity
 {
-    EditText nameET;
-    EditText parkingET;
-    EditText capacityET;
-    EditText feeET;
-    EditText supervisedET;
-    EditText operatorET;
-    Button createET;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -50,6 +42,15 @@ public class AddParkingActivity extends AppCompatActivity
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        EditText nameET;
+        EditText parkingET;
+        EditText capacityET;
+        EditText feeET;
+        EditText supervisedET;
+        EditText operatorET;
+        Button createET;
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         nameET = findViewById(R.id.et_name);
         parkingET = findViewById(R.id.et_pking);

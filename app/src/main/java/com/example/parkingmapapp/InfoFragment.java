@@ -83,7 +83,7 @@ public class InfoFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         Button route;
-        Button add;
+        Button reserve;
         TextView info;
         Button infosp;
 
@@ -92,6 +92,7 @@ public class InfoFragment extends Fragment
         route = v.findViewById(R.id.btn_route);
         info = v.findViewById(R.id.tv_info);
         infosp = v.findViewById(R.id.btn_info);
+        reserve = v.findViewById(R.id.btn_reservation);
 
         assert getArguments() != null;
         Utils u = (Utils) getArguments().getSerializable("OBJECT");
@@ -117,6 +118,16 @@ public class InfoFragment extends Fragment
                 Intent intent = new Intent(requireActivity().getApplicationContext(), ParkingInfoActivity.class);
                 intent.putExtra("KEYID", keyId);
                 intent.putExtra("PARKING", p);
+                startActivity(intent);
+            }
+        });
+
+        reserve.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(requireActivity().getApplicationContext(), ParkingBookingActivity.class);
                 startActivity(intent);
             }
         });

@@ -59,7 +59,7 @@ public class KMLStyler implements KmlFeature.Styler
     @Override
     public void onFeature(Overlay overlay, KmlFeature kmlFeature)
     {
-        map.getOverlays().remove(overlay);
+
     }
 
     @Override
@@ -87,7 +87,7 @@ public class KMLStyler implements KmlFeature.Styler
     @Override
     public void onLineString(Polyline polyline, KmlPlacemark kmlPlacemark, KmlLineString kmlLineString)
     {
-        map.getOverlays().remove(polyline);
+
     }
 
     @Override
@@ -122,7 +122,7 @@ public class KMLStyler implements KmlFeature.Styler
     @Override
     public void onTrack(Polyline polyline, KmlPlacemark kmlPlacemark, KmlTrack kmlTrack)
     {
-        map.getOverlays().remove(polyline);
+
     }
 
     public void howManyRecords()

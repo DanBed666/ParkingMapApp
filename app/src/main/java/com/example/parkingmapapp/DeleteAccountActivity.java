@@ -25,10 +25,6 @@ import java.util.Objects;
 
 public class DeleteAccountActivity extends AppCompatActivity
 {
-    EditText email;
-    EditText oldPassword;
-    Button delete;
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -41,6 +37,11 @@ public class DeleteAccountActivity extends AppCompatActivity
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        EditText email;
+        EditText oldPassword;
+        Button delete;
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
         email = findViewById(R.id.et_email);
         oldPassword = findViewById(R.id.old_pass);

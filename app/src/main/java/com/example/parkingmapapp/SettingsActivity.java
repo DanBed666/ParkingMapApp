@@ -38,14 +38,6 @@ import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity
 {
-    Button logout;
-    FirebaseAuth mAuth;
-    FirebaseUser user;
-    TextView email;
-    TextView name;
-    TextView surname;
-    Button settings;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
     String documentId;
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -59,6 +51,15 @@ public class SettingsActivity extends AppCompatActivity
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        Button logout;
+        FirebaseAuth mAuth;
+        FirebaseUser user;
+        TextView email;
+        TextView name;
+        TextView surname;
+        Button settings;
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         name = findViewById(R.id.tv_name);
         surname = findViewById(R.id.tv_surname);

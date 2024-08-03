@@ -37,14 +37,6 @@ import java.util.Objects;
 
 public class AccountActivity extends AppCompatActivity
 {
-    EditText nameET;
-    EditText surnameET;
-    Button confirm;
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseUser user;
-    Button changeMail;
-    Button changePass;
-    Button deleteAcc;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String documentId;
     @Override
@@ -58,6 +50,15 @@ public class AccountActivity extends AppCompatActivity
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        EditText nameET;
+        EditText surnameET;
+        Button confirm;
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user;
+        Button changeMail;
+        Button changePass;
+        Button deleteAcc;
 
         nameET = findViewById(R.id.et_name);
         surnameET = findViewById(R.id.et_surname);
