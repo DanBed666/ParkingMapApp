@@ -15,11 +15,13 @@ firebaseAuth = "22.3.1"
 firebaseDatabase = "21.0.0"
 firebaseFirestore = "25.0.0"
 pro = "2.3.4"
+retrofit = "2.11.0"
 stripeAndroid = "20.48.2"
 stripeJava = "26.0.0"
 volley = "1.2.1"
 
 [libraries]
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 frames-android = { module = "com.github.checkout:frames-android", version.ref = "framesAndroid" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -35,6 +37,7 @@ firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version
 firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 pro = { module = "com.fingerprint.android:pro", version.ref = "pro" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 stripe-android = { module = "com.stripe:stripe-android", version.ref = "stripeAndroid" }
 stripe-java = { module = "com.stripe:stripe-java", version.ref = "stripeJava" }
 volley = { module = "com.android.volley:volley", version.ref = "volley" }

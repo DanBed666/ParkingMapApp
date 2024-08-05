@@ -47,5 +47,6 @@ dependencies {
     implementation libs.pro
     implementation libs.stripe.java
     implementation libs.stripe.android
-    implementation libs.volley
+    implementation libs.retrofit
+    implementation libs.converter.gson
 }
