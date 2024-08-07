@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:textSize="26dp"
         android:textAlignment="center"
-        android:text="Rejestracja"/>
+        android:text="Dane osobowe"/>
 
     <EditText
         android:id="@+id/et_email"
@@ -53,16 +53,15 @@
 
     <Button
         android:id="@+id/btn_next"
-        android:text="Zakończ"
+        android:text="Dalej"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <TextView
         android:id="@+id/tv_login"
-        android:text="Masz juz konto? Zaloguj się tutaj!"
+        android:text="Strona 1/2"
         android:textAlignment="center"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"/>
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

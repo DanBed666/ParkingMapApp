@@ -23,20 +23,16 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class RegisterActivity extends AppCompatActivity
+public class RegisterActivity2 extends AppCompatActivity
 {
     EditText nameET;
     EditText surnameET;
     EditText emailET;
     EditText passwordET;
+    EditText password2ET;
     Button register;
     TextView goToLogin;
     FirebaseAuth mAuth;
@@ -62,8 +58,8 @@ public class RegisterActivity extends AppCompatActivity
         surnameET = findViewById(R.id.et_surname);
         emailET = findViewById(R.id.et_email);
         passwordET = findViewById(R.id.et_password);
+        password2ET = findViewById(R.id.et_password2);
         register = findViewById(R.id.btn_register);
-        goToLogin = findViewById(R.id.tv_login);
 
         register.setOnClickListener(new View.OnClickListener()
         {
@@ -88,8 +84,7 @@ public class RegisterActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             }
         });
     }

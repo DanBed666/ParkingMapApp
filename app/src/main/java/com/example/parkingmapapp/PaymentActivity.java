@@ -1,5 +1,6 @@
 package com.example.parkingmapapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.stripe.android.paymentsheet.PaymentSheetResult;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 
 public class PaymentActivity extends AppCompatActivity
 {
@@ -77,7 +79,12 @@ public class PaymentActivity extends AppCompatActivity
     {
         if (paymentSheetResult instanceof PaymentSheetResult.Completed)
         {
-            Toast.makeText(getApplicationContext(), "Payment Success", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Płatność zakończona sukcesem!", Toast.LENGTH_SHORT).show();
+            String ticketId = generateTicketId();
+            Intent intent = new Intent(getApplicationContext(), TicketActivity.class);
+            intent.putExtra("TICKETID", ticketId);
+            startActivity(intent);
+            finish();
         }
         else if (paymentSheetResult instanceof PaymentSheetResult.Failed)
         {
@@ -121,7 +128,7 @@ public class PaymentActivity extends AppCompatActivity
 
     public void getClientSecret(String customerId)
     {
-        paymentViewModel.getClientSecretVm(bearerToken, customerId, "1700", "pln", "true").observeForever(new Observer<String>()
+        paymentViewModel.getClientSecretVm(bearerToken, customerId, "1200", "pln", "true").observeForever(new Observer<String>()
         {
             @Override
             public void onChanged(String secret)
@@ -138,5 +145,18 @@ public class PaymentActivity extends AppCompatActivity
                 "ABC company",
                 new PaymentSheet.CustomerConfiguration(customerId, ephemeralKey)
         ));
+    }
+
+    public String generateTicketId()
+    {
+        StringBuilder chain = new StringBuilder();
+        Random rand = new Random();
+
+        for (int i = 0; i < 12; i++)
+        {
+            chain.append((char) (rand.nextInt(26) + 65));
+        }
+
+        return chain.toString();
     }
 }
