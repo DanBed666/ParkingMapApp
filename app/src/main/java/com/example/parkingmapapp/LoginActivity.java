@@ -76,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
-                startActivity(new Intent(getApplicationContext(), RegisterStartActivity.class));
+                startActivity(new Intent(getApplicationContext(), RegisterActivity2.class));
             }
         });
 

@@ -21,14 +21,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -52,25 +46,92 @@ public class SettingsActivity extends AppCompatActivity
             return insets;
         });
 
-        Button logout;
         FirebaseAuth mAuth;
         FirebaseUser user;
         TextView email;
-        TextView name;
-        TextView surname;
-        Button settings;
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        name = findViewById(R.id.tv_name);
-        surname = findViewById(R.id.tv_surname);
+        TextView name = findViewById(R.id.tv_name);
+        TextView surname = findViewById(R.id.tv_surname);
+        Button guy = findViewById(R.id.btn_guy);
+        Button changePass = findViewById(R.id.btn_change_pass);
+        Button changeMail = findViewById(R.id.btn_change_email);
+        Button cars = findViewById(R.id.btn_cars);
+        Button parkings = findViewById(R.id.btn_parkings);
+        Button bookings = findViewById(R.id.btn_bookings);
+        Button logout = findViewById(R.id.btn_logout);
+        Button deleteAcc = findViewById(R.id.btn_delete);
+
         email = findViewById(R.id.tv_email);
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
-        logout = findViewById(R.id.btn_logout);
-        settings = findViewById(R.id.btn_change);
 
+        assert user != null;
         email.setText(user.getEmail());
         Log.i("UID", user.getUid());
+
+        guy.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                startActivity(new Intent(getApplicationContext(), GuyActivity.class));
+            }
+        });
+
+        changeMail.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                startActivity(new Intent(getApplicationContext(), EmailChangeActivity.class));
+            }
+        });
+
+        changePass.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                startActivity(new Intent(getApplicationContext(), PasswordChangeActivity.class));
+            }
+        });
+
+        deleteAcc.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                startActivity(new Intent(getApplicationContext(), DeleteAccountActivity.class));
+            }
+        });
+
+        cars.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                startActivity(new Intent(getApplicationContext(), CarsAddedActivity.class));
+            }
+        });
+
+        parkings.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                startActivity(new Intent(getApplicationContext(), ParkingsAddedActivity.class));
+            }
+        });
+
+        bookings.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                startActivity(new Intent(getApplicationContext(), BookingsActivity.class));
+            }
+        });
 
         db.collection("users").whereEqualTo("uId", user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
@@ -131,17 +192,6 @@ public class SettingsActivity extends AppCompatActivity
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 Toast.makeText(getApplicationContext(), "Wylogowano pomyślnie", Toast.LENGTH_SHORT).show();
                 finish();
-            }
-        });
-
-        settings.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                Intent intent = new Intent(getApplicationContext(), AccountActivity.class);
-                intent.putExtra("DOCUMENTID", documentId);
-                startActivity(intent);
             }
         });
     }

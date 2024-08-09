@@ -68,11 +68,12 @@ public class RegisterActivity2 extends AppCompatActivity
             {
                 String email = emailET.getText().toString();
                 String password = passwordET.getText().toString();
+                String password2 = password2ET.getText().toString();
 
                 Log.i("PASS", email);
                 Log.i("PASS", password);
 
-                if (checkCredentials(email, password))
+                if (checkCredentials(email, password, password2))
                 {
                     signUp(email, password);
                 }
@@ -118,7 +119,7 @@ public class RegisterActivity2 extends AppCompatActivity
         });
     }
 
-    public boolean checkCredentials(String email, String password)
+    public boolean checkCredentials(String email, String password, String password2)
     {
         if (email.isEmpty() && password.isEmpty())
         {
@@ -128,6 +129,12 @@ public class RegisterActivity2 extends AppCompatActivity
         else if (password.length() < 8)
         {
             Toast.makeText(getApplicationContext(), "Hasło powinno mieć min 8 znaków", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (!password.equals(password2))
+        {
+            Toast.makeText(getApplicationContext(), "Hasła są różne", Toast.LENGTH_SHORT).show();
             return false;
         }
 

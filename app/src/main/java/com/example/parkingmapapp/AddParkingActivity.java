@@ -18,6 +18,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
@@ -51,6 +53,8 @@ public class AddParkingActivity extends AppCompatActivity
         EditText operatorET;
         Button createET;
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
 
         nameET = findViewById(R.id.et_name);
         parkingET = findViewById(R.id.et_pking);
@@ -76,9 +80,26 @@ public class AddParkingActivity extends AppCompatActivity
                 String operator = operatorET.getText().toString();
 
                 assert location != null;
-                Parking newParking = new Parking(id, name, parking, capacity, fee, supervised, operator, location.getLatitude(), location.getLongitude(), true);
+                assert user != null;
+                Parking newParking = new Parking(user.getUid(), id, name, parking, capacity, fee, supervised, operator, location.getLatitude(), location.getLongitude(), true);
 
                 db.collection("parkings").document(id).set(newParking).addOnSuccessListener(new OnSuccessListener<Void>()
+                {
+                    @Override
+                    public void onSuccess(Void unused)
+                    {
+                        Log.i("CREATEDADD", "created");
+                    }
+                }).addOnFailureListener(new OnFailureListener()
+                {
+                    @Override
+                    public void onFailure(@NonNull Exception e)
+                    {
+                        Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
+                    }
+                });
+
+                db.collection("addedparkings").document(id).set(newParking).addOnSuccessListener(new OnSuccessListener<Void>()
                 {
                     @Override
                     public void onSuccess(Void unused)

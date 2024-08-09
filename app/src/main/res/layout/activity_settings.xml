@@ -8,11 +8,12 @@
     android:layout_height="match_parent"
     tools:context=".SettingsActivity">
 
-    <Button
-        android:id="@+id/btn_logout"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="logout"/>
+        android:text="Zalogowany jako"
+        android:textAlignment="center"
+        android:textSize="24dp"/>
 
     <TextView
         android:id="@+id/tv_email"
@@ -33,9 +34,51 @@
         android:textSize="24dp"/>
 
     <Button
-        android:id="@+id/btn_change"
+        android:id="@+id/btn_guy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="account settings"/>
+        android:text="Dane osobowe"/>
+
+    <Button
+        android:id="@+id/btn_change_pass"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Zmiana hasła"/>
+
+    <Button
+        android:id="@+id/btn_change_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Zmiana adresu email"/>
+
+    <Button
+        android:id="@+id/btn_cars"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Moje pojazdy"/>
+
+    <Button
+        android:id="@+id/btn_parkings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Moje parkingi"/>
+
+    <Button
+        android:id="@+id/btn_bookings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Moje rezerwacje"/>
+
+    <Button
+        android:id="@+id/btn_logout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Wyloguj"/>
+
+    <Button
+        android:id="@+id/btn_delete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Usuń konto"/>
 
 </LinearLayout>

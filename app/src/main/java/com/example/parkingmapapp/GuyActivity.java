@@ -21,21 +21,14 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
-public class AccountActivity extends AppCompatActivity
+public class GuyActivity extends AppCompatActivity
 {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String documentId;
@@ -44,7 +37,7 @@ public class AccountActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_account);
+        setContentView(R.layout.activity_guy);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -56,16 +49,10 @@ public class AccountActivity extends AppCompatActivity
         Button confirm;
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser user;
-        Button changeMail;
-        Button changePass;
-        Button deleteAcc;
 
         nameET = findViewById(R.id.et_name);
         surnameET = findViewById(R.id.et_surname);
         confirm = findViewById(R.id.btn_confirm);
-        changeMail = findViewById(R.id.btn_mailchange);
-        changePass = findViewById(R.id.btn_passchange);
-        deleteAcc = findViewById(R.id.btn_delete);
         user = mAuth.getCurrentUser();
 
         assert user != null;
@@ -106,33 +93,6 @@ public class AccountActivity extends AppCompatActivity
                 addUser(u);
                 finish();
                 Toast.makeText(getApplicationContext(), "Zmiany zostały zapisane!", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        changeMail.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                startActivity(new Intent(getApplicationContext(), EmailChangeActivity.class));
-            }
-        });
-
-        changePass.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                startActivity(new Intent(getApplicationContext(), PasswordChangeActivity.class));
-            }
-        });
-
-        deleteAcc.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                startActivity(new Intent(getApplicationContext(), DeleteAccountActivity.class));
             }
         });
     }

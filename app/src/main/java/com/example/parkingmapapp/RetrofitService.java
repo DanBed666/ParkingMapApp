@@ -8,13 +8,17 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.HeaderMap;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface RetrofitService
 {
     String BASE_URL = "https://api.stripe.com/v1/";
+    String NOMINATIM_URL = "https://nominatim.openstreetmap.org/";
 
     @POST("customers")
     Call<Customer> createCustomer(@Header("Authorization") String authorization);
@@ -39,4 +43,8 @@ public interface RetrofitService
                                             @Field("amount") String amount,
                                             @Field("currency") String currency,
                                             @Field("automatic_payment_methods[enabled]") String automatic_payment_methods_enabled);
+
+
+    @GET("reverse")
+    Call<Address> getAddress(@Query("lat")double latitude, @Query("lon")double longitude, @Query("format")String format);
 }

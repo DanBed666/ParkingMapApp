@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 public class Parking implements Serializable
 {
+    private String uId;
     private String id;
     private String name;
     private String pking;
@@ -29,6 +30,28 @@ public class Parking implements Serializable
         this.latitude = latitude;
         this.longtitude = longtitude;
         this.edited = edited;
+    }
+
+    public Parking(String uId, String id, String name, String pking, String capacity, String fee, String supervised, String operator, double latitude, double longtitude, boolean edited) {
+        this.uId = uId;
+        this.id = id;
+        this.name = name;
+        this.pking = pking;
+        this.capacity = capacity;
+        this.fee = fee;
+        this.supervised = supervised;
+        this.operator = operator;
+        this.latitude = latitude;
+        this.longtitude = longtitude;
+        this.edited = edited;
+    }
+
+    public String getuId() {
+        return uId;
+    }
+
+    public void setuId(String uId) {
+        this.uId = uId;
     }
 
     public String getId() {

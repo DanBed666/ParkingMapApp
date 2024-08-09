@@ -23,6 +23,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -68,6 +69,7 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
     MapView map;
     MyLocationNewOverlay mLocationOverlay;
     FragmentInterface listener;
+    AddressViewModel addressViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -130,6 +132,7 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
         settings = findViewById(R.id.btn_settings);
         clear = findViewById(R.id.btn_clear);
 
+        Configuration.getInstance().setUserAgentValue("userAgent");
         location.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -188,6 +191,8 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
                         .commit();
             }
         });
+
+        addressViewModel = new AddressViewModel();
     }
 
     @Override
@@ -283,10 +288,24 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
         intent.putExtra("LOCATION", (Parcelable) p);
         startActivity(intent);
 
+        getAddress(p.getLatitude(), p.getLongitude(), "json");
+
         Marker m = new Marker(map);
         m.setPosition(p);
         map.getOverlays().add(m);
 
         return true;
+    }
+
+    public void getAddress(double lat, double lon, String format)
+    {
+        addressViewModel.getAddressVM(lat, lon, format).observeForever(new Observer<Address>()
+        {
+            @Override
+            public void onChanged(Address address)
+            {
+                Log.i("ADRES", address.getDisplayName());
+            }
+        });
     }
 }

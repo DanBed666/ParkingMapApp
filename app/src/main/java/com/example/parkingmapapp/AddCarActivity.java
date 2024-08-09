@@ -1,12 +1,10 @@
 package com.example.parkingmapapp;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.EditText;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -21,77 +19,55 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-import com.journeyapps.barcodescanner.BarcodeEncoder;
 
-import java.util.Random;
-
-public class TicketActivity extends AppCompatActivity
+public class AddCarActivity extends AppCompatActivity
 {
-    ImageView imageView;
-    String ticketId;
-    TextView ticket;
-    Button back;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseUser user = mAuth.getCurrentUser();
+    FirebaseUser user;
+    FirebaseAuth mAuth;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_ticket);
+        setContentView(R.layout.activity_add_car);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) ->
         {
-
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        ticket = findViewById(R.id.ticket_id);
-        imageView = findViewById(R.id.imageCode);
-        back = findViewById(R.id.btn_back);
-        ticketId = getIntent().getStringExtra("TICKETID");
-        ticket.setText(ticketId);
+        user = mAuth.getCurrentUser();
+        EditText markaET = findViewById(R.id.et_marka);
+        EditText modelET = findViewById(R.id.et_model);
+        EditText typET = findViewById(R.id.et_typ);
+        EditText numerET = findViewById(R.id.et_numer);
+        EditText rokET = findViewById(R.id.et_rok);
+        Button confirm = findViewById(R.id.btn_add);
 
-        generateQrCode();
-
-        back.setOnClickListener(new View.OnClickListener()
+        confirm.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
+                String marka = markaET.getText().toString();
+                String model = modelET.getText().toString();
+                String typ = typET.getText().toString();
+                String numer = numerET.getText().toString();
+                String rok = rokET.getText().toString();
+
+                Car car = new Car(user.getUid(), marka, model, typ, numer, rok);
+
+                addCar(car);
                 finish();
             }
         });
     }
 
-    public void generateQrCode()
+    public void addCar(Car car)
     {
-        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
-
-        try
-        {
-            BitMatrix bitMatrix = multiFormatWriter.encode(ticketId, BarcodeFormat.QR_CODE, 400, 400);
-            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-            Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
-            imageView.setImageBitmap(bitmap);
-            Ticket ticket = new Ticket(user.getUid(), "guwno", bitmap);
-            addTicket(ticket);
-        }
-        catch (WriterException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    public void addTicket(Ticket ticket)
-    {
-        db.collection("tickets").add(ticket).addOnSuccessListener(new OnSuccessListener<DocumentReference>()
+        db.collection("cars").add(car).addOnSuccessListener(new OnSuccessListener<DocumentReference>()
         {
             @Override
             public void onSuccess(DocumentReference documentReference)

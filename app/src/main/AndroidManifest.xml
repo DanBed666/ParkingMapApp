@@ -20,6 +20,21 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".AddCarActivity"
+            android:exported="false" />
+        <activity
+            android:name=".BookingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ParkingsAddedActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CarsAddedActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddedCarsActivity"
+            android:exported="false" />
+        <activity
             android:name=".RegisterStartActivity"
             android:exported="false" />
         <activity
@@ -53,7 +68,7 @@
             android:name=".ParkingInfoActivity"
             android:exported="false" />
         <activity
-            android:name=".AccountActivity"
+            android:name=".GuyActivity"
             android:exported="false" />
         <activity
             android:name=".AddParking"

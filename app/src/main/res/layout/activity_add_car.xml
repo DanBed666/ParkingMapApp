@@ -6,61 +6,55 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegisterStartActivity">
+    tools:context=".AddCarActivity">
 
     <TextView
+        android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="26dp"
         android:textAlignment="center"
-        android:text="Dane osobowe"/>
+        android:text="Dodaj samochód"/>
 
     <EditText
-        android:id="@+id/et_email"
+        android:id="@+id/et_marka"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:inputType="textEmailAddress"
-        android:hint="Adres email"/>
+        android:hint="Marka"/>
 
     <EditText
-        android:id="@+id/et_password"
+        android:id="@+id/et_model"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
-        android:hint="Hasło"/>
+        android:hint="Model"/>
 
     <EditText
-        android:id="@+id/et_password2"
+        android:id="@+id/et_typ"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
-        android:hint="Powtórz Hasło"/>
+        android:hint="Typ"/>
 
     <EditText
-        android:id="@+id/et_name"
+        android:id="@+id/et_numer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
-        android:hint="Imię"/>
+        android:hint="Numer rejestracyjny"/>
 
     <EditText
-        android:id="@+id/et_surname"
+        android:id="@+id/et_rok"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
-        android:hint="Nazwisko"/>
+        android:hint="Rok produkcji"/>
 
     <Button
-        android:id="@+id/btn_next"
-        android:text="Dalej"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <TextView
-        android:id="@+id/tv_login"
-        android:text="Strona 1/2"
-        android:textAlignment="center"
+        android:id="@+id/btn_add"
+        android:text="Dodaj"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

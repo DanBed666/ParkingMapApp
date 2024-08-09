@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.Observer;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity
 
         Button start;
         start = findViewById(R.id.btn_start);
+
         start.setOnClickListener(new View.OnClickListener()
         {
             @Override
