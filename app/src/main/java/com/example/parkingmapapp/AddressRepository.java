@@ -18,7 +18,7 @@ public class AddressRepository
     public MutableLiveData<Address> getAddress(double lat, double lon, String format)
     {
         MutableLiveData<Address> mutableLiveData = new MutableLiveData<>();
-        RetrofitBuilder.getRetrofitService().getAddress(lat, lon, format).enqueue(new Callback<Address>()
+        RetrofitBuilder.getRetrofitService2().getAddress(lat, lon, format).enqueue(new Callback<Address>()
         {
             @Override
             public void onResponse(@NonNull Call<Address> call, @NonNull Response<Address> response)
