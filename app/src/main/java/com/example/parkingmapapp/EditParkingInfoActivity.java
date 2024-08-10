@@ -68,6 +68,7 @@ public class EditParkingInfoActivity extends AppCompatActivity
         documentId = getIntent().getStringExtra("DOCUMENTID");
         final Double[] latitude = new Double[1];
         final Double[] longitude = new Double[1];
+        final Address[] address = new Address[1];
 
         assert id != null;
         db.collection("parkings").whereEqualTo("id", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
@@ -89,6 +90,7 @@ public class EditParkingInfoActivity extends AppCompatActivity
                         String ope = (String) document.getData().get("operator");
                         latitude[0] = (Double) document.getData().get("latitude");
                         longitude[0] = (Double) document.getData().get("longtitude");
+                        address[0] = (Address) document.getData().get("address");
 
                         name.setText(nam);
                         parking.setText(pkg);
@@ -117,7 +119,7 @@ public class EditParkingInfoActivity extends AppCompatActivity
                 String sup = supervised.getText().toString();
                 String ope = operator.getText().toString();
 
-                Parking parking = new Parking(id, nam, pkg, cpc, f33, sup, ope, latitude[0], longitude[0], true);
+                Parking parking = new Parking(id, nam, pkg, cpc, f33, sup, ope, latitude[0], longitude[0], true, address[0]);
                 editParking(parking);
 
                 finish();

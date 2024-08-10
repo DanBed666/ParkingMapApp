@@ -2,6 +2,7 @@ package com.example.parkingmapapp;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -27,6 +28,10 @@ public class BookingsActivity extends AppCompatActivity
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
+    TextView id;
+    TextView nazwa;
+    TextView adres;
+    TextView data;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -43,6 +48,11 @@ public class BookingsActivity extends AppCompatActivity
         recyclerView = findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
+
+        id = findViewById(R.id.id);
+        nazwa = findViewById(R.id.nazwa);
+        adres = findViewById(R.id.adres);
+        data = findViewById(R.id.data);
 
         getTickets();
     }

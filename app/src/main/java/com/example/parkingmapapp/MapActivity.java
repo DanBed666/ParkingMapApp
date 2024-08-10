@@ -288,24 +288,10 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
         intent.putExtra("LOCATION", (Parcelable) p);
         startActivity(intent);
 
-        getAddress(p.getLatitude(), p.getLongitude(), "json");
-
         Marker m = new Marker(map);
         m.setPosition(p);
         map.getOverlays().add(m);
 
         return true;
-    }
-
-    public void getAddress(double lat, double lon, String format)
-    {
-        addressViewModel.getAddressVM(lat, lon, format).observeForever(new Observer<Address>()
-        {
-            @Override
-            public void onChanged(Address address)
-            {
-                Log.i("ADRES", address.getDisplayName());
-            }
-        });
     }
 }

@@ -66,7 +66,7 @@ public class KMLStyler implements KmlFeature.Styler
     public void onPoint(Marker marker, KmlPlacemark kmlPlacemark, KmlPoint kmlPoint)
     {
         String id = kmlPlacemark.mId;
-        DatabaseManager databaseManager = new DatabaseManager(kmlPlacemark, kmlPoint.getPosition());
+        DatabaseManager databaseManager = new DatabaseManager(kmlPlacemark, kmlPoint.getPosition(), context);
         databaseManager.checkIfExists(id);
         howManyRecords();
 
@@ -95,7 +95,7 @@ public class KMLStyler implements KmlFeature.Styler
     {
         polygon.setVisible(false);
         String id = kmlPlacemark.mId;
-        DatabaseManager databaseManager = new DatabaseManager(kmlPlacemark, kmlPolygon.getBoundingBox().getCenter());
+        DatabaseManager databaseManager = new DatabaseManager(kmlPlacemark, kmlPolygon.getBoundingBox().getCenter(), context);
         databaseManager.checkIfExists(id);
         howManyRecords();
 

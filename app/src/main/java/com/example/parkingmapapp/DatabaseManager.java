@@ -1,7 +1,10 @@
 package com.example.parkingmapapp;
 
+import android.content.Context;
 import android.util.Log;
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Observer;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -19,10 +22,15 @@ public class DatabaseManager
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     KmlFeature kmlPlacemark;
     GeoPoint loc;
-    public DatabaseManager(KmlFeature kml, GeoPoint l)
+    Context context;
+    AddressViewModel addressViewModel;
+    Address addressAdr;
+    public DatabaseManager(KmlFeature kml, GeoPoint l, Context c)
     {
         kmlPlacemark = kml;
         loc = l;
+        context = c;
+        addressViewModel = new AddressViewModel();
     }
 
     public void addParkings2()
@@ -45,10 +53,12 @@ public class DatabaseManager
         lat = loc.getLatitude();
         lon = loc.getLongitude();
 
+        getAddressNominatim(lat, lon, "json");
+
         double finalLat = lat;
         double finalLon = lon;
 
-        Parking parking = new Parking(id, nm, pk, cpc, fee, svd, ope, finalLat, finalLon, false);
+        Parking parking = new Parking(id, nm, pk, cpc, fee, svd, ope, finalLat, finalLon, false, addressAdr);
         addRecord(id, parking);
     }
 
@@ -96,6 +106,18 @@ public class DatabaseManager
                 {
                     Log.d("ERROR", "Failed with: ", task.getException());
                 }
+            }
+        });
+    }
+
+    public void getAddressNominatim(double lat, double lon, String format)
+    {
+        addressViewModel.getAddressVM(lat, lon, format).observeForever(new Observer<Address>()
+        {
+            @Override
+            public void onChanged(Address address)
+            {
+                addressAdr = address;
             }
         });
     }

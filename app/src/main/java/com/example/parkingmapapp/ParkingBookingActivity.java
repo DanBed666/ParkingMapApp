@@ -30,12 +30,15 @@ public class ParkingBookingActivity extends AppCompatActivity
         Button pay;
         pay = findViewById(R.id.pay);
 
+        String id = getIntent().getStringExtra("KEYID");
+
         pay.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
                 Intent intent = new Intent(getApplicationContext(), PaymentActivity.class);
+                intent.putExtra("KEYID", id);
                 startActivity(intent);
             }
         });

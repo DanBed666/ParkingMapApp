@@ -58,6 +58,8 @@ public class TicketActivity extends AppCompatActivity
         ticketId = getIntent().getStringExtra("TICKETID");
         ticket.setText(ticketId);
 
+        String id = getIntent().getStringExtra("KEYID");
+
         generateQrCode();
 
         back.setOnClickListener(new View.OnClickListener()

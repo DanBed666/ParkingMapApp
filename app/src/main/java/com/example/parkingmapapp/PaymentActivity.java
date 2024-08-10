@@ -33,6 +33,7 @@ public class PaymentActivity extends AppCompatActivity
     String customerId;
     String ephemeralKey;
     String clientSecret;
+    String id;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -61,6 +62,8 @@ public class PaymentActivity extends AppCompatActivity
         headers.put("Authorization", bearerToken);
         headers.put("Stripe-Version", "2024-06-20");
 
+        id = getIntent().getStringExtra("KEYID");
+
         getCustomerId();
         pay.setOnClickListener(new View.OnClickListener()
         {
@@ -83,6 +86,7 @@ public class PaymentActivity extends AppCompatActivity
             String ticketId = generateTicketId();
             Intent intent = new Intent(getApplicationContext(), TicketActivity.class);
             intent.putExtra("TICKETID", ticketId);
+            intent.putExtra("KEYID", id);
             startActivity(intent);
             finish();
         }
