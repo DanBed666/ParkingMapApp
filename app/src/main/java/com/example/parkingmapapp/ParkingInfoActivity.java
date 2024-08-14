@@ -44,6 +44,14 @@ public class ParkingInfoActivity extends AppCompatActivity
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String documentId;
     String id;
+    TextView access;
+    TextView capacityDis;
+    TextView capacityTru;
+    TextView capacityBus;
+    TextView capacityMoto;
+    TextView ulica;
+    TextView kod;
+    TextView miasto;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -64,6 +72,14 @@ public class ParkingInfoActivity extends AppCompatActivity
         supervised = findViewById(R.id.tv_supervised);
         operator = findViewById(R.id.tv_operator);
         edit = findViewById(R.id.btn_edit);
+        access = findViewById(R.id.et_access);
+        capacityDis = findViewById(R.id.tv_capacitydis);
+        capacityTru = findViewById(R.id.tv_capacitytrucks);
+        capacityBus = findViewById(R.id.tv_capacitybus);
+        capacityMoto = findViewById(R.id.tv_capacitymoto);
+        ulica = findViewById(R.id.tv_ulica);
+        kod = findViewById(R.id.tv_kod);
+        miasto = findViewById(R.id.tv_miasto);
 
         id = getIntent().getStringExtra("KEYID");
         Parking p = (Parking) getIntent().getSerializableExtra("PARKING");
@@ -107,12 +123,27 @@ public class ParkingInfoActivity extends AppCompatActivity
                         String sup = (String) document.getData().get("supervised");
                         String ope = (String) document.getData().get("operator");
 
+                        String acc = (String) document.getData().get("access");
+                        String cdis = (String) document.getData().get("capacity:disabled");
+                        String ctru = (String) document.getData().get("capacity:truck");
+                        String cbus = (String) document.getData().get("capacity:bus");
+                        String cmot = (String) document.getData().get("capacity:motorcycle");
+                        Address address = (Address) document.getData().get("address");
+
                         name.setText("Name: " + nam);
                         parking.setText("Parking: " + pkg);
                         capacity.setText("Capacity: " + cpc);
                         fee.setText("Fee: " + f33);
                         supervised.setText("Supervised: " + sup);
                         operator.setText("Operator: " + ope);
+                        access.setText("Access: " + acc);
+                        capacityDis.setText("CapacityDis: " + cdis);
+                        capacityTru.setText("CapacityTru: " + ctru);
+                        capacityBus.setText("CapacityBus: " + cbus);
+                        capacityMoto.setText("CapacityMoto: " + cmot);
+                        ulica.setText("Ulica: " + address.getRoad());
+                        kod.setText("Kod: " + address.getPostcode());
+                        miasto.setText("Miasto: " + address.getCity());
 
                         documentId = document.getId();
                     }

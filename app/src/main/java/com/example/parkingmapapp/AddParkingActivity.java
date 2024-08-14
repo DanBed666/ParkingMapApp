@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.Observer;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -27,11 +28,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.osmdroid.util.GeoPoint;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Objects;
 import java.util.Random;
 
 public class AddParkingActivity extends AppCompatActivity
 {
+    AddressViewModel addressViewModel;
+    Address addressAdr;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -51,10 +56,16 @@ public class AddParkingActivity extends AppCompatActivity
         EditText feeET;
         EditText supervisedET;
         EditText operatorET;
+        EditText accessET;
+        EditText capacityDisabledET;
+        EditText capacityTrucksET;
+        EditText capacityBusET;
+        EditText capacityMotoET;
         Button createET;
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
+        addressViewModel = new AddressViewModel();
 
         nameET = findViewById(R.id.et_name);
         parkingET = findViewById(R.id.et_pking);
@@ -63,6 +74,11 @@ public class AddParkingActivity extends AppCompatActivity
         supervisedET = findViewById(R.id.et_supervised);
         operatorET = findViewById(R.id.et_operator);
         createET = findViewById(R.id.btn_create);
+        accessET = findViewById(R.id.et_access);
+        capacityDisabledET = findViewById(R.id.et_capacitydis);
+        capacityTrucksET = findViewById(R.id.et_capacitytru);
+        capacityBusET = findViewById(R.id.et_capacitybus);
+        capacityMotoET = findViewById(R.id.et_capacitymoto);
 
         GeoPoint location = getIntent().getParcelableExtra("LOCATION");
 
@@ -78,10 +94,25 @@ public class AddParkingActivity extends AppCompatActivity
                 String fee = feeET.getText().toString();
                 String supervised = supervisedET.getText().toString();
                 String operator = operatorET.getText().toString();
+                String access = accessET.getText().toString();
+                String capacityDis = capacityDisabledET.getText().toString();
+                String capacityTru = capacityTrucksET.getText().toString();
+                String capacityBus = capacityBusET.getText().toString();
+                String capacityMoto = capacityMotoET.getText().toString();
 
                 assert location != null;
+                addressViewModel.getAddressVM(location.getLatitude(), location.getLongitude(), "json").observeForever(new Observer<Address>()
+                {
+                    @Override
+                    public void onChanged(Address address)
+                    {
+                        addressAdr = address;
+                    }
+                });
+
                 assert user != null;
-                Parking newParking = new Parking(user.getUid(), id, name, parking, capacity, fee, supervised, operator, location.getLatitude(), location.getLongitude(), true);
+                Parking newParking = new Parking(user.getUid(), id, name, parking, access, capacity, capacityDis, capacityTru, capacityBus, capacityMoto,
+                        fee, supervised, operator, location.getLatitude(), location.getLongitude(), false, true, addressAdr, getActualDate(), "");
 
                 db.collection("parkings").document(id).set(newParking).addOnSuccessListener(new OnSuccessListener<Void>()
                 {
@@ -132,5 +163,13 @@ public class AddParkingActivity extends AppCompatActivity
         }
 
         return chain.toString();
+    }
+
+    public String getActualDate()
+    {
+        Calendar calender = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        String formattedDate = df.format(calender.getTime());
+        return formattedDate;
     }
 }

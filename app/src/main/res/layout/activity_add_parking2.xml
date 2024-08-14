@@ -23,10 +23,45 @@
         android:layout_marginTop="10dp"/>
 
     <EditText
+        android:id="@+id/et_access"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Access"
+        android:layout_marginTop="10dp"/>
+
+    <EditText
         android:id="@+id/et_capacity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Capacity"
+        android:layout_marginTop="10dp"/>
+
+    <EditText
+        android:id="@+id/et_capacitydis"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="CapacityDisabled"
+        android:layout_marginTop="10dp"/>
+
+    <EditText
+        android:id="@+id/et_capacitytru"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="CapacityTrucks"
+        android:layout_marginTop="10dp"/>
+
+    <EditText
+        android:id="@+id/et_capacitybus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="CapacityBus"
+        android:layout_marginTop="10dp"/>
+
+    <EditText
+        android:id="@+id/et_capacitymoto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="CapacityMoto"
         android:layout_marginTop="10dp"/>
 
     <EditText

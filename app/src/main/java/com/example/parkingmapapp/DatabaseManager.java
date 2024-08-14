@@ -45,6 +45,11 @@ public class DatabaseManager
         String fee = kmlPlacemark.getExtendedData("fee");
         String svd = kmlPlacemark.getExtendedData("supervised");
         String ope = kmlPlacemark.getExtendedData("operator");
+        String acc = kmlPlacemark.getExtendedData("access");
+        String cpcd = kmlPlacemark.getExtendedData("capacity:disabled");
+        String cpcb = kmlPlacemark.getExtendedData("capacity:bus");
+        String cpct = kmlPlacemark.getExtendedData("capacity:truck");
+        String cpcm = kmlPlacemark.getExtendedData("capacity:motorcycle");
         double lat;
         double lon;
 
@@ -58,7 +63,8 @@ public class DatabaseManager
         double finalLat = lat;
         double finalLon = lon;
 
-        Parking parking = new Parking(id, nm, pk, cpc, fee, svd, ope, finalLat, finalLon, false, addressAdr);
+        Parking parking = new Parking("xyz123", id, nm, pk, acc, cpc, cpcd, cpct, cpcb, cpcm, fee, svd, ope,
+                finalLat, finalLon, false, false, addressAdr, "18-03-2024 18:19", "28-06-2024 06:47");
         addRecord(id, parking);
     }
 

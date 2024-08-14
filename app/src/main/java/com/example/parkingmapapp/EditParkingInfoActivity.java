@@ -29,6 +29,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import org.osmdroid.util.GeoPoint;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,6 +46,11 @@ public class EditParkingInfoActivity extends AppCompatActivity
     String id;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String documentId;
+    EditText accessET;
+    EditText capacityDisabledET;
+    EditText capacityTrucksET;
+    EditText capacityBusET;
+    EditText capacityMotoET;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -66,6 +73,11 @@ public class EditParkingInfoActivity extends AppCompatActivity
         edit = findViewById(R.id.btn_edit);
         id = getIntent().getStringExtra("KEYID");
         documentId = getIntent().getStringExtra("DOCUMENTID");
+        accessET = findViewById(R.id.et_access);
+        capacityDisabledET = findViewById(R.id.et_capacitydis);
+        capacityTrucksET = findViewById(R.id.et_capacitytru);
+        capacityBusET = findViewById(R.id.et_capacitybus);
+        capacityMotoET = findViewById(R.id.et_capacitymoto);
         final Double[] latitude = new Double[1];
         final Double[] longitude = new Double[1];
         final Address[] address = new Address[1];
@@ -92,12 +104,23 @@ public class EditParkingInfoActivity extends AppCompatActivity
                         longitude[0] = (Double) document.getData().get("longtitude");
                         address[0] = (Address) document.getData().get("address");
 
+                        String acc = (String) document.getData().get("access");
+                        String cdis = (String) document.getData().get("capacity:disabled");
+                        String ctru = (String) document.getData().get("capacity:truck");
+                        String cbus = (String) document.getData().get("capacity:bus");
+                        String cmot = (String) document.getData().get("capacity:motorcycle");
+
                         name.setText(nam);
                         parking.setText(pkg);
                         capacity.setText(cpc);
                         fee.setText(f33);
                         supervised.setText(sup);
                         operator.setText(ope);
+                        accessET.setText(acc);
+                        capacityDisabledET.setText(cdis);
+                        capacityTrucksET.setText(ctru);
+                        capacityBusET.setText(cbus);
+                        capacityMotoET.setText(cmot);
                     }
                 }
                 else
@@ -118,26 +141,36 @@ public class EditParkingInfoActivity extends AppCompatActivity
                 String f33 = fee.getText().toString();
                 String sup = supervised.getText().toString();
                 String ope = operator.getText().toString();
+                String acc = accessET.getText().toString();
+                String cdis = capacityDisabledET.getText().toString();
+                String ctru = capacityTrucksET.getText().toString();
+                String cbus = capacityBusET.getText().toString();
+                String cmot = capacityMotoET.getText().toString();
 
-                Parking parking = new Parking(id, nam, pkg, cpc, f33, sup, ope, latitude[0], longitude[0], true, address[0]);
-                editParking(parking);
+                Map<String, Object> mapa = new HashMap<>();
+                mapa.put("name", nam);
+                mapa.put("pking", pkg);
+                mapa.put("capacity", cpc);
+                mapa.put("fee", f33);
+                mapa.put("supervised", sup);
+                mapa.put("operator", ope);
+                mapa.put("edited", true);
+                mapa.put("access", acc);
+                mapa.put("capacityDisabled", cdis);
+                mapa.put("capacityTrucks", ctru);
+                mapa.put("capacityBus", cbus);
+                mapa.put("capacityMotorcycle", cmot);
+                mapa.put("dataEdited", getActualDate());
+
+                editParking(mapa);
 
                 finish();
             }
         });
     }
 
-    public void editParking(Parking parking)
+    public void editParking(Map<String, Object> mapa)
     {
-        Map<String, Object> mapa = new HashMap<>();
-        mapa.put("name", parking.getName());
-        mapa.put("pking", parking.getPking());
-        mapa.put("capacity", parking.getCapacity());
-        mapa.put("fee", parking.getFee());
-        mapa.put("supervised", parking.getSupervised());
-        mapa.put("operator", parking.getOperator());
-        mapa.put("edited", parking.isEdited());
-
         db.collection("parkings").document(documentId).update(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
         {
             @Override
@@ -153,5 +186,13 @@ public class EditParkingInfoActivity extends AppCompatActivity
                 Log.d("ERROR", "Error: " + e.getMessage());
             }
         });
+    }
+
+    public String getActualDate()
+    {
+        Calendar calender = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        String formattedDate = df.format(calender.getTime());
+        return formattedDate;
     }
 }

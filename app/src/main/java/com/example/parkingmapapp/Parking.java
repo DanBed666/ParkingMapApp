@@ -10,6 +10,7 @@ public class Parking implements Serializable
     private String id;
     private String name;
     private String pking;
+    private String access;
     private String capacity;
     private String capacityDisabled;
     private String capacityTrucks;
@@ -23,35 +24,98 @@ public class Parking implements Serializable
     private boolean edited;
     private boolean created;
     Address address;
+    private String dataCreated;
+    private String dataEdited;
 
-    public Parking(String id, String name, String pking, String capacity, String fee, String supervised, String operator, double latitude, double longtitude, boolean edited, Address address)
+    public Parking(String uId, String id, String name, String pking, String access, String capacity, String capacityDisabled, String capacityTrucks,
+                   String capacityBus, String capacityMotorcycle, String fee, String supervised, String operator, double latitude, double longtitude,
+                   boolean edited, boolean created, Address address, String dataCreated, String dataEdited)
     {
-        this.id = id;
-        this.name = name;
-        this.pking = pking;
-        this.capacity = capacity;
-        this.fee = fee;
-        this.supervised = supervised;
-        this.operator = operator;
-        this.latitude = latitude;
-        this.longtitude = longtitude;
-        this.edited = edited;
-        this.address = address;
-    }
-
-    public Parking(String uId, String id, String name, String pking, String capacity, String fee, String supervised, String operator, double latitude, double longtitude, boolean edited) {
         this.uId = uId;
         this.id = id;
         this.name = name;
         this.pking = pking;
+        this.access = access;
         this.capacity = capacity;
+        this.capacityDisabled = capacityDisabled;
+        this.capacityTrucks = capacityTrucks;
+        this.capacityBus = capacityBus;
+        this.capacityMotorcycle = capacityMotorcycle;
         this.fee = fee;
         this.supervised = supervised;
         this.operator = operator;
         this.latitude = latitude;
         this.longtitude = longtitude;
         this.edited = edited;
+        this.created = created;
+        this.address = address;
+        this.dataCreated = dataCreated;
+        this.dataEdited = dataEdited;
     }
+    public String getDataCreated() {
+        return dataCreated;
+    }
+
+    public void setDataCreated(String dataCreated) {
+        this.dataCreated = dataCreated;
+    }
+
+    public String getDataEdited() {
+        return dataEdited;
+    }
+
+    public void setDataEdited(String dataEdited) {
+        this.dataEdited = dataEdited;
+    }
+
+    public String getAccess() {
+        return access;
+    }
+
+    public void setAccess(String access) {
+        this.access = access;
+    }
+
+    public String getCapacityDisabled() {
+        return capacityDisabled;
+    }
+
+    public void setCapacityDisabled(String capacityDisabled) {
+        this.capacityDisabled = capacityDisabled;
+    }
+
+    public String getCapacityTrucks() {
+        return capacityTrucks;
+    }
+
+    public void setCapacityTrucks(String capacityTrucks) {
+        this.capacityTrucks = capacityTrucks;
+    }
+
+    public String getCapacityBus() {
+        return capacityBus;
+    }
+
+    public void setCapacityBus(String capacityBus) {
+        this.capacityBus = capacityBus;
+    }
+
+    public String getCapacityMotorcycle() {
+        return capacityMotorcycle;
+    }
+
+    public void setCapacityMotorcycle(String capacityMotorcycle) {
+        this.capacityMotorcycle = capacityMotorcycle;
+    }
+
+    public boolean isCreated() {
+        return created;
+    }
+
+    public void setCreated(boolean created) {
+        this.created = created;
+    }
+
     public Address getAddress() {
         return address;
     }

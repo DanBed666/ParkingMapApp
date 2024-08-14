@@ -118,6 +118,12 @@ public class FindParksOptionsFragment extends Fragment {
                     q = q.whereEqualTo("supervised", getChooseYN(supervisedRG));
                 }
 
+                if (!capacityET.getText().toString().isEmpty())
+                {
+                    findingTag += String.format("][capacity<%s", capacityET.getText().toString());
+                    q = q.whereLessThan("capacity", capacityET.getText().toString());
+                }
+
                 Log.i("TAGF", findingTag);
                 u.findParkings(findingTag);
 
