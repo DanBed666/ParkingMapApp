@@ -20,6 +20,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Random;
+
 public class AddCarActivity extends AppCompatActivity
 {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -38,6 +40,7 @@ public class AddCarActivity extends AppCompatActivity
             return insets;
         });
 
+        mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         EditText markaET = findViewById(R.id.et_marka);
         EditText modelET = findViewById(R.id.et_model);
@@ -57,7 +60,7 @@ public class AddCarActivity extends AppCompatActivity
                 String numer = numerET.getText().toString();
                 String rok = rokET.getText().toString();
 
-                Car car = new Car(user.getUid(), marka, model, typ, numer, rok);
+                Car car = new Car(generateCarId(), user.getUid(), marka, model, typ, numer, rok);
 
                 addCar(car);
                 finish();
@@ -82,5 +85,18 @@ public class AddCarActivity extends AppCompatActivity
                 Log.d("ERROR", "Error: " + e.getMessage());
             }
         });
+    }
+
+    public String generateCarId()
+    {
+        StringBuilder chain = new StringBuilder();
+        Random rand = new Random();
+
+        for (int i = 0; i < 12; i++)
+        {
+            chain.append((char) (rand.nextInt(26) + 65));
+        }
+
+        return chain.toString();
     }
 }

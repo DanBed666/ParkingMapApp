@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -28,10 +29,6 @@ public class BookingsActivity extends AppCompatActivity
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
-    TextView id;
-    TextView nazwa;
-    TextView adres;
-    TextView data;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -48,11 +45,6 @@ public class BookingsActivity extends AppCompatActivity
         recyclerView = findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
-
-        id = findViewById(R.id.id);
-        nazwa = findViewById(R.id.nazwa);
-        adres = findViewById(R.id.adres);
-        data = findViewById(R.id.data);
 
         getTickets();
     }

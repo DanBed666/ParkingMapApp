@@ -18,6 +18,7 @@
         android:layout_height="50dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
+        app:cornerRadius="0dp"
         android:text="FND"/>
 
     <Button
@@ -26,6 +27,7 @@
         android:layout_height="50dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
+        app:cornerRadius="0dp"
         android:text="LOC"/>
 
     <Button
@@ -34,6 +36,7 @@
         android:layout_height="50dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
+        app:cornerRadius="0dp"
         android:text="SET"/>
 
     <Button
@@ -43,6 +46,7 @@
         android:layout_marginTop="50dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
+        app:cornerRadius="0dp"
         android:text="CLEAR"/>
 
     <androidx.fragment.app.FragmentContainerView

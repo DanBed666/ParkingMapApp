@@ -11,12 +11,17 @@ public class Parking implements Serializable
     private String name;
     private String pking;
     private String capacity;
+    private String capacityDisabled;
+    private String capacityTrucks;
+    private String capacityBus;
+    private String capacityMotorcycle;
     private String fee;
     private String supervised;
     private String operator;
     private double latitude;
     private double longtitude;
     private boolean edited;
+    private boolean created;
     Address address;
 
     public Parking(String id, String name, String pking, String capacity, String fee, String supervised, String operator, double latitude, double longtitude, boolean edited, Address address)

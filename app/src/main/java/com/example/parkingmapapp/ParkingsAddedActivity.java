@@ -28,10 +28,6 @@ public class ParkingsAddedActivity extends AppCompatActivity
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
-    TextView nazwa;
-    TextView adres;
-    TextView status_edyt;
-    TextView status_weryf;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -50,11 +46,6 @@ public class ParkingsAddedActivity extends AppCompatActivity
         recyclerView.setHasFixedSize(true);
 
         getParkings();
-
-        nazwa = findViewById(R.id.nazwa);
-        adres = findViewById(R.id.adres);
-        status_edyt = findViewById(R.id.status_edyt);
-        status_weryf = findViewById(R.id.status_weryf);
     }
 
     public void getParkings()

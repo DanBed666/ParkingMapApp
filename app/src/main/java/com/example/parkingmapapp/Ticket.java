@@ -6,12 +6,12 @@ public class Ticket
 {
     String uId;
     String reservationDate;
-    Bitmap qrCode;
+    String ticketId;
 
-    public Ticket(String uId, String reservationDate, Bitmap qrCode) {
+    public Ticket(String uId, String reservationDate, String ticketId) {
         this.uId = uId;
         this.reservationDate = reservationDate;
-        this.qrCode = qrCode;
+        this.ticketId = ticketId;
     }
 
     public String getuId() {
@@ -30,11 +30,11 @@ public class Ticket
         this.reservationDate = reservationDate;
     }
 
-    public Bitmap getQrCode() {
-        return qrCode;
+    public String getTicketId() {
+        return ticketId;
     }
 
-    public void setQrCode(Bitmap qrCode) {
-        this.qrCode = qrCode;
+    public void setTicketId(String ticketId) {
+        this.ticketId = ticketId;
     }
 }

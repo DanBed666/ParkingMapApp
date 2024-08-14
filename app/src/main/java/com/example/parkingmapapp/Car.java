@@ -2,6 +2,7 @@ package com.example.parkingmapapp;
 
 public class Car
 {
+    String id;
     String userId;
     String marka;
     String model;
@@ -9,13 +10,22 @@ public class Car
     String registrationNumber;
     String year;
 
-    public Car(String userId, String marka, String model, String type, String registrationNumber, String year) {
+    public Car(String id, String userId, String marka, String model, String type, String registrationNumber, String year) {
+        this.id = id;
         this.userId = userId;
         this.marka = marka;
         this.model = model;
         this.type = type;
         this.registrationNumber = registrationNumber;
         this.year = year;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getYear() {

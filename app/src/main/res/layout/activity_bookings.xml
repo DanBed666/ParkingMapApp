@@ -8,11 +8,12 @@
     tools:context=".CarsAddedActivity"
     android:orientation="vertical">
 
-    <Button
-        android:id="@+id/new_car"
+    <TextView
+        android:text="Moje rezerwacje"
+        android:textAlignment="center"
+        android:textSize="26dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Dodaj nowy samochód"/>
+        android:layout_height="wrap_content"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"

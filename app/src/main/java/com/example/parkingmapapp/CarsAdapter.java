@@ -1,6 +1,8 @@
 package com.example.parkingmapapp;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,17 +36,34 @@ public class CarsAdapter extends RecyclerView.Adapter<CarsAdapter.CarsViewHolder
     @Override
     public void onBindViewHolder(@NonNull CarsAdapter.CarsViewHolder holder, int position)
     {
+        String documentId = exampleList.get(position).getId();
+        String id = exampleList.get(position).getString("id");
         String marka = exampleList.get(position).getString("marka");
         String model = exampleList.get(position).getString("model");
         String type = exampleList.get(position).getString("type");
         String year = exampleList.get(position).getString("year");
         String registrationNumber = exampleList.get(position).getString("registrationNumber");
 
+        Log.i("MARKA2", "marka");
+
         holder.marka.setText(marka);
         holder.marka.setText(model);
         holder.marka.setText(type);
         holder.marka.setText(year);
         holder.marka.setText(registrationNumber);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(context, EditCarActivity.class);
+                Log.i("DOCUMENT", documentId);
+                intent.putExtra("CARID", id);
+                intent.putExtra("DOCUMENTID", documentId);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override

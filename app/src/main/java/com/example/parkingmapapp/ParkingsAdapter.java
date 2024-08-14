@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,9 +44,19 @@ public class ParkingsAdapter extends RecyclerView.Adapter<ParkingsAdapter.Parkin
 
     public static class ParkingsViewHolder extends RecyclerView.ViewHolder
     {
+        TextView nazwa;
+        TextView adres;
+        TextView status_edyt;
+        TextView status_weryf;
+        TextView data;
         public ParkingsViewHolder(@NonNull View itemView)
         {
             super(itemView);
+            nazwa = itemView.findViewById(R.id.nazwa);
+            adres = itemView.findViewById(R.id.adres);
+            status_edyt = itemView.findViewById(R.id.status_edyt);
+            status_weryf = itemView.findViewById(R.id.status_weryf);
+            data = itemView.findViewById(R.id.data);
         }
     }
 }

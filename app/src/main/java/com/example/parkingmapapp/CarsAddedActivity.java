@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -31,6 +32,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class CarsAddedActivity extends AppCompatActivity
 {
@@ -54,6 +56,7 @@ public class CarsAddedActivity extends AppCompatActivity
             return insets;
         });
 
+        mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         new_car = findViewById(R.id.new_car);
 
@@ -74,7 +77,7 @@ public class CarsAddedActivity extends AppCompatActivity
 
     public void getCars()
     {
-        db.collection("cars").whereEqualTo("uId", user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        db.collection("cars").whereEqualTo("userId", user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task)
@@ -83,8 +86,13 @@ public class CarsAddedActivity extends AppCompatActivity
                 {
                     carsAdapter = new CarsAdapter(getApplicationContext(), task.getResult().getDocuments());
                     recyclerView.setAdapter(carsAdapter);
-                    carsAdapter.notifyDataSetChanged();
+                    int pos = 0;
 
+                    for (DocumentSnapshot ds : task.getResult().getDocuments())
+                    {
+                        pos++;
+                        carsAdapter.notifyItemChanged(pos);
+                    }
                 }
                 else
                 {
@@ -97,19 +105,6 @@ public class CarsAddedActivity extends AppCompatActivity
             public void onFailure(@NonNull Exception e)
             {
                 Log.e("ERR2", "Error getting documents.", e);
-            }
-        });
-
-        db.collection("cars").whereEqualTo("uId", user.getUid()).addSnapshotListener(new EventListener<QuerySnapshot>()
-        {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error)
-            {
-                assert value != null;
-                for (DocumentChange d : value.getDocumentChanges())
-                {
-
-                }
             }
         });
     }

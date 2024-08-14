@@ -27,6 +27,10 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Random;
 
 public class TicketActivity extends AppCompatActivity
@@ -38,6 +42,7 @@ public class TicketActivity extends AppCompatActivity
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
+    String id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -58,7 +63,7 @@ public class TicketActivity extends AppCompatActivity
         ticketId = getIntent().getStringExtra("TICKETID");
         ticket.setText(ticketId);
 
-        String id = getIntent().getStringExtra("KEYID");
+        id = getIntent().getStringExtra("KEYID");
 
         generateQrCode();
 
@@ -82,31 +87,10 @@ public class TicketActivity extends AppCompatActivity
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
             Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
             imageView.setImageBitmap(bitmap);
-            Ticket ticket = new Ticket(user.getUid(), "guwno", bitmap);
-            addTicket(ticket);
         }
         catch (WriterException e)
         {
             e.printStackTrace();
         }
-    }
-
-    public void addTicket(Ticket ticket)
-    {
-        db.collection("tickets").add(ticket).addOnSuccessListener(new OnSuccessListener<DocumentReference>()
-        {
-            @Override
-            public void onSuccess(DocumentReference documentReference)
-            {
-                Log.d("TEST", "DocumentSnapshot added with ID: " + documentReference.getId());
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Log.d("ERROR", "Error: " + e.getMessage());
-            }
-        });
     }
 }

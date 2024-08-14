@@ -8,15 +8,25 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.Observer;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.stripe.android.PaymentConfiguration;
 import com.stripe.android.paymentsheet.PaymentSheet;
 import com.stripe.android.paymentsheet.PaymentSheetResult;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -34,6 +44,9 @@ public class PaymentActivity extends AppCompatActivity
     String ephemeralKey;
     String clientSecret;
     String id;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseUser user = mAuth.getCurrentUser();
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -82,12 +95,14 @@ public class PaymentActivity extends AppCompatActivity
     {
         if (paymentSheetResult instanceof PaymentSheetResult.Completed)
         {
+            getCustomerId();
             Toast.makeText(getApplicationContext(), "Płatność zakończona sukcesem!", Toast.LENGTH_SHORT).show();
             String ticketId = generateTicketId();
             Intent intent = new Intent(getApplicationContext(), TicketActivity.class);
             intent.putExtra("TICKETID", ticketId);
-            intent.putExtra("KEYID", id);
             startActivity(intent);
+            Ticket ticket = new Ticket(user.getUid(), getActualDate(), ticketId);
+            addTicket(ticket);
             finish();
         }
         else if (paymentSheetResult instanceof PaymentSheetResult.Failed)
@@ -162,5 +177,32 @@ public class PaymentActivity extends AppCompatActivity
         }
 
         return chain.toString();
+    }
+
+    public void addTicket(Ticket ticket)
+    {
+        db.collection("tickets").add(ticket).addOnSuccessListener(new OnSuccessListener<DocumentReference>()
+        {
+            @Override
+            public void onSuccess(DocumentReference documentReference)
+            {
+                Log.d("TEST", "DocumentSnapshot added with ID: " + documentReference.getId());
+            }
+        }).addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+                Log.d("ERROR", "Error: " + e.getMessage());
+            }
+        });
+    }
+
+    public String getActualDate()
+    {
+        Calendar calender = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        String formattedDate = df.format(calender.getTime());
+        return formattedDate;
     }
 }
