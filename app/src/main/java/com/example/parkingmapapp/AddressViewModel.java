@@ -10,8 +10,8 @@ public class AddressViewModel
         addressRepository = new AddressRepository();
     }
 
-    public MutableLiveData<Address> getAddressVM(double lat, double lon, String format)
+    public MutableLiveData<Address> getAddressVM(String geoPoint, String apiKey)
     {
-        return addressRepository.getAddress(lat, lon, format);
+        return addressRepository.getAddress(geoPoint, apiKey);
     }
 }

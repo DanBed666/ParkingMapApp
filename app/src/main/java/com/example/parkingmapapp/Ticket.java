@@ -7,7 +7,6 @@ public class Ticket
     String uId;
     String reservationDate;
     String ticketId;
-
     public Ticket(String uId, String reservationDate, String ticketId) {
         this.uId = uId;
         this.reservationDate = reservationDate;

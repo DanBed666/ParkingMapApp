@@ -1,6 +1,5 @@
 package com.example.parkingmapapp;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,22 +14,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.Observer;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.Objects;
 
 public class ParkingInfoActivity extends AppCompatActivity
 {
@@ -49,9 +42,7 @@ public class ParkingInfoActivity extends AppCompatActivity
     TextView capacityTru;
     TextView capacityBus;
     TextView capacityMoto;
-    TextView ulica;
-    TextView kod;
-    TextView miasto;
+    AddressViewModel addressViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -65,6 +56,7 @@ public class ParkingInfoActivity extends AppCompatActivity
             return insets;
         });
 
+        addressViewModel = new AddressViewModel();
         name = findViewById(R.id.tv_name);
         parking = findViewById(R.id.tv_parking);
         capacity = findViewById(R.id.tv_capacity);
@@ -72,14 +64,11 @@ public class ParkingInfoActivity extends AppCompatActivity
         supervised = findViewById(R.id.tv_supervised);
         operator = findViewById(R.id.tv_operator);
         edit = findViewById(R.id.btn_edit);
-        access = findViewById(R.id.et_access);
+        access = findViewById(R.id.tv_access);
         capacityDis = findViewById(R.id.tv_capacitydis);
         capacityTru = findViewById(R.id.tv_capacitytrucks);
         capacityBus = findViewById(R.id.tv_capacitybus);
         capacityMoto = findViewById(R.id.tv_capacitymoto);
-        ulica = findViewById(R.id.tv_ulica);
-        kod = findViewById(R.id.tv_kod);
-        miasto = findViewById(R.id.tv_miasto);
 
         id = getIntent().getStringExtra("KEYID");
         Parking p = (Parking) getIntent().getSerializableExtra("PARKING");
@@ -122,13 +111,11 @@ public class ParkingInfoActivity extends AppCompatActivity
                         String f33 = (String) document.getData().get("fee");
                         String sup = (String) document.getData().get("supervised");
                         String ope = (String) document.getData().get("operator");
-
                         String acc = (String) document.getData().get("access");
                         String cdis = (String) document.getData().get("capacity:disabled");
                         String ctru = (String) document.getData().get("capacity:truck");
                         String cbus = (String) document.getData().get("capacity:bus");
                         String cmot = (String) document.getData().get("capacity:motorcycle");
-                        Address address = (Address) document.getData().get("address");
 
                         name.setText("Name: " + nam);
                         parking.setText("Parking: " + pkg);
@@ -141,10 +128,6 @@ public class ParkingInfoActivity extends AppCompatActivity
                         capacityTru.setText("CapacityTru: " + ctru);
                         capacityBus.setText("CapacityBus: " + cbus);
                         capacityMoto.setText("CapacityMoto: " + cmot);
-                        ulica.setText("Ulica: " + address.getRoad());
-                        kod.setText("Kod: " + address.getPostcode());
-                        miasto.setText("Miasto: " + address.getCity());
-
                         documentId = document.getId();
                     }
                 }

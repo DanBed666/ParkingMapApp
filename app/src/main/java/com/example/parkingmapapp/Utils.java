@@ -117,7 +117,6 @@ public class Utils implements Serializable, Parcelable
 
         boolean ok = overpassProvider.addInKmlFolder(kmlDocument.mKmlRoot, url);
         KMLStyler kmlStyler = new KMLStyler(ctx, map, location, listener);
-
         howManyRecords(new IsParkingEdited()
         {
             @Override

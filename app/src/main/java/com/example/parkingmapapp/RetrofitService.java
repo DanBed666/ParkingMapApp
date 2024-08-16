@@ -18,7 +18,7 @@ import retrofit2.http.Query;
 public interface RetrofitService
 {
     String BASE_URL = "https://api.stripe.com/v1/";
-    String NOMINATIM_URL = "https://nominatim.openstreetmap.org/";
+    String NOMINATIM_URL = "https://revgeocode.search.hereapi.com/v1/";
 
     @POST("customers")
     Call<Customer> createCustomer(@Header("Authorization") String authorization);
@@ -45,6 +45,6 @@ public interface RetrofitService
                                             @Field("automatic_payment_methods[enabled]") String automatic_payment_methods_enabled);
 
 
-    @GET("reverse")
-    Call<Address> getAddress(@Query("lat")double latitude, @Query("lon")double longitude, @Query("format")String format);
+    @GET("revgeocode")
+    Call<Address> getAddress(@Query("at")String geoPoint, @Query("apiKey")String apiKey);
 }

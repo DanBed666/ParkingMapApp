@@ -13,7 +13,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.osmdroid.bonuspack.kml.KmlFeature;
-import org.osmdroid.bonuspack.kml.KmlPlacemark;
 import org.osmdroid.util.GeoPoint;
 import java.util.Objects;
 
@@ -23,14 +22,11 @@ public class DatabaseManager
     KmlFeature kmlPlacemark;
     GeoPoint loc;
     Context context;
-    AddressViewModel addressViewModel;
-    Address addressAdr;
     public DatabaseManager(KmlFeature kml, GeoPoint l, Context c)
     {
         kmlPlacemark = kml;
         loc = l;
         context = c;
-        addressViewModel = new AddressViewModel();
     }
 
     public void addParkings2()
@@ -58,13 +54,14 @@ public class DatabaseManager
         lat = loc.getLatitude();
         lon = loc.getLongitude();
 
-        getAddressNominatim(lat, lon, "json");
-
         double finalLat = lat;
         double finalLon = lon;
 
+        //getAddressNominatim(finalLat, finalLon, "98eb540c060e4c43a8ce513017c650a1");
+
         Parking parking = new Parking("xyz123", id, nm, pk, acc, cpc, cpcd, cpct, cpcb, cpcm, fee, svd, ope,
-                finalLat, finalLon, false, false, addressAdr, "18-03-2024 18:19", "28-06-2024 06:47");
+                finalLat, finalLon, false, false,
+                "18-03-2024 18:19", "28-06-2024 06:47");
         addRecord(id, parking);
     }
 
@@ -112,18 +109,6 @@ public class DatabaseManager
                 {
                     Log.d("ERROR", "Failed with: ", task.getException());
                 }
-            }
-        });
-    }
-
-    public void getAddressNominatim(double lat, double lon, String format)
-    {
-        addressViewModel.getAddressVM(lat, lon, format).observeForever(new Observer<Address>()
-        {
-            @Override
-            public void onChanged(Address address)
-            {
-                addressAdr = address;
             }
         });
     }

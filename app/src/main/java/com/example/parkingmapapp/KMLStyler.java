@@ -1,26 +1,14 @@
 package com.example.parkingmapapp;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.osmdroid.bonuspack.kml.KmlFeature;
@@ -29,16 +17,12 @@ import org.osmdroid.bonuspack.kml.KmlPlacemark;
 import org.osmdroid.bonuspack.kml.KmlPoint;
 import org.osmdroid.bonuspack.kml.KmlPolygon;
 import org.osmdroid.bonuspack.kml.KmlTrack;
-import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.Polygon;
 import org.osmdroid.views.overlay.Polyline;
-
-import java.util.Objects;
 
 public class KMLStyler implements KmlFeature.Styler
 {
@@ -48,12 +32,15 @@ public class KMLStyler implements KmlFeature.Styler
     FragmentInterface listener;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FragmentInfoManager fragmentInfoManager;
+    AddressViewModel addressViewModel;
+    Address addressAdr;
     public KMLStyler(Context ctx, MapView m, GeoPoint s, FragmentInterface l)
     {
         context = ctx;
         map = m;
         startPoint = s;
         listener = l;
+        addressViewModel = new AddressViewModel();
     }
 
     @Override
@@ -66,6 +53,7 @@ public class KMLStyler implements KmlFeature.Styler
     public void onPoint(Marker marker, KmlPlacemark kmlPlacemark, KmlPoint kmlPoint)
     {
         String id = kmlPlacemark.mId;
+        Log.i("ADRESADR", String.valueOf(addressAdr));
         DatabaseManager databaseManager = new DatabaseManager(kmlPlacemark, kmlPoint.getPosition(), context);
         databaseManager.checkIfExists(id);
         howManyRecords();
@@ -95,9 +83,6 @@ public class KMLStyler implements KmlFeature.Styler
     {
         polygon.setVisible(false);
         String id = kmlPlacemark.mId;
-        DatabaseManager databaseManager = new DatabaseManager(kmlPlacemark, kmlPolygon.getBoundingBox().getCenter(), context);
-        databaseManager.checkIfExists(id);
-        howManyRecords();
 
         Marker marker = new Marker(map);
         double latitude = kmlPolygon.getBoundingBox().getCenterLatitude();
@@ -115,6 +100,10 @@ public class KMLStyler implements KmlFeature.Styler
                 return true;
             }
         });
+
+        DatabaseManager databaseManager = new DatabaseManager(kmlPlacemark, kmlPolygon.getBoundingBox().getCenter(), context);
+        databaseManager.checkIfExists(id);
+        howManyRecords();
 
         map.getOverlays().add(marker);
     }

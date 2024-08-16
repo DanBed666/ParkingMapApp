@@ -13,98 +13,77 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="name"
-        android:textSize="28dp"/>
+        android:textSize="22dp"/>
 
     <TextView
         android:id="@+id/tv_parking"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="parking"
-        android:textSize="28dp"/>
+        android:textSize="22dp"/>
 
     <TextView
         android:id="@+id/tv_access"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="access"
-        android:textSize="28dp"/>
+        android:textSize="22dp"/>
 
     <TextView
         android:id="@+id/tv_capacity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="capacity"
-        android:textSize="28dp"/>
+        android:textSize="22dp"/>
 
     <TextView
         android:id="@+id/tv_capacitydis"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="capacityDisabled"
-        android:textSize="28dp"/>
+        android:textSize="22dp"/>
 
     <TextView
         android:id="@+id/tv_capacitytrucks"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="capacityTrucks"
-        android:textSize="28dp"/>
+        android:textSize="22dp"/>
 
     <TextView
         android:id="@+id/tv_capacitybus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="capacityBus"
-        android:textSize="28dp"/>
+        android:textSize="22dp"/>
 
     <TextView
         android:id="@+id/tv_capacitymoto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="capacityMoto"
-        android:textSize="28dp"/>
+        android:textSize="22dp"/>
 
     <TextView
         android:id="@+id/tv_fee"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="fee"
-        android:textSize="28dp"/>
+        android:textSize="22dp"/>
 
     <TextView
         android:id="@+id/tv_supervised"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="supervised"
-        android:textSize="28dp"/>
+        android:textSize="22dp"/>
 
     <TextView
         android:id="@+id/tv_operator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="operator"
-        android:textSize="28dp"/>
-
-    <TextView
-        android:id="@+id/tv_ulica"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="ulica"
-        android:textSize="28dp"/>
-
-    <TextView
-        android:id="@+id/tv_kod"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="kod"
-        android:textSize="28dp"/>
-
-    <TextView
-        android:id="@+id/tv_miasto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="miasto"
-        android:textSize="28dp"/>
+        android:textSize="22dp"/>
 
     <Button
         android:id="@+id/btn_edit"

@@ -23,13 +23,12 @@ public class Parking implements Serializable
     private double longtitude;
     private boolean edited;
     private boolean created;
-    Address address;
     private String dataCreated;
     private String dataEdited;
 
     public Parking(String uId, String id, String name, String pking, String access, String capacity, String capacityDisabled, String capacityTrucks,
                    String capacityBus, String capacityMotorcycle, String fee, String supervised, String operator, double latitude, double longtitude,
-                   boolean edited, boolean created, Address address, String dataCreated, String dataEdited)
+                   boolean edited, boolean created, String dataCreated, String dataEdited)
     {
         this.uId = uId;
         this.id = id;
@@ -48,7 +47,6 @@ public class Parking implements Serializable
         this.longtitude = longtitude;
         this.edited = edited;
         this.created = created;
-        this.address = address;
         this.dataCreated = dataCreated;
         this.dataEdited = dataEdited;
     }
@@ -115,15 +113,6 @@ public class Parking implements Serializable
     public void setCreated(boolean created) {
         this.created = created;
     }
-
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
     public String getuId() {
         return uId;
     }

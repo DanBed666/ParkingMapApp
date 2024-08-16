@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -15,15 +14,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.Observer;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.osmdroid.util.GeoPoint;
@@ -101,7 +95,7 @@ public class AddParkingActivity extends AppCompatActivity
                 String capacityMoto = capacityMotoET.getText().toString();
 
                 assert location != null;
-                addressViewModel.getAddressVM(location.getLatitude(), location.getLongitude(), "json").observeForever(new Observer<Address>()
+                addressViewModel.getAddressVM(location.getLatitude() + "%2C" + location.getLongitude(), "FiyHNQAmeoWKRcEdp5KyYWOAaAKf-7hvtqkz--lGBDc").observeForever(new Observer<Address>()
                 {
                     @Override
                     public void onChanged(Address address)
@@ -112,7 +106,7 @@ public class AddParkingActivity extends AppCompatActivity
 
                 assert user != null;
                 Parking newParking = new Parking(user.getUid(), id, name, parking, access, capacity, capacityDis, capacityTru, capacityBus, capacityMoto,
-                        fee, supervised, operator, location.getLatitude(), location.getLongitude(), false, true, addressAdr, getActualDate(), "");
+                        fee, supervised, operator, location.getLatitude(), location.getLongitude(), true, true, getActualDate(), "");
 
                 db.collection("parkings").document(id).set(newParking).addOnSuccessListener(new OnSuccessListener<Void>()
                 {
