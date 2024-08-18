@@ -30,7 +30,7 @@ import java.util.Calendar;
 import java.util.Objects;
 import java.util.Random;
 
-public class AddParkingActivity extends AppCompatActivity
+public class AddParkingActivity extends AppCompatActivity implements HarmValueListener
 {
     AddressViewModel addressViewModel;
     Address addressAdr;
@@ -59,6 +59,8 @@ public class AddParkingActivity extends AppCompatActivity
         EditText capacityET = findViewById(R.id.et_capacity);
         EditText operatorET = findViewById(R.id.et_operator);
         Button createBTN = findViewById(R.id.btn_create);
+        EditText cena = findViewById(R.id.et_cena);
+        Button harmonogram = findViewById(R.id.btn_hours);
 
         String[] types = {"Dowolny", "Naziemny", "Przyległy do drogi", "Wielopoziomowy", "Podziemny"};
         String[] typesEN = {"", "surface", "street_side", "multi-storey", "underground"};
@@ -74,18 +76,18 @@ public class AddParkingActivity extends AppCompatActivity
 
         GeoPoint location = getIntent().getParcelableExtra("LOCATION");
 
-        spinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        harmonogram.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            public void onClick(View v)
             {
+                HarmonogramFragment fragment = new HarmonogramFragment();
 
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent)
-            {
-
+                getSupportFragmentManager().beginTransaction().
+                        setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                        .show(fragment)
+                        .replace(R.id.fragment2, fragment)
+                        .commit();
             }
         });
 
@@ -187,5 +189,11 @@ public class AddParkingActivity extends AppCompatActivity
         });
 
         return value[0];
+    }
+
+    @Override
+    public void onStringReceived(String harm)
+    {
+        Log.i("WARTOSC", harm);
     }
 }

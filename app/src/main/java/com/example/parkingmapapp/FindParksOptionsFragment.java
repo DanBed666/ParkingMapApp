@@ -51,8 +51,8 @@ public class FindParksOptionsFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     String findingTag = "amenity=parking";
-    Query findingQuery;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    Query findingQuery = db.collection("parkings");
     public FindParksOptionsFragment() {
         // Required empty public constructor
     }
@@ -108,15 +108,24 @@ public class FindParksOptionsFragment extends Fragment {
         Spinner spinnerMoto = v.findViewById(R.id.spinner_moto);
         capacityET = v.findViewById(R.id.et_capacity);
 
-        String[] types = {"Dowolny", "Naziemny", "Przyległy do drogi", "Wielopoziomowy", "Podziemny"};
+        String[] types = getResources().getStringArray(R.array.types);
         String[] typesEN = {"", "surface", "street_side", "multi-storey", "underground"};
-        String[] accessTab = {"Dowolny", "Otwarty", "Prywatny", "Dla klientów"};
+        String[] accessTab = getResources().getStringArray(R.array.access);
         String[] accessTabEN = {"", "yes", "private", "customers"};
-        String[] opcje = {"Dowolny", "Tak", "Nie"};
+        String[] opcje = getResources().getStringArray(R.array.options);
         String[] opcjeEN = {"", "yes", "no"};
 
         assert getArguments() != null;
         Utils u = (Utils) getArguments().getSerializable("OBJECT");
+
+        getValue(types, spinnerType);
+        getValue(accessTab, spinnerAccess);
+        getValue(opcje, spinnerFee);
+        getValue(opcje, spinnerSupervised);
+        getValue(opcje, spinnerBus);
+        getValue(opcje, spinnerTrucks);
+        getValue(opcje, spinnerDisabled);
+        getValue(opcje, spinnerMoto);
 
         find.setOnClickListener(new View.OnClickListener()
         {
@@ -124,16 +133,18 @@ public class FindParksOptionsFragment extends Fragment {
             public void onClick(View v)
             {
                 assert u != null;
-                findingQuery = db.collection("parkings");
 
-                getValue(types, spinnerType, typesEN, "parking");
-                getValue(accessTab, spinnerAccess, accessTabEN, "access");
-                getValue(opcje, spinnerFee, opcjeEN, "fee");
-                getValue(opcje, spinnerSupervised, opcjeEN, "supervised");
-                getValue(opcje, spinnerBus, opcjeEN, "capacity:bus");
-                getValue(opcje, spinnerTrucks, opcjeEN, "capacity:truck");
-                getValue(opcje, spinnerDisabled, opcjeEN, "capacity:disabled");
-                getValue(opcje, spinnerMoto, opcjeEN, "capacity:motorcycle");
+                Log.i("POZYCJA", String.valueOf(spinnerType.getSelectedItemPosition()));
+                Log.i("POZYCJA", String.valueOf(spinnerFee.getSelectedItemPosition()));
+
+                getTag8(spinnerType, typesEN, "parking");
+                getTag8(spinnerAccess, accessTabEN, "access");
+                getTag8(spinnerFee, opcjeEN, "fee");
+                getTag8(spinnerSupervised, opcjeEN, "supervised");
+                getTag8(spinnerBus, opcjeEN, "capacity:bus");
+                getTag8(spinnerTrucks, opcjeEN, "capacity:truck");
+                getTag8(spinnerDisabled, opcjeEN, "capacity:disabled");
+                getTag8(spinnerMoto, opcjeEN, "capacity:motorcycle");
 
                 if (!capacityET.getText().toString().isEmpty())
                 {
@@ -147,6 +158,9 @@ public class FindParksOptionsFragment extends Fragment {
 
                 Log.i("FIND", "click!");
 
+                Log.i("TAG", findingTag);
+                Log.i("QUERY", findingQuery.get().toString());
+
                 assert getFragmentManager() != null;
                 getFragmentManager().beginTransaction().remove(FindParksOptionsFragment.this).commit();
             }
@@ -154,29 +168,23 @@ public class FindParksOptionsFragment extends Fragment {
 
         return v;
     }
-    public void getValue(String [] tab, Spinner spinner, String [] tabEN, String queryTitle)
+    public void getValue(String [] tab, Spinner spinner)
     {
-        ArrayAdapter<String> aa = new ArrayAdapter<>(requireActivity().getApplicationContext(), android.R.layout.simple_spinner_item, tab);
+        ArrayAdapter<String> aa = new ArrayAdapter<>(requireActivity(), android.R.layout.simple_spinner_item, tab);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(aa);
+        Log.i("POSITION", "Wykonuje");
+    }
 
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+    public void getTag8(Spinner spinner, String [] tabEN, String queryTitle)
+    {
+        int position = spinner.getSelectedItemPosition();
+        Log.i("POSITION", String.valueOf(position));
+
+        if (position != 0)
         {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-            {
-                if (!tabEN[position].isEmpty())
-                {
-                    findingTag += String.format("][%s=%s", queryTitle, tabEN[position]);
-                    findingQuery = findingQuery.whereEqualTo(queryTitle, tabEN[position]);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent)
-            {
-
-            }
-        });
+            findingTag += String.format("][%s=%s", queryTitle, tabEN[position]);
+            findingQuery = findingQuery.whereEqualTo(queryTitle, tabEN[position]);
+        }
     }
 }

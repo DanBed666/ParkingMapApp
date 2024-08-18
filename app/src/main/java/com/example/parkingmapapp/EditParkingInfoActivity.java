@@ -65,7 +65,7 @@ public class EditParkingInfoActivity extends AppCompatActivity
         });
 
         name = findViewById(R.id.et_name);
-        parking = findViewById(R.id.et_parking);
+        parking = findViewById(R.id.et_pking);
         capacity = findViewById(R.id.et_capacity);
         fee = findViewById(R.id.et_fee);
         supervised = findViewById(R.id.et_supervised);

@@ -35,7 +35,7 @@
 
             <Spinner
                 android:id="@+id/spinner_type"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_width="280dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginStart="10dp"
@@ -43,7 +43,8 @@
                 android:spinnerMode="dropdown"
                 android:background="@android:drawable/btn_dropdown"
                 android:theme="@style/ThemeOverlay.AppCompat.Light"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"
+                android:entries="@array/types"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -62,7 +63,8 @@
                 android:spinnerMode="dropdown"
                 android:background="@android:drawable/btn_dropdown"
                 android:theme="@style/ThemeOverlay.AppCompat.Light"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"
+                android:entries="@array/access"/>
 
             <EditText
                 android:id="@+id/et_capacity"
@@ -91,7 +93,8 @@
                 android:spinnerMode="dropdown"
                 android:background="@android:drawable/btn_dropdown"
                 android:theme="@style/ThemeOverlay.AppCompat.Light"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"
+                android:entries="@array/options"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -110,7 +113,8 @@
                 android:spinnerMode="dropdown"
                 android:background="@android:drawable/btn_dropdown"
                 android:theme="@style/ThemeOverlay.AppCompat.Light"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"
+                android:entries="@array/options"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -129,7 +133,8 @@
                 android:spinnerMode="dropdown"
                 android:background="@android:drawable/btn_dropdown"
                 android:theme="@style/ThemeOverlay.AppCompat.Light"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"
+                android:entries="@array/options"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -148,7 +153,8 @@
                 android:spinnerMode="dropdown"
                 android:background="@android:drawable/btn_dropdown"
                 android:theme="@style/ThemeOverlay.AppCompat.Light"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"
+                android:entries="@array/options"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -167,7 +173,8 @@
                 android:spinnerMode="dropdown"
                 android:background="@android:drawable/btn_dropdown"
                 android:theme="@style/ThemeOverlay.AppCompat.Light"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"
+                android:entries="@array/options"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -186,7 +193,8 @@
                 android:spinnerMode="dropdown"
                 android:background="@android:drawable/btn_dropdown"
                 android:theme="@style/ThemeOverlay.AppCompat.Light"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"
+                android:entries="@array/options"/>
 
             <Button
                 android:id="@+id/btn_find"
