@@ -3,8 +3,11 @@ package com.example.parkingmapapp;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -44,55 +47,65 @@ public class AddParkingActivity extends AppCompatActivity
             return insets;
         });
 
-        EditText nameET;
-        EditText parkingET;
-        EditText capacityET;
-        EditText feeET;
-        EditText supervisedET;
-        EditText operatorET;
-        EditText accessET;
-        EditText capacityDisabledET;
-        EditText capacityTrucksET;
-        EditText capacityBusET;
-        EditText capacityMotoET;
-        Button createET;
+        Spinner spinnerType = findViewById(R.id.spinner_type);
+        Spinner spinnerAccess = findViewById(R.id.spinner_access);
+        Spinner spinnerFee = findViewById(R.id.spinner_fee);
+        Spinner spinnerSupervised = findViewById(R.id.spinner_supervised);
+        Spinner spinnerBus = findViewById(R.id.spinner_bus);
+        Spinner spinnerTrucks = findViewById(R.id.spinner_truck);
+        Spinner spinnerDisabled = findViewById(R.id.spinner_disabled);
+        Spinner spinnerMoto = findViewById(R.id.spinner_moto);
+        EditText nameET = findViewById(R.id.et_nazwa);
+        EditText capacityET = findViewById(R.id.et_capacity);
+        EditText operatorET = findViewById(R.id.et_operator);
+        Button createBTN = findViewById(R.id.btn_create);
+
+        String[] types = {"Dowolny", "Naziemny", "Przyległy do drogi", "Wielopoziomowy", "Podziemny"};
+        String[] typesEN = {"", "surface", "street_side", "multi-storey", "underground"};
+        String[] accessTab = {"Dowolny", "Otwarty", "Prywatny", "Dla klientów"};
+        String[] accessTabEN = {"", "yes", "private", "customers"};
+        String[] opcje = {"Dowolny", "Tak", "Nie"};
+        String[] opcjeEN = {"", "yes", "no"};
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         addressViewModel = new AddressViewModel();
 
-        nameET = findViewById(R.id.et_name);
-        parkingET = findViewById(R.id.et_pking);
-        capacityET = findViewById(R.id.et_capacity);
-        feeET = findViewById(R.id.et_fee);
-        supervisedET = findViewById(R.id.et_supervised);
-        operatorET = findViewById(R.id.et_operator);
-        createET = findViewById(R.id.btn_create);
-        accessET = findViewById(R.id.et_access);
-        capacityDisabledET = findViewById(R.id.et_capacitydis);
-        capacityTrucksET = findViewById(R.id.et_capacitytru);
-        capacityBusET = findViewById(R.id.et_capacitybus);
-        capacityMotoET = findViewById(R.id.et_capacitymoto);
-
         GeoPoint location = getIntent().getParcelableExtra("LOCATION");
 
-        createET.setOnClickListener(new View.OnClickListener()
+        spinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+
+            }
+        });
+
+        createBTN.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
                 String id = generateId();
                 String name = nameET.getText().toString();
-                String parking = parkingET.getText().toString();
                 String capacity = capacityET.getText().toString();
-                String fee = feeET.getText().toString();
-                String supervised = supervisedET.getText().toString();
+                String parking = getValue(types, spinnerType, typesEN);
+                String fee = getValue(opcje, spinnerFee, opcjeEN);
+                String supervised = getValue(opcje, spinnerSupervised, opcjeEN);
                 String operator = operatorET.getText().toString();
-                String access = accessET.getText().toString();
-                String capacityDis = capacityDisabledET.getText().toString();
-                String capacityTru = capacityTrucksET.getText().toString();
-                String capacityBus = capacityBusET.getText().toString();
-                String capacityMoto = capacityMotoET.getText().toString();
+                String access = getValue(accessTab, spinnerAccess, accessTabEN);
+                String capacityDis = getValue(opcje, spinnerDisabled, opcjeEN);
+                String capacityTru = getValue(opcje, spinnerTrucks, opcjeEN);
+                String capacityBus = getValue(opcje, spinnerBus, opcjeEN);
+                String capacityMoto = getValue(opcje, spinnerMoto, opcjeEN);
 
                 assert location != null;
                 addressViewModel.getAddressVM(location.getLatitude() + "%2C" + location.getLongitude(), "FiyHNQAmeoWKRcEdp5KyYWOAaAKf-7hvtqkz--lGBDc").observeForever(new Observer<Address>()
@@ -109,22 +122,6 @@ public class AddParkingActivity extends AppCompatActivity
                         fee, supervised, operator, location.getLatitude(), location.getLongitude(), true, true, getActualDate(), "");
 
                 db.collection("parkings").document(id).set(newParking).addOnSuccessListener(new OnSuccessListener<Void>()
-                {
-                    @Override
-                    public void onSuccess(Void unused)
-                    {
-                        Log.i("CREATEDADD", "created");
-                    }
-                }).addOnFailureListener(new OnFailureListener()
-                {
-                    @Override
-                    public void onFailure(@NonNull Exception e)
-                    {
-                        Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
-                    }
-                });
-
-                db.collection("addedparkings").document(id).set(newParking).addOnSuccessListener(new OnSuccessListener<Void>()
                 {
                     @Override
                     public void onSuccess(Void unused)
@@ -165,5 +162,30 @@ public class AddParkingActivity extends AppCompatActivity
         SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         String formattedDate = df.format(calender.getTime());
         return formattedDate;
+    }
+
+    public String getValue(String [] tab, Spinner spinner, String [] tabEN)
+    {
+        ArrayAdapter<String> aa = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, tab);
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(aa);
+        final String[] value = new String[1];
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                value[0] = tabEN[position];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+                value[0] = "";
+            }
+        });
+
+        return value[0];
     }
 }

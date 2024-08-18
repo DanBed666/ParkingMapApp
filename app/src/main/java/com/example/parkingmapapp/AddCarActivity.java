@@ -3,8 +3,11 @@ package com.example.parkingmapapp;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -44,10 +47,12 @@ public class AddCarActivity extends AppCompatActivity
         user = mAuth.getCurrentUser();
         EditText markaET = findViewById(R.id.et_marka);
         EditText modelET = findViewById(R.id.et_model);
-        EditText typET = findViewById(R.id.et_typ);
+        Spinner typSpinner = findViewById(R.id.spinner_car);
         EditText numerET = findViewById(R.id.et_numer);
         EditText rokET = findViewById(R.id.et_rok);
         Button confirm = findViewById(R.id.btn_add);
+
+        String[] types = {"Samochód osobowy", "Tir", "Motocykl", "Autokar"};
 
         confirm.setOnClickListener(new View.OnClickListener()
         {
@@ -56,7 +61,7 @@ public class AddCarActivity extends AppCompatActivity
             {
                 String marka = markaET.getText().toString();
                 String model = modelET.getText().toString();
-                String typ = typET.getText().toString();
+                String typ = getValue(types, typSpinner);
                 String numer = numerET.getText().toString();
                 String rok = rokET.getText().toString();
 
@@ -98,5 +103,31 @@ public class AddCarActivity extends AppCompatActivity
         }
 
         return chain.toString();
+    }
+
+    public String getValue(String [] tab, Spinner spinner)
+    {
+        ArrayAdapter<String> aa = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, tab);
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(aa);
+
+        final String[] typ = new String[1];
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                typ[0] = tab[position];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+                typ[0] = "";
+            }
+        });
+
+        return typ[0];
     }
 }

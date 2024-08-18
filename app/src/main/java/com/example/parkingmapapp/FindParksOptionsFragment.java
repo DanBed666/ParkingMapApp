@@ -9,10 +9,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,6 +29,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +51,7 @@ public class FindParksOptionsFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     String findingTag = "amenity=parking";
+    Query findingQuery;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     public FindParksOptionsFragment() {
         // Required empty public constructor
@@ -89,11 +95,25 @@ public class FindParksOptionsFragment extends Fragment {
 
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_find_parks_options, container, false);
-        feeRG = v.findViewById(R.id.rg_fee);
-        supervisedRG = v.findViewById(R.id.rg_sup);
-        capacityET = v.findViewById(R.id.et_capacity);
-        parkingET = v.findViewById(R.id.et_parking);
+        //supervisedRG = v.findViewById(R.id.rg_sup);
         find = v.findViewById(R.id.btn_find);
+
+        Spinner spinnerType = v.findViewById(R.id.spinner_type);
+        Spinner spinnerAccess = v.findViewById(R.id.spinner_access);
+        Spinner spinnerFee = v.findViewById(R.id.spinner_fee);
+        Spinner spinnerSupervised = v.findViewById(R.id.spinner_supervised);
+        Spinner spinnerBus = v.findViewById(R.id.spinner_bus);
+        Spinner spinnerTrucks = v.findViewById(R.id.spinner_truck);
+        Spinner spinnerDisabled = v.findViewById(R.id.spinner_disabled);
+        Spinner spinnerMoto = v.findViewById(R.id.spinner_moto);
+        capacityET = v.findViewById(R.id.et_capacity);
+
+        String[] types = {"Dowolny", "Naziemny", "Przyległy do drogi", "Wielopoziomowy", "Podziemny"};
+        String[] typesEN = {"", "surface", "street_side", "multi-storey", "underground"};
+        String[] accessTab = {"Dowolny", "Otwarty", "Prywatny", "Dla klientów"};
+        String[] accessTabEN = {"", "yes", "private", "customers"};
+        String[] opcje = {"Dowolny", "Tak", "Nie"};
+        String[] opcjeEN = {"", "yes", "no"};
 
         assert getArguments() != null;
         Utils u = (Utils) getArguments().getSerializable("OBJECT");
@@ -104,30 +124,26 @@ public class FindParksOptionsFragment extends Fragment {
             public void onClick(View v)
             {
                 assert u != null;
-                Query q = db.collection("parkings");
+                findingQuery = db.collection("parkings");
 
-                if (feeRG.getCheckedRadioButtonId() != -1)
-                {
-                    findingTag += String.format("][fee=%s", getChooseYN(feeRG));
-                    q = q.whereEqualTo("fee", getChooseYN(feeRG));
-                }
-
-                if (supervisedRG.getCheckedRadioButtonId() != -1)
-                {
-                    findingTag += String.format("][supervised=%s", getChooseYN(supervisedRG));
-                    q = q.whereEqualTo("supervised", getChooseYN(supervisedRG));
-                }
+                getValue(types, spinnerType, typesEN, "parking");
+                getValue(accessTab, spinnerAccess, accessTabEN, "access");
+                getValue(opcje, spinnerFee, opcjeEN, "fee");
+                getValue(opcje, spinnerSupervised, opcjeEN, "supervised");
+                getValue(opcje, spinnerBus, opcjeEN, "capacity:bus");
+                getValue(opcje, spinnerTrucks, opcjeEN, "capacity:truck");
+                getValue(opcje, spinnerDisabled, opcjeEN, "capacity:disabled");
+                getValue(opcje, spinnerMoto, opcjeEN, "capacity:motorcycle");
 
                 if (!capacityET.getText().toString().isEmpty())
                 {
                     findingTag += String.format("][capacity<%s", capacityET.getText().toString());
-                    q = q.whereLessThan("capacity", capacityET.getText().toString());
+                    findingQuery = findingQuery.whereLessThan("capacity", capacityET.getText().toString());
                 }
 
                 Log.i("TAGF", findingTag);
                 u.findParkings(findingTag);
-
-                u.findParkingsDB(q);
+                u.findParkingsDB(findingQuery);
 
                 Log.i("FIND", "click!");
 
@@ -138,25 +154,29 @@ public class FindParksOptionsFragment extends Fragment {
 
         return v;
     }
-
-    public String getChooseYN(RadioGroup radioGroup)
+    public void getValue(String [] tab, Spinner spinner, String [] tabEN, String queryTitle)
     {
-        String wybor = "";
-        String option;
-        int optionId = radioGroup.getCheckedRadioButtonId();
+        ArrayAdapter<String> aa = new ArrayAdapter<>(requireActivity().getApplicationContext(), android.R.layout.simple_spinner_item, tab);
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(aa);
 
-        RadioButton radioButton = radioGroup.findViewById(optionId);
-        option = radioButton.getText().toString();
-
-        if (option.equals("Tak"))
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
-            wybor = "yes";
-        }
-        else if (option.equals("Nie"))
-        {
-            wybor = "no";
-        }
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                if (!tabEN[position].isEmpty())
+                {
+                    findingTag += String.format("][%s=%s", queryTitle, tabEN[position]);
+                    findingQuery = findingQuery.whereEqualTo(queryTitle, tabEN[position]);
+                }
+            }
 
-        return wybor;
+            @Override
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+
+            }
+        });
     }
 }

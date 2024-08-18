@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,6 +27,7 @@ public class BookingsActivity extends AppCompatActivity
 {
     RecyclerView recyclerView;
     BookingsAdapter bookingsAdapter;
+    AddressViewModel addressViewModel;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
@@ -42,6 +44,7 @@ public class BookingsActivity extends AppCompatActivity
             return insets;
         });
 
+        addressViewModel = new AddressViewModel();
         recyclerView = findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);

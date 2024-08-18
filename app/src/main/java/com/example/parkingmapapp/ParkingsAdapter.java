@@ -33,9 +33,22 @@ public class ParkingsAdapter extends RecyclerView.Adapter<ParkingsAdapter.Parkin
     @Override
     public void onBindViewHolder(@NonNull ParkingsAdapter.ParkingsViewHolder holder, int position)
     {
-        holder.nazwa.setText(exampleList.get(position).getString("nazwa"));
-        holder.status_edyt.setText(exampleList.get(position).getString("edited"));
-        holder.status_weryf.setText(exampleList.get(position).getString("created"));
+        boolean edited = Boolean.TRUE.equals(exampleList.get(position).getBoolean("edited"));
+        boolean created = Boolean.TRUE.equals(exampleList.get(position).getBoolean("created"));
+
+        if (edited)
+        {
+            holder.nazwa.setText(exampleList.get(position).getString("nazwa"));
+            holder.status_edyt.setText("Edytowano");
+            holder.data.setText(exampleList.get(position).getString("dataCreated"));
+        }
+
+        if (created)
+        {
+            holder.nazwa.setText(exampleList.get(position).getString("nazwa"));
+            holder.status_edyt.setText("Utworzono");
+            holder.data.setText(exampleList.get(position).getString("dataEdited"));
+        }
     }
 
     @Override

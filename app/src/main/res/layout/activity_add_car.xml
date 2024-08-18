@@ -29,11 +29,26 @@
         android:layout_height="wrap_content"
         android:hint="Model"/>
 
-    <EditText
-        android:id="@+id/et_typ"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Typ"/>
+        android:textSize="22dp"
+        android:layout_marginTop="10dp"
+        android:textAlignment="center"
+        android:text="Typ pojazdu"/>
+
+    <Spinner
+        android:id="@+id/spinner_car"
+        android:layout_height="38dp"
+        android:layout_width="280dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="10dp"
+        android:spinnerMode="dropdown"
+        android:background="@android:drawable/btn_dropdown"
+        android:theme="@style/ThemeOverlay.AppCompat.Light"
+        android:layout_marginTop="10dp" />
+
 
     <EditText
         android:id="@+id/et_numer"
