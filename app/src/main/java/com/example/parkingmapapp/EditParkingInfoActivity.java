@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -37,21 +38,9 @@ import java.util.Map;
 
 public class EditParkingInfoActivity extends AppCompatActivity
 {
-    EditText name;
-    EditText parking;
-    EditText capacity;
-    EditText fee;
-    EditText supervised;
-    EditText operator;
-    Button edit;
     String id;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String documentId;
-    EditText accessET;
-    EditText capacityDisabledET;
-    EditText capacityTrucksET;
-    EditText capacityBusET;
-    EditText capacityMotoET;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -65,6 +54,9 @@ public class EditParkingInfoActivity extends AppCompatActivity
             return insets;
         });
 
+        id = getIntent().getStringExtra("KEYID");
+        documentId = getIntent().getStringExtra("DOCUMENTID");
+
         Spinner spinnerType = findViewById(R.id.spinner_type);
         Spinner spinnerAccess = findViewById(R.id.spinner_access);
         Spinner spinnerFee = findViewById(R.id.spinner_fee);
@@ -76,18 +68,26 @@ public class EditParkingInfoActivity extends AppCompatActivity
         EditText nameET = findViewById(R.id.et_nazwa);
         EditText capacityET = findViewById(R.id.et_capacity);
         EditText operatorET = findViewById(R.id.et_operator);
-        Button createBTN = findViewById(R.id.btn_create);
+        Button edit = findViewById(R.id.btn_create);
         EditText cena = findViewById(R.id.et_cena);
         Button harmonogram = findViewById(R.id.btn_hours);
 
-        String[] types = {"Dowolny", "Naziemny", "Przyległy do drogi", "Wielopoziomowy", "Podziemny"};
+        String[] types = getResources().getStringArray(R.array.types);
         String[] typesEN = {"", "surface", "street_side", "multi-storey", "underground"};
-        String[] accessTab = {"Dowolny", "Otwarty", "Prywatny", "Dla klientów"};
+        String[] accessTab = getResources().getStringArray(R.array.access);
         String[] accessTabEN = {"", "yes", "private", "customers"};
-        String[] opcje = {"Dowolny", "Tak", "Nie"};
+        String[] opcje = getResources().getStringArray(R.array.options);
         String[] opcjeEN = {"", "yes", "no"};
 
-        assert id != null;
+        initializeAdapter(types, spinnerType);
+        initializeAdapter(opcje, spinnerFee);
+        initializeAdapter(opcje, spinnerSupervised);
+        initializeAdapter(accessTab, spinnerAccess);
+        initializeAdapter(opcje, spinnerDisabled);
+        initializeAdapter(opcje, spinnerTrucks);
+        initializeAdapter(opcje, spinnerBus);
+        initializeAdapter(opcje, spinnerMoto);
+
         db.collection("parkings").whereEqualTo("id", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
             @Override
@@ -111,17 +111,18 @@ public class EditParkingInfoActivity extends AppCompatActivity
                         String cbus = (String) document.getData().get("capacity:bus");
                         String cmot = (String) document.getData().get("capacity:motorcycle");
 
-                        name.setText(nam);
-                        parking.setText(pkg);
-                        capacity.setText(cpc);
-                        fee.setText(f33);
-                        supervised.setText(sup);
-                        operator.setText(ope);
-                        accessET.setText(acc);
-                        capacityDisabledET.setText(cdis);
-                        capacityTrucksET.setText(ctru);
-                        capacityBusET.setText(cbus);
-                        capacityMotoET.setText(cmot);
+                        nameET.setText(nam);
+                        capacityET.setText(cpc);
+                        operatorET.setText(ope);
+
+                        spinnerType.setSelection(getPosition(pkg, typesEN));
+                        spinnerAccess.setSelection(getPosition(acc, accessTabEN));
+                        spinnerDisabled.setSelection(getPosition(cdis, opcjeEN));
+                        spinnerFee.setSelection(getPosition(f33, opcjeEN));
+                        spinnerSupervised.setSelection(getPosition(sup, opcjeEN));
+                        spinnerBus.setSelection(getPosition(cbus, opcjeEN));
+                        spinnerMoto.setSelection(getPosition(cmot, opcjeEN));
+                        spinnerTrucks.setSelection(getPosition(ctru, opcjeEN));
                     }
                 }
                 else
@@ -136,27 +137,27 @@ public class EditParkingInfoActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                String nam = name.getText().toString();
-                String pkg = parking.getText().toString();
-                String cpc = capacity.getText().toString();
-                String f33 = fee.getText().toString();
-                String sup = supervised.getText().toString();
-                String ope = operator.getText().toString();
-                String acc = accessET.getText().toString();
-                String cdis = capacityDisabledET.getText().toString();
-                String ctru = capacityTrucksET.getText().toString();
-                String cbus = capacityBusET.getText().toString();
-                String cmot = capacityMotoET.getText().toString();
+                String name = nameET.getText().toString();
+                String capacity = capacityET.getText().toString();
+                String parking = getValue(spinnerType, typesEN);
+                String fee = getValue(spinnerFee, opcjeEN);
+                String supervised = getValue(spinnerSupervised, opcjeEN);
+                String operator = operatorET.getText().toString();
+                String access = getValue(spinnerAccess, accessTabEN);
+                String cdis = getValue(spinnerDisabled, opcjeEN);
+                String ctru = getValue(spinnerTrucks, opcjeEN);
+                String cbus = getValue(spinnerBus, opcjeEN);
+                String cmot= getValue(spinnerMoto, opcjeEN);
 
                 Map<String, Object> mapa = new HashMap<>();
-                mapa.put("name", nam);
-                mapa.put("pking", pkg);
-                mapa.put("capacity", cpc);
-                mapa.put("fee", f33);
-                mapa.put("supervised", sup);
-                mapa.put("operator", ope);
+                mapa.put("name", name);
+                mapa.put("pking", parking);
+                mapa.put("capacity", capacity);
+                mapa.put("fee", fee);
+                mapa.put("supervised", supervised);
+                mapa.put("operator", operator);
                 mapa.put("edited", true);
-                mapa.put("access", acc);
+                mapa.put("access", access);
                 mapa.put("capacityDisabled", cdis);
                 mapa.put("capacityTrucks", ctru);
                 mapa.put("capacityBus", cbus);
@@ -195,5 +196,39 @@ public class EditParkingInfoActivity extends AppCompatActivity
         SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         String formattedDate = df.format(calender.getTime());
         return formattedDate;
+    }
+
+    public void initializeAdapter(String [] tab, Spinner spinner)
+    {
+        ArrayAdapter<String> aa = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, tab);
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(aa);
+    }
+
+    public String getValue(Spinner spinner, String [] tabEN)
+    {
+        String value;
+        int position = spinner.getSelectedItemPosition();
+        value = tabEN[position];
+
+        return value;
+    }
+
+    public int getPosition(String value, String [] tabEN)
+    {
+        int position = 0;
+
+        if (value == null)
+            value = "";
+
+        for (int i = 0; i < tabEN.length; i++)
+        {
+            if (value.equals(tabEN[i]))
+            {
+                position = i;
+            }
+        }
+
+        return position;
     }
 }

@@ -78,7 +78,8 @@
                 android:spinnerMode="dropdown"
                 android:background="@android:drawable/btn_dropdown"
                 android:theme="@style/ThemeOverlay.AppCompat.Light"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"
+                android:entries="@array/types"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -97,7 +98,8 @@
                 android:spinnerMode="dropdown"
                 android:background="@android:drawable/btn_dropdown"
                 android:theme="@style/ThemeOverlay.AppCompat.Light"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"
+                android:entries="@array/access"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -116,7 +118,8 @@
                 android:spinnerMode="dropdown"
                 android:background="@android:drawable/btn_dropdown"
                 android:theme="@style/ThemeOverlay.AppCompat.Light"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"
+                android:entries="@array/options"/>
 
             <EditText
                 android:id="@+id/et_cena"
@@ -145,7 +148,8 @@
                 android:spinnerMode="dropdown"
                 android:background="@android:drawable/btn_dropdown"
                 android:theme="@style/ThemeOverlay.AppCompat.Light"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"
+                android:entries="@array/options"/>
 
             <Button
                 android:id="@+id/btn_hours"
@@ -170,7 +174,8 @@
                 android:spinnerMode="dropdown"
                 android:background="@android:drawable/btn_dropdown"
                 android:theme="@style/ThemeOverlay.AppCompat.Light"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"
+                android:entries="@array/options"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -189,7 +194,8 @@
                 android:spinnerMode="dropdown"
                 android:background="@android:drawable/btn_dropdown"
                 android:theme="@style/ThemeOverlay.AppCompat.Light"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"
+                android:entries="@array/options"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -208,7 +214,8 @@
                 android:spinnerMode="dropdown"
                 android:background="@android:drawable/btn_dropdown"
                 android:theme="@style/ThemeOverlay.AppCompat.Light"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"
+                android:entries="@array/options"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -227,7 +234,8 @@
                 android:spinnerMode="dropdown"
                 android:background="@android:drawable/btn_dropdown"
                 android:theme="@style/ThemeOverlay.AppCompat.Light"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"
+                android:entries="@array/options"/>
 
             <Button
                 android:id="@+id/btn_create"
