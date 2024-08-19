@@ -27,6 +27,7 @@ import org.osmdroid.util.GeoPoint;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 
@@ -34,6 +35,7 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
 {
     AddressViewModel addressViewModel;
     Address addressAdr;
+    Map<String, String> schedule;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -117,6 +119,7 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
                 String capacityTru = getValue(spinnerTrucks, opcjeEN);
                 String capacityBus = getValue(spinnerBus, opcjeEN);
                 String capacityMoto = getValue(spinnerMoto, opcjeEN);
+                String prize = cena.getText().toString();
 
                 assert location != null;
                 addressViewModel.getAddressVM(location.getLatitude() + "%2C" + location.getLongitude(), "FiyHNQAmeoWKRcEdp5KyYWOAaAKf-7hvtqkz--lGBDc").observeForever(new Observer<Address>()
@@ -130,7 +133,8 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
 
                 assert user != null;
                 Parking newParking = new Parking(user.getUid(), id, name, parking, access, capacity, capacityDis, capacityTru, capacityBus, capacityMoto,
-                        fee, supervised, operator, location.getLatitude(), location.getLongitude(), true, true, getActualDate(), "");
+                        fee, supervised, operator, location.getLatitude(), location.getLongitude(), true, true, getActualDate(), "",
+                        schedule, prize);
 
                 db.collection("parkings").document(id).set(newParking).addOnSuccessListener(new OnSuccessListener<Void>()
                 {
@@ -192,8 +196,13 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
     }
 
     @Override
-    public void onStringReceived(String harm)
+    public void onStringReceived(Map<String, String> ham)
     {
-        Log.i("WARTOSC", harm);
+        schedule = ham;
+
+        for (Map.Entry<String, String> entry : ham.entrySet())
+        {
+            Log.i("DAY", entry.getKey() + " " + entry.getValue());
+        }
     }
 }

@@ -61,7 +61,7 @@ public class DatabaseManager
 
         Parking parking = new Parking("xyz123", id, nm, pk, acc, cpc, cpcd, cpct, cpcb, cpcm, fee, svd, ope,
                 finalLat, finalLon, false, false,
-                "18-03-2024 18:19", "28-06-2024 06:47");
+                "18-03-2024 18:19", "28-06-2024 06:47", new ExampleHarms().getHarmonogram(), "12");
         addRecord(id, parking);
     }
 

@@ -54,14 +54,20 @@ public class AddCarActivity extends AppCompatActivity
 
         String[] types = {"Samochód osobowy", "Tir", "Motocykl", "Autokar"};
 
+        ArrayAdapter<String> aa = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, types);
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        typSpinner.setAdapter(aa);
+
         confirm.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
+                int position = typSpinner.getSelectedItemPosition();
+
                 String marka = markaET.getText().toString();
                 String model = modelET.getText().toString();
-                String typ = getValue(types, typSpinner);
+                String typ = types[position];
                 String numer = numerET.getText().toString();
                 String rok = rokET.getText().toString();
 
@@ -103,31 +109,5 @@ public class AddCarActivity extends AppCompatActivity
         }
 
         return chain.toString();
-    }
-
-    public String getValue(String [] tab, Spinner spinner)
-    {
-        ArrayAdapter<String> aa = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, tab);
-        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(aa);
-
-        final String[] typ = new String[1];
-
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-        {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-            {
-                typ[0] = tab[position];
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent)
-            {
-                typ[0] = "";
-            }
-        });
-
-        return typ[0];
     }
 }

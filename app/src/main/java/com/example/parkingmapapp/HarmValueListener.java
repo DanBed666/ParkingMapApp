@@ -1,6 +1,8 @@
 package com.example.parkingmapapp;
 
+import java.util.Map;
+
 public interface HarmValueListener
 {
-    void onStringReceived(String harm);
+    void onStringReceived(Map<String, String> ham);
 }

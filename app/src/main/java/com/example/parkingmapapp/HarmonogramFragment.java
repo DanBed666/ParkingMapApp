@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,10 @@ import android.widget.Switch;
 
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.switchmaterial.SwitchMaterial;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,7 +37,7 @@ public class HarmonogramFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    String harmonogram = "";
+    Map<String, String> harmonogram = new HashMap<>();
     HarmValueListener listener;
 
     public HarmonogramFragment() {
@@ -100,6 +105,15 @@ public class HarmonogramFragment extends Fragment {
         EditText sunEnd = v.findViewById(R.id.sun_end);
         Button save = v.findViewById(R.id.btn_save);
 
+        assert getArguments() != null;
+
+        if (getArguments().getSerializable("SCHEDULE") != null)
+        {
+            harmonogram = (Map<String, String>) getArguments().getSerializable("SCHEDULE");
+            assert harmonogram != null;
+            Log.i("WT", Objects.requireNonNull(harmonogram.get("Wtorek")));
+        }
+
         allDay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
         {
             @Override
@@ -107,7 +121,7 @@ public class HarmonogramFragment extends Fragment {
             {
                 if (isChecked)
                 {
-                    harmonogram = "24/7";
+                    harmonogram.put("Parking całodobowy", "24/7");
                     monday.setClickable(false);
                     tuesday.setClickable(false);
                     wednesday.setClickable(false);
@@ -118,6 +132,15 @@ public class HarmonogramFragment extends Fragment {
                 }
             }
         });
+
+        getValuesMapAll(allDay);
+        getValuesMap(monday, monBegin, monEnd, "Poniedziałek");
+        getValuesMap(tuesday, tueBegin, tueEnd, "Wtorek");
+        getValuesMap(wednesday, wedBegin, wedEnd, "Środa");
+        getValuesMap(thursday, thuBegin, thuEnd, "Czwartek");
+        getValuesMap(friday, friBegin, friEnd, "Piątek");
+        getValuesMap(saturday, satBegin, satEnd, "Sobota");
+        getValuesMap(sunday, sunBegin, sunEnd, "Niedziela");
 
         save.setOnClickListener(new View.OnClickListener()
         {
@@ -144,7 +167,7 @@ public class HarmonogramFragment extends Fragment {
     {
         if (materialSwitch.isChecked())
         {
-            harmonogram += String.format("%s: %s - %s", day, begin.getText().toString(), end.getText().toString()) + "\n";
+            harmonogram.put(day, String.format("%s-%s", begin.getText().toString(), end.getText().toString()));
         }
     }
 
@@ -162,5 +185,42 @@ public class HarmonogramFragment extends Fragment {
             throw new ClassCastException(context.toString()
                     + " must implement TaskIdListener");
         }
+    }
+    public void getValuesMapAll(SwitchMaterial element)
+    {
+        for (Map.Entry<String, String> day : harmonogram.entrySet())
+        {
+            if (day.getKey() == element.getText())
+            {
+                element.setChecked(true);
+            }
+        }
+    }
+
+    public void getValuesMap(SwitchMaterial element, EditText begin, EditText end, String day)
+    {
+        String hours = harmonogram.get(day);
+        StringBuilder beginStr = new StringBuilder();
+        StringBuilder endStr = new StringBuilder();
+
+        Log.i("DAY8", day + " " + hours);
+
+        if (hours != null)
+        {
+            element.setChecked(true);
+
+            for (int i = 0; i < 5; i++)
+            {
+                beginStr.append(hours.toCharArray()[i]);
+            }
+
+            for (int i = 6; i < hours.length(); i++)
+            {
+                endStr.append(hours.toCharArray()[i]);
+            }
+        }
+
+        begin.setText(beginStr.toString());
+        end.setText(endStr.toString());
     }
 }

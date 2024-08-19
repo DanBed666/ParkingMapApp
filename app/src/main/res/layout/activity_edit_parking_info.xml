@@ -8,12 +8,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fragment2"
-            android:layout_width="500dp"
-            android:layout_height="720dp"/>
-
-
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
@@ -245,6 +239,11 @@
                 android:layout_marginTop="10dp"/>
 
         </LinearLayout>
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragment2"
+            android:layout_width="500dp"
+            android:layout_height="720dp"/>
 
     </RelativeLayout>
 

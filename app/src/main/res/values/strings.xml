@@ -23,4 +23,11 @@
         <item>Nie</item>
     </string-array>
 
+    <string-array name="typpojazdu">
+        <item>Samochód osobowy</item>
+        <item>Tir</item>
+        <item>Motocykl</item>
+        <item>Autobus</item>
+    </string-array>
+
 </resources>

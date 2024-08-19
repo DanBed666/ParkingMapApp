@@ -3,6 +3,7 @@ package com.example.parkingmapapp;
 import org.osmdroid.util.GeoPoint;
 
 import java.io.Serializable;
+import java.util.Map;
 
 public class Parking implements Serializable
 {
@@ -25,10 +26,13 @@ public class Parking implements Serializable
     private boolean created;
     private String dataCreated;
     private String dataEdited;
+    private Map<String, String> harmonogram;
+    private String kwota;
 
-    public Parking(String uId, String id, String name, String pking, String access, String capacity, String capacityDisabled, String capacityTrucks,
-                   String capacityBus, String capacityMotorcycle, String fee, String supervised, String operator, double latitude, double longtitude,
-                   boolean edited, boolean created, String dataCreated, String dataEdited)
+    public Parking(String uId, String id, String name, String pking, String access, String capacity, String capacityDisabled,
+                   String capacityTrucks, String capacityBus, String capacityMotorcycle, String fee, String supervised,
+                   String operator, double latitude, double longtitude, boolean edited, boolean created, String dataCreated,
+                   String dataEdited, Map<String, String> harmonogram, String kwota)
     {
         this.uId = uId;
         this.id = id;
@@ -49,7 +53,26 @@ public class Parking implements Serializable
         this.created = created;
         this.dataCreated = dataCreated;
         this.dataEdited = dataEdited;
+        this.harmonogram = harmonogram;
+        this.kwota = kwota;
     }
+
+    public Map<String, String> getHarmonogram() {
+        return harmonogram;
+    }
+
+    public void setHarmonogram(Map<String, String> harmonogram) {
+        this.harmonogram = harmonogram;
+    }
+
+    public String getKwota() {
+        return kwota;
+    }
+
+    public void setKwota(String kwota) {
+        this.kwota = kwota;
+    }
+
     public String getDataCreated() {
         return dataCreated;
     }

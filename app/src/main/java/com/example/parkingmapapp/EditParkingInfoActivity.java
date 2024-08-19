@@ -31,16 +31,19 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import org.osmdroid.util.GeoPoint;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
-public class EditParkingInfoActivity extends AppCompatActivity
+public class EditParkingInfoActivity extends AppCompatActivity implements HarmValueListener
 {
     String id;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String documentId;
+    Map<String, String> schedule = new HashMap<>();
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -69,7 +72,7 @@ public class EditParkingInfoActivity extends AppCompatActivity
         EditText capacityET = findViewById(R.id.et_capacity);
         EditText operatorET = findViewById(R.id.et_operator);
         Button edit = findViewById(R.id.btn_create);
-        EditText cena = findViewById(R.id.et_cena);
+        EditText cenaET = findViewById(R.id.et_cena);
         Button harmonogram = findViewById(R.id.btn_hours);
 
         String[] types = getResources().getStringArray(R.array.types);
@@ -87,7 +90,6 @@ public class EditParkingInfoActivity extends AppCompatActivity
         initializeAdapter(opcje, spinnerTrucks);
         initializeAdapter(opcje, spinnerBus);
         initializeAdapter(opcje, spinnerMoto);
-
         db.collection("parkings").whereEqualTo("id", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
             @Override
@@ -110,10 +112,15 @@ public class EditParkingInfoActivity extends AppCompatActivity
                         String ctru = (String) document.getData().get("capacity:truck");
                         String cbus = (String) document.getData().get("capacity:bus");
                         String cmot = (String) document.getData().get("capacity:motorcycle");
+                        String cena = (String) document.getData().get("kwota");
+                        schedule = (Map<String, String>) document.getData().get("harmonogram");
+                        assert schedule != null;
+                        Log.i("PON", Objects.requireNonNull(schedule.get("Poniedziałek")));
 
                         nameET.setText(nam);
                         capacityET.setText(cpc);
                         operatorET.setText(ope);
+                        cenaET.setText(cena);
 
                         spinnerType.setSelection(getPosition(pkg, typesEN));
                         spinnerAccess.setSelection(getPosition(acc, accessTabEN));
@@ -129,6 +136,24 @@ public class EditParkingInfoActivity extends AppCompatActivity
                 {
                     Log.w("ERR", "Error getting documents.", task.getException());
                 }
+            }
+        });
+
+        harmonogram.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                HarmonogramFragment fragment = new HarmonogramFragment();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("SCHEDULE", (Serializable) schedule);
+                fragment.setArguments(bundle);
+
+                getSupportFragmentManager().beginTransaction().
+                        setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                        .show(fragment)
+                        .replace(R.id.fragment2, fragment)
+                        .commit();
             }
         });
 
@@ -163,6 +188,15 @@ public class EditParkingInfoActivity extends AppCompatActivity
                 mapa.put("capacityBus", cbus);
                 mapa.put("capacityMotorcycle", cmot);
                 mapa.put("dataEdited", getActualDate());
+                mapa.put("harmonogram", schedule);
+
+                for (Map.Entry<String, Object> element : mapa.entrySet())
+                {
+                    if (element.getValue() == null)
+                    {
+                        mapa.put(element.getKey(), "Brak");
+                    }
+                }
 
                 editParking(mapa);
 
@@ -230,5 +264,11 @@ public class EditParkingInfoActivity extends AppCompatActivity
         }
 
         return position;
+    }
+
+    @Override
+    public void onStringReceived(Map<String, String> ham)
+    {
+        schedule = ham;
     }
 }
