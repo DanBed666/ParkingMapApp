@@ -62,11 +62,11 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
         EditText cena = findViewById(R.id.et_cena);
         Button harmonogram = findViewById(R.id.btn_hours);
 
-        String[] types = {"Dowolny", "Naziemny", "Przyległy do drogi", "Wielopoziomowy", "Podziemny"};
+        String[] types = getResources().getStringArray(R.array.types);
         String[] typesEN = {"", "surface", "street_side", "multi-storey", "underground"};
-        String[] accessTab = {"Dowolny", "Otwarty", "Prywatny", "Dla klientów"};
+        String[] accessTab = getResources().getStringArray(R.array.access);
         String[] accessTabEN = {"", "yes", "private", "customers"};
-        String[] opcje = {"Dowolny", "Tak", "Nie"};
+        String[] opcje = getResources().getStringArray(R.array.options);
         String[] opcjeEN = {"", "yes", "no"};
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -85,11 +85,20 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
 
                 getSupportFragmentManager().beginTransaction().
                         setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                        .show(fragment)
                         .replace(R.id.fragment2, fragment)
+                        .addToBackStack(null)
                         .commit();
             }
         });
+
+        initializeAdapter(types, spinnerType);
+        initializeAdapter(opcje, spinnerFee);
+        initializeAdapter(opcje, spinnerSupervised);
+        initializeAdapter(accessTab, spinnerAccess);
+        initializeAdapter(opcje, spinnerDisabled);
+        initializeAdapter(opcje, spinnerTrucks);
+        initializeAdapter(opcje, spinnerBus);
+        initializeAdapter(opcje, spinnerMoto);
 
         createBTN.setOnClickListener(new View.OnClickListener()
         {
@@ -99,15 +108,15 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
                 String id = generateId();
                 String name = nameET.getText().toString();
                 String capacity = capacityET.getText().toString();
-                String parking = getValue(types, spinnerType, typesEN);
-                String fee = getValue(opcje, spinnerFee, opcjeEN);
-                String supervised = getValue(opcje, spinnerSupervised, opcjeEN);
+                String parking = getValue(spinnerType, typesEN);
+                String fee = getValue(spinnerFee, opcjeEN);
+                String supervised = getValue(spinnerSupervised, opcjeEN);
                 String operator = operatorET.getText().toString();
-                String access = getValue(accessTab, spinnerAccess, accessTabEN);
-                String capacityDis = getValue(opcje, spinnerDisabled, opcjeEN);
-                String capacityTru = getValue(opcje, spinnerTrucks, opcjeEN);
-                String capacityBus = getValue(opcje, spinnerBus, opcjeEN);
-                String capacityMoto = getValue(opcje, spinnerMoto, opcjeEN);
+                String access = getValue(spinnerAccess, accessTabEN);
+                String capacityDis = getValue(spinnerDisabled, opcjeEN);
+                String capacityTru = getValue(spinnerTrucks, opcjeEN);
+                String capacityBus = getValue(spinnerBus, opcjeEN);
+                String capacityMoto = getValue(spinnerMoto, opcjeEN);
 
                 assert location != null;
                 addressViewModel.getAddressVM(location.getLatitude() + "%2C" + location.getLongitude(), "FiyHNQAmeoWKRcEdp5KyYWOAaAKf-7hvtqkz--lGBDc").observeForever(new Observer<Address>()
@@ -166,29 +175,20 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
         return formattedDate;
     }
 
-    public String getValue(String [] tab, Spinner spinner, String [] tabEN)
+    public void initializeAdapter(String [] tab, Spinner spinner)
     {
         ArrayAdapter<String> aa = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, tab);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(aa);
-        final String[] value = new String[1];
+    }
 
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-        {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-            {
-                value[0] = tabEN[position];
-            }
+    public String getValue(Spinner spinner, String [] tabEN)
+    {
+        String value;
+        int position = spinner.getSelectedItemPosition();
+        value = tabEN[position];
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent)
-            {
-                value[0] = "";
-            }
-        });
-
-        return value[0];
+        return value;
     }
 
     @Override

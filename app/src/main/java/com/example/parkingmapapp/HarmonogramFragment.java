@@ -116,16 +116,6 @@ public class HarmonogramFragment extends Fragment {
                     saturday.setClickable(false);
                     sunday.setClickable(false);
                 }
-                else
-                {
-                    getValue(monday, monBegin, monEnd, "Poniedziałek");
-                    getValue(tuesday, tueBegin, tueEnd, "Wtorek");
-                    getValue(wednesday, wedBegin, wedEnd, "Środa");
-                    getValue(thursday, thuBegin, thuEnd, "Czwartek");
-                    getValue(friday, friBegin, friEnd, "Piątek");
-                    getValue(saturday, satBegin, satEnd, "Sobota");
-                    getValue(sunday, sunBegin, sunEnd, "Niedziela");
-                }
             }
         });
 
@@ -134,6 +124,13 @@ public class HarmonogramFragment extends Fragment {
             @Override
             public void onClick(View v)
             {
+                getValue(monday, monBegin, monEnd, "Poniedziałek");
+                getValue(tuesday, tueBegin, tueEnd, "Wtorek");
+                getValue(wednesday, wedBegin, wedEnd, "Środa");
+                getValue(thursday, thuBegin, thuEnd, "Czwartek");
+                getValue(friday, friBegin, friEnd, "Piątek");
+                getValue(saturday, satBegin, satEnd, "Sobota");
+                getValue(sunday, sunBegin, sunEnd, "Niedziela");
                 listener.onStringReceived(harmonogram);
                 assert getFragmentManager() != null;
                 getFragmentManager().beginTransaction().remove(HarmonogramFragment.this).commit();
@@ -145,17 +142,10 @@ public class HarmonogramFragment extends Fragment {
 
     public void getValue(SwitchMaterial materialSwitch, EditText begin, EditText end, String day)
     {
-        materialSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        if (materialSwitch.isChecked())
         {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if (isChecked)
-                {
-                    harmonogram += String.format("%s: %s - %s", day, begin.getText().toString(), end.getText().toString()) + "\n";
-                }
-            }
-        });
+            harmonogram += String.format("%s: %s - %s", day, begin.getText().toString(), end.getText().toString()) + "\n";
+        }
     }
 
     @Override

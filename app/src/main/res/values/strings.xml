@@ -3,24 +3,24 @@
     <!-- TODO: Remove or change this placeholder text -->
 
     <string-array name="types">
-        <item >Dowolny</item>
-        <item >Naziemny</item>
-        <item >Przyległy do drogi</item>
-        <item >Wielopoziomowy</item>
-        <item >Podziemny</item>
+        <item>Dowolny</item>
+        <item>Naziemny</item>
+        <item>Przyległy do drogi</item>
+        <item>Wielopoziomowy</item>
+        <item>Podziemny</item>
     </string-array>
 
     <string-array name="access">
-        <item >Dowolny</item>
-        <item >Otwarty</item>
-        <item >Prywatny</item>
-        <item >Dla klientów</item>
+        <item>Dowolny</item>
+        <item>Otwarty</item>
+        <item>Prywatny</item>
+        <item>Dla klientów</item>
     </string-array>
 
     <string-array name="options">
-        <item >Dowolny</item>
-        <item >Tak</item>
-        <item >Nie</item>
+        <item>Dowolny</item>
+        <item>Tak</item>
+        <item>Nie</item>
     </string-array>
 
 </resources>

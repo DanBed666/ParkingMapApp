@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -64,23 +65,27 @@ public class EditParkingInfoActivity extends AppCompatActivity
             return insets;
         });
 
-        name = findViewById(R.id.et_name);
-        parking = findViewById(R.id.et_pking);
-        capacity = findViewById(R.id.et_capacity);
-        fee = findViewById(R.id.et_fee);
-        supervised = findViewById(R.id.et_supervised);
-        operator = findViewById(R.id.et_operator);
-        edit = findViewById(R.id.btn_edit);
-        id = getIntent().getStringExtra("KEYID");
-        documentId = getIntent().getStringExtra("DOCUMENTID");
-        accessET = findViewById(R.id.et_access);
-        capacityDisabledET = findViewById(R.id.et_capacitydis);
-        capacityTrucksET = findViewById(R.id.et_capacitytru);
-        capacityBusET = findViewById(R.id.et_capacitybus);
-        capacityMotoET = findViewById(R.id.et_capacitymoto);
-        final Double[] latitude = new Double[1];
-        final Double[] longitude = new Double[1];
-        final Address[] address = new Address[1];
+        Spinner spinnerType = findViewById(R.id.spinner_type);
+        Spinner spinnerAccess = findViewById(R.id.spinner_access);
+        Spinner spinnerFee = findViewById(R.id.spinner_fee);
+        Spinner spinnerSupervised = findViewById(R.id.spinner_supervised);
+        Spinner spinnerBus = findViewById(R.id.spinner_bus);
+        Spinner spinnerTrucks = findViewById(R.id.spinner_truck);
+        Spinner spinnerDisabled = findViewById(R.id.spinner_disabled);
+        Spinner spinnerMoto = findViewById(R.id.spinner_moto);
+        EditText nameET = findViewById(R.id.et_nazwa);
+        EditText capacityET = findViewById(R.id.et_capacity);
+        EditText operatorET = findViewById(R.id.et_operator);
+        Button createBTN = findViewById(R.id.btn_create);
+        EditText cena = findViewById(R.id.et_cena);
+        Button harmonogram = findViewById(R.id.btn_hours);
+
+        String[] types = {"Dowolny", "Naziemny", "Przyległy do drogi", "Wielopoziomowy", "Podziemny"};
+        String[] typesEN = {"", "surface", "street_side", "multi-storey", "underground"};
+        String[] accessTab = {"Dowolny", "Otwarty", "Prywatny", "Dla klientów"};
+        String[] accessTabEN = {"", "yes", "private", "customers"};
+        String[] opcje = {"Dowolny", "Tak", "Nie"};
+        String[] opcjeEN = {"", "yes", "no"};
 
         assert id != null;
         db.collection("parkings").whereEqualTo("id", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
@@ -100,10 +105,6 @@ public class EditParkingInfoActivity extends AppCompatActivity
                         String f33 = (String) document.getData().get("fee");
                         String sup = (String) document.getData().get("supervised");
                         String ope = (String) document.getData().get("operator");
-                        latitude[0] = (Double) document.getData().get("latitude");
-                        longitude[0] = (Double) document.getData().get("longtitude");
-                        address[0] = (Address) document.getData().get("address");
-
                         String acc = (String) document.getData().get("access");
                         String cdis = (String) document.getData().get("capacity:disabled");
                         String ctru = (String) document.getData().get("capacity:truck");

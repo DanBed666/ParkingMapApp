@@ -6,15 +6,9 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
-                <androidx.fragment.app.FragmentContainerView
-                    android:id="@+id/fragment2"
-                    android:layout_width="500dp"
-                    android:layout_height="720dp"/>
-
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/main"
@@ -78,7 +72,8 @@
                     android:spinnerMode="dropdown"
                     android:background="@android:drawable/btn_dropdown"
                     android:theme="@style/ThemeOverlay.AppCompat.Light"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginTop="10dp"
+                    android:entries="@array/types"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -97,7 +92,8 @@
                     android:spinnerMode="dropdown"
                     android:background="@android:drawable/btn_dropdown"
                     android:theme="@style/ThemeOverlay.AppCompat.Light"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginTop="10dp"
+                    android:entries="@array/access"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -116,7 +112,8 @@
                     android:spinnerMode="dropdown"
                     android:background="@android:drawable/btn_dropdown"
                     android:theme="@style/ThemeOverlay.AppCompat.Light"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginTop="10dp"
+                    android:entries="@array/options"/>
 
                 <EditText
                     android:id="@+id/et_cena"
@@ -145,7 +142,8 @@
                     android:spinnerMode="dropdown"
                     android:background="@android:drawable/btn_dropdown"
                     android:theme="@style/ThemeOverlay.AppCompat.Light"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginTop="10dp"
+                    android:entries="@array/options"/>
 
                 <Button
                     android:id="@+id/btn_hours"
@@ -170,7 +168,8 @@
                     android:spinnerMode="dropdown"
                     android:background="@android:drawable/btn_dropdown"
                     android:theme="@style/ThemeOverlay.AppCompat.Light"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginTop="10dp"
+                    android:entries="@array/options"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -189,7 +188,8 @@
                     android:spinnerMode="dropdown"
                     android:background="@android:drawable/btn_dropdown"
                     android:theme="@style/ThemeOverlay.AppCompat.Light"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginTop="10dp"
+                    android:entries="@array/options"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -208,7 +208,8 @@
                     android:spinnerMode="dropdown"
                     android:background="@android:drawable/btn_dropdown"
                     android:theme="@style/ThemeOverlay.AppCompat.Light"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginTop="10dp"
+                    android:entries="@array/options"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -227,7 +228,8 @@
                     android:spinnerMode="dropdown"
                     android:background="@android:drawable/btn_dropdown"
                     android:theme="@style/ThemeOverlay.AppCompat.Light"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginTop="10dp"
+                    android:entries="@array/options"/>
 
                 <Button
                     android:id="@+id/btn_create"
@@ -237,6 +239,11 @@
                     android:layout_marginTop="10dp"/>
 
         </LinearLayout>
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/fragment2"
+                    android:layout_width="500dp"
+                    android:layout_height="720dp"/>
 
         </RelativeLayout>
 
