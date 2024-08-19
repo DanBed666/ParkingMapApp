@@ -36,16 +36,16 @@ public class DatabaseManager
         String id = kmlPlacemark.mId;
 
         String nm = "Brak";
-        String pk = kmlPlacemark.getExtendedData("parking");
-        String cpc = kmlPlacemark.getExtendedData("capacity");
-        String fee = kmlPlacemark.getExtendedData("fee");
-        String svd = kmlPlacemark.getExtendedData("supervised");
-        String ope = kmlPlacemark.getExtendedData("operator");
-        String acc = kmlPlacemark.getExtendedData("access");
-        String cpcd = kmlPlacemark.getExtendedData("capacity:disabled");
-        String cpcb = kmlPlacemark.getExtendedData("capacity:bus");
-        String cpct = kmlPlacemark.getExtendedData("capacity:truck");
-        String cpcm = kmlPlacemark.getExtendedData("capacity:motorcycle");
+        String pk = kmlPlacemark.getExtendedData("parking"); if(pk == null) pk="Brak";
+        String cpc = kmlPlacemark.getExtendedData("capacity"); if(cpc == null) cpc="Brak";
+        String fee = kmlPlacemark.getExtendedData("fee"); if(fee == null) fee="Brak";
+        String svd = kmlPlacemark.getExtendedData("supervised"); if(svd == null) svd="Brak";
+        String ope = kmlPlacemark.getExtendedData("operator"); if(ope == null) ope="Brak";
+        String acc = kmlPlacemark.getExtendedData("access"); if(acc == null) acc="Brak";
+        String cpcd = kmlPlacemark.getExtendedData("capacity:disabled"); if(cpcd == null) cpcd="Brak";
+        String cpcb = kmlPlacemark.getExtendedData("capacity:bus"); if(cpcb == null) cpcb="Brak";
+        String cpct = kmlPlacemark.getExtendedData("capacity:truck"); if(cpct == null) cpct="Brak";
+        String cpcm = kmlPlacemark.getExtendedData("capacity:motorcycle"); if(cpcm == null) cpcm="Brak";
         double lat;
         double lon;
 
@@ -56,8 +56,6 @@ public class DatabaseManager
 
         double finalLat = lat;
         double finalLon = lon;
-
-        //getAddressNominatim(finalLat, finalLon, "98eb540c060e4c43a8ce513017c650a1");
 
         Parking parking = new Parking("xyz123", id, nm, pk, acc, cpc, cpcd, cpct, cpcb, cpcm, fee, svd, ope,
                 finalLat, finalLon, false, false,

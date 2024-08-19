@@ -18,6 +18,10 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,6 +31,8 @@ import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,6 +59,8 @@ public class FindParksOptionsFragment extends Fragment {
     String findingTag = "amenity=parking";
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     Query findingQuery = db.collection("parkings");
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseUser userId = mAuth.getCurrentUser();
     public FindParksOptionsFragment() {
         // Required empty public constructor
     }
@@ -148,7 +156,8 @@ public class FindParksOptionsFragment extends Fragment {
 
                 if (!capacityET.getText().toString().isEmpty())
                 {
-                    findingTag += String.format("][capacity<%s", capacityET.getText().toString());
+                    //findingTag += String.format("][capacity<%s", capacityET.getText().toString());
+                    findingTag += "][capacity~'^([1-9])$'";
                     findingQuery = findingQuery.whereLessThan("capacity", capacityET.getText().toString());
                 }
 
@@ -186,5 +195,27 @@ public class FindParksOptionsFragment extends Fragment {
             findingTag += String.format("][%s=%s", queryTitle, tabEN[position]);
             findingQuery = findingQuery.whereEqualTo(queryTitle, tabEN[position]);
         }
+    }
+
+    public void getCars()
+    {
+        db.collection("cars").whereEqualTo("userId", userId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task)
+            {
+                if (task.isSuccessful())
+                {
+                    for (QueryDocumentSnapshot document : task.getResult())
+                    {
+                        String typ = (String) document.getData().get("type");
+                    }
+                }
+                else
+                {
+                    Log.w("ERR", "Error getting documents.", task.getException());
+                }
+            }
+        });
     }
 }

@@ -117,17 +117,17 @@ public class ParkingInfoActivity extends AppCompatActivity
                         String cbus = (String) document.getData().get("capacity:bus");
                         String cmot = (String) document.getData().get("capacity:motorcycle");
 
-                        name.setText("Name: " + nam);
-                        parking.setText("Parking: " + pkg);
-                        capacity.setText("Capacity: " + cpc);
-                        fee.setText("Fee: " + f33);
-                        supervised.setText("Supervised: " + sup);
+                        name.setText("Nazwa: " + nam);
+                        parking.setText("Typ parkingu: " + pkg);
+                        capacity.setText("Wielkość: " + cpc);
+                        fee.setText("Opłaty: " + f33);
+                        supervised.setText("Parking strzeżony: " + sup);
                         operator.setText("Operator: " + ope);
-                        access.setText("Access: " + acc);
-                        capacityDis.setText("CapacityDis: " + cdis);
-                        capacityTru.setText("CapacityTru: " + ctru);
-                        capacityBus.setText("CapacityBus: " + cbus);
-                        capacityMoto.setText("CapacityMoto: " + cmot);
+                        access.setText("Dostęp: " + acc);
+                        capacityDis.setText("Miejsca dla niepełnosprawnych: " + cdis);
+                        capacityTru.setText("Miejsca dla tirów: " + ctru);
+                        capacityBus.setText("Miejsca dla busów: " + cbus);
+                        capacityMoto.setText("Miejsca dla motocykli: " + cmot);
                         documentId = document.getId();
                     }
                 }
