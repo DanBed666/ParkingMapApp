@@ -161,7 +161,12 @@ public class EditCarActivity extends AppCompatActivity {
     {
         Map<String, Object> mapa = new HashMap<>();
         mapa.put("marka", car.getMarka());
-        db.collection("users").document(documentId).update(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
+        mapa.put("model", car.getModel());
+        mapa.put("primary", car.isPrimary());
+        mapa.put("registrationNumber", car.getRegistrationNumber());
+        mapa.put("type", car.getType());
+        mapa.put("year", car.getYear());
+        db.collection("cars").document(documentId).update(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
         {
             @Override
             public void onSuccess(Void documentReference)

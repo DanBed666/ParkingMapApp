@@ -121,13 +121,13 @@ public class FindParksOptionsFragment extends Fragment {
         Spinner spinnerAccess = v.findViewById(R.id.spinner_access);
         Spinner spinnerFee = v.findViewById(R.id.spinner_fee);
         Spinner spinnerSupervised = v.findViewById(R.id.spinner_supervised);
-        Spinner spinnerBus = v.findViewById(R.id.spinner_bus);
+        spinnerBus = v.findViewById(R.id.spinner_bus);
         Spinner spinnerTrucks = v.findViewById(R.id.spinner_truck);
         Spinner spinnerDisabled = v.findViewById(R.id.spinner_disabled);
         Spinner spinnerMoto = v.findViewById(R.id.spinner_moto);
         capacityET = v.findViewById(R.id.et_capacity);
 
-        TextView busTV = v.findViewById(R.id.tv_bus);
+        busTV = v.findViewById(R.id.tv_bus);
         TextView tirTV = v.findViewById(R.id.tv_tir);
         TextView motoTV = v.findViewById(R.id.tv_moto);
 
@@ -174,7 +174,7 @@ public class FindParksOptionsFragment extends Fragment {
 
                 if (!capacityET.getText().toString().isEmpty())
                 {
-                    //findingTag += String.format("][capacity<%s", capacityET.getText().toString());
+                    findingTag += String.format("][capacity~'%s'", algos(Integer.parseInt(capacityET.getText().toString())));
                     findingTag += "][capacity~'^([1-9])$'";
                     findingQuery = findingQuery.whereLessThan("capacity", capacityET.getText().toString());
                 }
@@ -250,33 +250,25 @@ public class FindParksOptionsFragment extends Fragment {
         });
     }
 
-    public void algos()
+    public String algos(int number)
     {
-        int number = 164;
         String p = "";
         String word;
         int w = number / 10;
         int r = number % 10;
 
-        if (number >= 1 && number <= 9)
-            p = String.format("[1-%d]", number);
-        else if (number >= 10 && number <= 19)
-            p = String.format("[1-9]|[1][0-%d]", r);
+        if (number >= 1 && number <= 9) p = String.format("[1-%d]", number);
+        else if (number >= 10 && number <= 19) p = String.format("[1-9]|[1][0-%d]", r);
         else if (number >= 20 && number <= 99)
         {
             String lancuch = "";
-
             for (int i = 1; i < w; i++)
             {
                 lancuch += i;
             }
-
             p = String.format("[1-9]|[%s][0-9]|[%d][0-%d]", lancuch, w, r);
         }
-        else if (number >= 100 && number <= 109)
-        {
-            p = String.format("[1-9]{1}|[0-9]{2}|1[0][0-%d]", r);
-        }
+        else if (number >= 100 && number <= 109) p = String.format("[1-9]{1}|[0-9]{2}|1[0][0-%d]", r);
         else if (number >= 110 && number <= 199)
         {
             String lancuch = "";
@@ -289,12 +281,10 @@ public class FindParksOptionsFragment extends Fragment {
 
             p = String.format("[1-9]{1}|[0-9]{2}|1[%s][0-9]|1[%d][0-%d]", lancuch, w, r);
         }
-        else if (number >= 200 && number <= 209)
-        {
-            p = String.format("[1-9]{1}|[0-9]{2}|1[0123456789][0-9]|2[0][0-%d]", r);
-        }
+        else if (number >= 200 && number <= 209) p = String.format("[1-9]{1}|[0-9]{2}|1[0123456789][0-9]|2[0][0-%d]", r);
 
         word = String.format("^(%s)$", p);
-        System.out.println(word);
+
+        return word;
     }
 }
