@@ -1,10 +1,13 @@
 package com.example.parkingmapapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -18,6 +21,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -27,6 +31,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class EditCarActivity extends AppCompatActivity {
 
@@ -40,6 +45,9 @@ public class EditCarActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseUser user;
     String documentId;
+    SwitchMaterial primarySw;
+    Spinner typSpinner;
+    String[] types = {"Samochód osobowy", "Tir", "Motocykl", "Autokar"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,13 +63,18 @@ public class EditCarActivity extends AppCompatActivity {
         user = mAuth.getCurrentUser();
         carId = getIntent().getStringExtra("CARID");
         documentId = getIntent().getStringExtra("DOCUMENTID");
-
         markaET = findViewById(R.id.et_marka);
         modelET = findViewById(R.id.et_model);
-        typET = findViewById(R.id.et_typ);
+        typSpinner = findViewById(R.id.spinner_car);
         numerET = findViewById(R.id.et_numer);
         rokET = findViewById(R.id.et_rok);
         Button confirm = findViewById(R.id.btn_add);
+        primarySw = findViewById(R.id.switch_primary);
+
+
+        ArrayAdapter<String> aa = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, types);
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        typSpinner.setAdapter(aa);
 
         getCars();
         confirm.setOnClickListener(new View.OnClickListener()
@@ -69,13 +82,21 @@ public class EditCarActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
+                int position = typSpinner.getSelectedItemPosition();
+
                 String marka = markaET.getText().toString();
                 String model = modelET.getText().toString();
-                String typ = typET.getText().toString();
+                String typ = types[position];
                 String numer = numerET.getText().toString();
                 String rok = rokET.getText().toString();
+                boolean primary = false;
 
-                addCar(new Car(carId, user.getUid(), marka, model, typ, numer, rok));
+                if (primarySw.isChecked())
+                    primary = true;
+
+                addCar(new Car(carId, user.getUid(), marka, model, typ, numer, rok, primary));
+                Intent intent = new Intent(getApplicationContext(), AddCarActivity.class);
+                setResult(RESULT_OK, intent);
                 finish();
                 Toast.makeText(getApplicationContext(), "Zmiany zostały zapisane!", Toast.LENGTH_SHORT).show();
             }
@@ -100,12 +121,25 @@ public class EditCarActivity extends AppCompatActivity {
                         String type = (String) document.getData().get("type");
                         String reg = (String) document.getData().get("registrationNumber");
                         String year = (String) document.getData().get("year");
+                        boolean primary = (boolean) document.getData().get("primary");
 
                         markaET.setText(marka);
                         modelET.setText(model);
-                        typET.setText(type);
+
+                        for (int i = 0; i < types.length; i++)
+                        {
+                            if (Objects.equals(type, types[i]))
+                            {
+                                typSpinner.setSelection(i);
+                                break;
+                            }
+                        }
+
                         numerET.setText(reg);
                         rokET.setText(year);
+
+                        if (primary)
+                            primarySw.setChecked(true);
                     }
                 }
                 else

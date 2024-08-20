@@ -1,6 +1,7 @@
 package com.example.parkingmapapp;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ParkingsAdapter extends RecyclerView.Adapter<ParkingsAdapter.ParkingsViewHolder>
 {
@@ -26,35 +28,40 @@ public class ParkingsAdapter extends RecyclerView.Adapter<ParkingsAdapter.Parkin
     @Override
     public ParkingsAdapter.ParkingsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
     {
-        View view = LayoutInflater.from(context).inflate(R.layout.single_car, parent, false);
-        return new ParkingsAdapter.ParkingsViewHolder(view);
+        View view = LayoutInflater.from(context).inflate(R.layout.single_parking, parent, false);
+        return new ParkingsViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ParkingsAdapter.ParkingsViewHolder holder, int position)
     {
-        boolean edited = Boolean.TRUE.equals(exampleList.get(position).getBoolean("edited"));
-        boolean created = Boolean.TRUE.equals(exampleList.get(position).getBoolean("created"));
+        boolean edited = Boolean.TRUE.equals(exampleList.get(position).get("edited"));
+        boolean created = Boolean.TRUE.equals(exampleList.get(position).get("created"));
+
+        Log.i("HISTORIA88", String.valueOf(exampleList.size()));
+        Log.i("HISTORIA88", String.valueOf(position));
+        //Log.i("HIST", Objects.requireNonNull(exampleList.get(position).getString("edited")));
+        //Log.i("HIST", Objects.requireNonNull(exampleList.get(position).getString("dataEdited")));
 
         if (edited)
         {
-            holder.nazwa.setText(exampleList.get(position).getString("nazwa"));
+            holder.nazwa.setText(Objects.requireNonNull(exampleList.get(position).get("name")).toString());
             holder.status_edyt.setText("Edytowano");
-            holder.data.setText(exampleList.get(position).getString("dataCreated"));
+            holder.data.setText(Objects.requireNonNull(exampleList.get(position).get("dataEdited")).toString());
         }
 
         if (created)
         {
-            holder.nazwa.setText(exampleList.get(position).getString("nazwa"));
+            holder.nazwa.setText(Objects.requireNonNull(exampleList.get(position).get("name")).toString());
             holder.status_edyt.setText("Utworzono");
-            holder.data.setText(exampleList.get(position).getString("dataEdited"));
+            holder.data.setText(Objects.requireNonNull(exampleList.get(position).get("dataCreated")).toString());
         }
     }
 
     @Override
     public int getItemCount()
     {
-        return 0;
+        return exampleList.size();
     }
 
     public static class ParkingsViewHolder extends RecyclerView.ViewHolder

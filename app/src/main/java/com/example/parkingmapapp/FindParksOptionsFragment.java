@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -60,7 +61,12 @@ public class FindParksOptionsFragment extends Fragment {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     Query findingQuery = db.collection("parkings");
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseUser userId = mAuth.getCurrentUser();
+    Spinner spinnerBus;
+    Spinner spinnerTrucks;
+    Spinner spinnerMoto;
+    TextView busTV;
+    TextView tirTV;
+    TextView motoTV;
     public FindParksOptionsFragment() {
         // Required empty public constructor
     }
@@ -106,6 +112,11 @@ public class FindParksOptionsFragment extends Fragment {
         //supervisedRG = v.findViewById(R.id.rg_sup);
         find = v.findViewById(R.id.btn_find);
 
+        FirebaseUser userId = mAuth.getCurrentUser();
+
+        assert userId != null;
+        getCars(userId.getUid());
+
         Spinner spinnerType = v.findViewById(R.id.spinner_type);
         Spinner spinnerAccess = v.findViewById(R.id.spinner_access);
         Spinner spinnerFee = v.findViewById(R.id.spinner_fee);
@@ -115,6 +126,10 @@ public class FindParksOptionsFragment extends Fragment {
         Spinner spinnerDisabled = v.findViewById(R.id.spinner_disabled);
         Spinner spinnerMoto = v.findViewById(R.id.spinner_moto);
         capacityET = v.findViewById(R.id.et_capacity);
+
+        TextView busTV = v.findViewById(R.id.tv_bus);
+        TextView tirTV = v.findViewById(R.id.tv_tir);
+        TextView motoTV = v.findViewById(R.id.tv_moto);
 
         String[] types = getResources().getStringArray(R.array.types);
         String[] typesEN = {"", "surface", "street_side", "multi-storey", "underground"};
@@ -134,6 +149,9 @@ public class FindParksOptionsFragment extends Fragment {
         getValue(opcje, spinnerTrucks);
         getValue(opcje, spinnerDisabled);
         getValue(opcje, spinnerMoto);
+
+        //spinnerBus.setVisibility(View.GONE);
+        //busTV.setVisibility(View.GONE);
 
         find.setOnClickListener(new View.OnClickListener()
         {
@@ -197,7 +215,7 @@ public class FindParksOptionsFragment extends Fragment {
         }
     }
 
-    public void getCars()
+    public void getCars(String userId)
     {
         db.collection("cars").whereEqualTo("userId", userId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
@@ -209,6 +227,19 @@ public class FindParksOptionsFragment extends Fragment {
                     for (QueryDocumentSnapshot document : task.getResult())
                     {
                         String typ = (String) document.getData().get("type");
+                        boolean primary = (boolean) document.getData().get("primary");
+
+                        assert typ != null;
+                        Log.i("TIPO", typ);
+
+                        if (primary)
+                        {
+                            if (Objects.equals(typ, "Samochód osobowy"))
+                            {
+                                spinnerBus.setVisibility(View.GONE);
+                                busTV.setVisibility(View.GONE);
+                            }
+                        }
                     }
                 }
                 else
@@ -217,5 +248,53 @@ public class FindParksOptionsFragment extends Fragment {
                 }
             }
         });
+    }
+
+    public void algos()
+    {
+        int number = 164;
+        String p = "";
+        String word;
+        int w = number / 10;
+        int r = number % 10;
+
+        if (number >= 1 && number <= 9)
+            p = String.format("[1-%d]", number);
+        else if (number >= 10 && number <= 19)
+            p = String.format("[1-9]|[1][0-%d]", r);
+        else if (number >= 20 && number <= 99)
+        {
+            String lancuch = "";
+
+            for (int i = 1; i < w; i++)
+            {
+                lancuch += i;
+            }
+
+            p = String.format("[1-9]|[%s][0-9]|[%d][0-%d]", lancuch, w, r);
+        }
+        else if (number >= 100 && number <= 109)
+        {
+            p = String.format("[1-9]{1}|[0-9]{2}|1[0][0-%d]", r);
+        }
+        else if (number >= 110 && number <= 199)
+        {
+            String lancuch = "";
+            w = (number / 10) % 10;
+
+            for (int i = 0; i < w; i++)
+            {
+                lancuch += i;
+            }
+
+            p = String.format("[1-9]{1}|[0-9]{2}|1[%s][0-9]|1[%d][0-%d]", lancuch, w, r);
+        }
+        else if (number >= 200 && number <= 209)
+        {
+            p = String.format("[1-9]{1}|[0-9]{2}|1[0123456789][0-9]|2[0][0-%d]", r);
+        }
+
+        word = String.format("^(%s)$", p);
+        System.out.println(word);
     }
 }

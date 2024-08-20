@@ -64,6 +64,13 @@
         android:inputType="textEmailAddress"
         android:hint="Rok produkcji"/>
 
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/switch_primary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="Ustaw pojazd jako główny" />
+
     <Button
         android:id="@+id/btn_add"
         android:text="Dodaj"

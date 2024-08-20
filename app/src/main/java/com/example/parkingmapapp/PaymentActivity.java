@@ -80,6 +80,10 @@ public class PaymentActivity extends AppCompatActivity
         headers.put("Stripe-Version", "2024-06-20");
 
         id = getIntent().getStringExtra("KEYID");
+        String price = getIntent().getStringExtra("PRICE");
+
+        assert price != null;
+        Log.i("PRICE", price);
 
         getCustomerId();
         pay.setOnClickListener(new View.OnClickListener()
@@ -208,27 +212,5 @@ public class PaymentActivity extends AppCompatActivity
         SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         String formattedDate = df.format(calender.getTime());
         return formattedDate;
-    }
-
-    public void getParkings()
-    {
-        db.collection("parkings").whereEqualTo("id", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
-        {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task)
-            {
-                if (task.isSuccessful())
-                {
-                    for (QueryDocumentSnapshot document : task.getResult())
-                    {
-                        String kwota = (String) document.getData().get("kwota");
-                    }
-                }
-                else
-                {
-                    Log.w("ERR", "Error getting documents.", task.getException());
-                }
-            }
-        });
     }
 }

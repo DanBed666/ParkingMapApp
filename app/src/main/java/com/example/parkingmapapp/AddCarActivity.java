@@ -1,5 +1,6 @@
 package com.example.parkingmapapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.Spinner;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -18,6 +20,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -51,6 +54,7 @@ public class AddCarActivity extends AppCompatActivity
         EditText numerET = findViewById(R.id.et_numer);
         EditText rokET = findViewById(R.id.et_rok);
         Button confirm = findViewById(R.id.btn_add);
+        SwitchMaterial primarySw = findViewById(R.id.switch_primary);
 
         String[] types = {"Samochód osobowy", "Tir", "Motocykl", "Autokar"};
 
@@ -65,13 +69,19 @@ public class AddCarActivity extends AppCompatActivity
             {
                 int position = typSpinner.getSelectedItemPosition();
 
+                boolean primary = false;
                 String marka = markaET.getText().toString();
                 String model = modelET.getText().toString();
                 String typ = types[position];
                 String numer = numerET.getText().toString();
                 String rok = rokET.getText().toString();
 
-                Car car = new Car(generateCarId(), user.getUid(), marka, model, typ, numer, rok);
+                if (primarySw.isChecked())
+                {
+                    primary = true;
+                }
+
+                Car car = new Car(generateCarId(), user.getUid(), marka, model, typ, numer, rok, primary);
 
                 addCar(car);
                 finish();
@@ -109,5 +119,15 @@ public class AddCarActivity extends AppCompatActivity
         }
 
         return chain.toString();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
+    {
+        if (resultCode == RESULT_OK)
+        {
+            Log.i("DUpa", "dupa");
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

@@ -9,8 +9,9 @@ public class Car
     String type;
     String registrationNumber;
     String year;
+    boolean primary;
 
-    public Car(String id, String userId, String marka, String model, String type, String registrationNumber, String year) {
+    public Car(String id, String userId, String marka, String model, String type, String registrationNumber, String year, boolean primary) {
         this.id = id;
         this.userId = userId;
         this.marka = marka;
@@ -18,6 +19,15 @@ public class Car
         this.type = type;
         this.registrationNumber = registrationNumber;
         this.year = year;
+        this.primary = primary;
+    }
+
+    public boolean isPrimary() {
+        return primary;
+    }
+
+    public void setPrimary(boolean primary) {
+        this.primary = primary;
     }
 
     public String getId() {

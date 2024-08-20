@@ -17,7 +17,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -50,7 +53,9 @@ public class ParkingsAddedActivity extends AppCompatActivity
 
     public void getParkings()
     {
-        db.collection("parkings").whereEqualTo("id", user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        Query findingQuery = db.collection("parkings").where(Filter.or(Filter.equalTo("edited", true), Filter.equalTo("created", true)));
+
+        findingQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task)
@@ -59,7 +64,14 @@ public class ParkingsAddedActivity extends AppCompatActivity
                 {
                     parkingsAdapter = new ParkingsAdapter(getApplicationContext(), task.getResult().getDocuments());
                     recyclerView.setAdapter(parkingsAdapter);
-                    parkingsAdapter.notifyDataSetChanged();
+                    int pos = 0;
+                    Log.i("ILE99", String.valueOf(task.getResult().size()));
+
+                    for (DocumentSnapshot ds : task.getResult().getDocuments())
+                    {
+                        pos++;
+                        parkingsAdapter.notifyItemChanged(pos);
+                    }
                 }
                 else
                 {
