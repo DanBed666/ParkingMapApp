@@ -51,6 +51,8 @@ public class PaymentActivity extends AppCompatActivity
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
+    String price;
+    String finalPriceStr;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -66,8 +68,7 @@ public class PaymentActivity extends AppCompatActivity
 
         paymentViewModel = new PaymentViewModel();
 
-        Button pay;
-        pay = findViewById(R.id.btn_pay);
+        Button pay = findViewById(R.id.btn_pay);
 
         PaymentConfiguration.init(getApplicationContext(), PUBLIC_KEY);
 
@@ -81,11 +82,15 @@ public class PaymentActivity extends AppCompatActivity
 
         id = getIntent().getStringExtra("KEYID");
         String price = getIntent().getStringExtra("PRICE");
+        int hours = getIntent().getIntExtra("HOURS", 0);
+
+        int finalPrice = Integer.parseInt(price) * hours;
+        finalPriceStr = finalPrice + "00";
 
         assert price != null;
         Log.i("PRICE", price);
 
-        getCustomerId();
+        getCustomerId(finalPriceStr);
         pay.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -103,7 +108,7 @@ public class PaymentActivity extends AppCompatActivity
     {
         if (paymentSheetResult instanceof PaymentSheetResult.Completed)
         {
-            getCustomerId();
+            getCustomerId(finalPriceStr);
             Toast.makeText(getApplicationContext(), "Płatność zakończona sukcesem!", Toast.LENGTH_SHORT).show();
             String ticketId = generateTicketId();
             Intent intent = new Intent(getApplicationContext(), TicketActivity.class);
@@ -124,7 +129,7 @@ public class PaymentActivity extends AppCompatActivity
         }
     }
 
-    public void getCustomerId()
+    public void getCustomerId(String finalPrice)
     {
         paymentViewModel.getCustomerIdVm(bearerToken).observeForever(new Observer<String>()
         {
@@ -135,7 +140,7 @@ public class PaymentActivity extends AppCompatActivity
                 Log.i("PAYMENTID", id);
 
                 getEphemeralKey(id);
-                getClientSecret(id);
+                getClientSecret(id, finalPrice);
             }
         });
     }
@@ -153,9 +158,9 @@ public class PaymentActivity extends AppCompatActivity
         });
     }
 
-    public void getClientSecret(String customerId)
+    public void getClientSecret(String customerId, String finalPrize)
     {
-        paymentViewModel.getClientSecretVm(bearerToken, customerId, "1200", "pln", "true").observeForever(new Observer<String>()
+        paymentViewModel.getClientSecretVm(bearerToken, customerId, finalPrize, "pln", "true").observeForever(new Observer<String>()
         {
             @Override
             public void onChanged(String secret)

@@ -1,5 +1,6 @@
 package com.example.parkingmapapp;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -39,16 +40,21 @@ public class ParkingBookingActivity extends AppCompatActivity
             return insets;
         });
 
-        Button pay;
-        pay = findViewById(R.id.pay);
+        Button pay = findViewById(R.id.btn_pay);
+        Button pay2 = findViewById(R.id.btn_pay2);
+        Button pay3 = findViewById(R.id.btn_pay3);
 
         id = getIntent().getStringExtra("KEYID");
         Intent intent = new Intent(getApplicationContext(), PaymentActivity.class);
         getParkings(new GetPriceCallback()
         {
+            @SuppressLint("DefaultLocale")
             @Override
             public void getPrice(String price)
             {
+                pay.setText(String.format("1 godzina, cena: %d zł", Integer.parseInt(price)));
+                pay2.setText(String.format("2 godziny, cena: %d zł", Integer.parseInt(price) * 2));
+                pay3.setText(String.format("3 godziny, cena: %d zł", Integer.parseInt(price) * 3));
                 intent.putExtra("PRICE", price);
             }
         });
@@ -58,6 +64,29 @@ public class ParkingBookingActivity extends AppCompatActivity
             public void onClick(View v)
             {
                 intent.putExtra("KEYID", id);
+                intent.putExtra("HOURS", 1);
+                startActivity(intent);
+            }
+        });
+
+        pay2.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                intent.putExtra("KEYID", id);
+                intent.putExtra("HOURS", 2);
+                startActivity(intent);
+            }
+        });
+
+        pay3.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                intent.putExtra("KEYID", id);
+                intent.putExtra("HOURS", 3);
                 startActivity(intent);
             }
         });
