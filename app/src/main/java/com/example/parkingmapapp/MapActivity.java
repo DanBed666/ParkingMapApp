@@ -46,7 +46,6 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver,
     MyLocationNewOverlay mLocationOverlay;
     FragmentInterface listener;
     AddressViewModel addressViewModel;
-    Marker m;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -272,6 +271,6 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver,
     @Override
     public void closeMarker()
     {
-        Log.i("DUPA", "chuj");
+
     }
 }

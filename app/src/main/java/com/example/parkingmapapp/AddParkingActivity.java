@@ -40,7 +40,6 @@ import java.util.Random;
 public class AddParkingActivity extends AppCompatActivity implements HarmValueListener
 {
     AddressViewModel addressViewModel;
-    Address addressAdr;
     Map<String, String> schedule;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override

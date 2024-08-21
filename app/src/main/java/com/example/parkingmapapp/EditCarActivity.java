@@ -39,7 +39,6 @@ public class EditCarActivity extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     EditText markaET;
     EditText modelET;
-    EditText typET;
     EditText numerET;
     EditText rokET;
     FirebaseAuth mAuth;

@@ -6,7 +6,6 @@ import java.util.Map;
 public class ExampleHarms
 {
     Map<String, String> harmonogram = new HashMap<>();
-
     public ExampleHarms()
     {
         harmonogram.put("Poniedziałek", "17:00-22:00");
