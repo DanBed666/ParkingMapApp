@@ -36,6 +36,7 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class MapActivity extends AppCompatActivity implements MapEventsReceiver
 {
@@ -258,15 +259,29 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
     @Override
     public boolean longPressHelper(GeoPoint p)
     {
-        Intent intent = new Intent(getApplicationContext(), AddParkingActivity.class);
-        intent.putExtra("LOCATION", (Parcelable) p);
-        startActivity(intent);
-
-        getAddress(p.getLatitude() + "%2C" + p.getLongitude(), "FiyHNQAmeoWKRcEdp5KyYWOAaAKf-7hvtqkz--lGBDc");
-
         Marker m = new Marker(map);
         m.setPosition(p);
+
+        m.setOnMarkerClickListener(new Marker.OnMarkerClickListener()
+        {
+            @Override
+            public boolean onMarkerClick(Marker marker, MapView mapView)
+            {
+                Log.i("KILK", "lklkl");
+                FragmentInfoManager fragmentInfoManager = new FragmentInfoManager(getApplicationContext(), map, mLocationOverlay.getMyLocation(), listener);
+                fragmentInfoManager.addFragment(marker.getPosition(), generateId());
+                Log.i("IDPOINT", generateId());
+                return true;
+            }
+        });
+
         map.getOverlays().add(m);
+
+        getAddress(p.getLatitude() + "," + p.getLongitude(), "FiyHNQAmeoWKRcEdp5KyYWOAaAKf-7hvtqkz--lGBDc");
+        Intent intent = new Intent(getApplicationContext(), AddParkingActivity.class);
+        intent.putExtra("LOCATION", (Parcelable) p);
+        intent.putExtra("ID", generateId());
+        startActivity(intent);
 
         return true;
     }
@@ -278,8 +293,22 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
             @Override
             public void onChanged(Address address)
             {
-                Log.i("ADRES", address.getItems().get(0).getTitle());
+                Log.i("ADRES13", address.getItems().get(0).getTitle());
             }
         });
+    }
+
+    public String generateId()
+    {
+        Random random = new Random();
+        StringBuilder chain = new StringBuilder();
+
+        for (int i = 1; i <= 20; i++)
+        {
+            char c = (char)(random.nextInt(26) + 'a');
+            chain.append(c);
+        }
+
+        return chain.toString();
     }
 }

@@ -3,7 +3,6 @@ package com.example.parkingmapapp;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,25 +16,31 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.Observer;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.osmdroid.util.GeoPoint;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
 
 public class AddParkingActivity extends AppCompatActivity implements HarmValueListener
 {
     AddressViewModel addressViewModel;
     Address addressAdr;
     Map<String, String> schedule;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    String generatedId;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -71,6 +76,8 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
         String[] opcje = getResources().getStringArray(R.array.options);
         String[] opcjeEN = {"", "yes", "no"};
 
+        generatedId = getIntent().getStringExtra("ID");
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
@@ -84,11 +91,16 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
             public void onClick(View v)
             {
                 HarmonogramFragment fragment = new HarmonogramFragment();
+                Bundle bundle = new Bundle();
+                Map <String, String> schedule = new HashMap<>();
+                schedule.put("Brak", "Brak");
+                bundle.putSerializable("SCHEDULE", (Serializable) schedule);
+                fragment.setArguments(bundle);
 
                 getSupportFragmentManager().beginTransaction().
                         setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                        .show(fragment)
                         .replace(R.id.fragment2, fragment)
-                        .addToBackStack(null)
                         .commit();
             }
         });
@@ -107,7 +119,7 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
             @Override
             public void onClick(View v)
             {
-                String id = generateId();
+                String id = generatedId;
                 String name = nameET.getText().toString();
                 String capacity = capacityET.getText().toString();
                 String parking = getValue(spinnerType, typesEN);
@@ -122,14 +134,6 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
                 String prize = cena.getText().toString();
 
                 assert location != null;
-                addressViewModel.getAddressVM(location.getLatitude() + "%2C" + location.getLongitude(), "FiyHNQAmeoWKRcEdp5KyYWOAaAKf-7hvtqkz--lGBDc").observeForever(new Observer<Address>()
-                {
-                    @Override
-                    public void onChanged(Address address)
-                    {
-                        addressAdr = address;
-                    }
-                });
 
                 assert user != null;
                 Parking newParking = new Parking(user.getUid(), id, name, parking, access, capacity, capacityDis, capacityTru, capacityBus, capacityMoto,
@@ -152,25 +156,24 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
                     }
                 });
 
+                addressViewModel.getAddressVM(location.getLatitude() + "," + location.getLongitude(),
+                        "FiyHNQAmeoWKRcEdp5KyYWOAaAKf-7hvtqkz--lGBDc").observeForever(new Observer<Address>()
+                {
+                    @Override
+                    public void onChanged(Address address)
+                    {
+                        Log.i("ADRES", address.getItems().get(0).getTitle());
+                        Log.i("ADRESADRADRADR", address.getItems().get(0).getTitle());
+                        Edits edits = new Edits(user.getUid(), id, false, true, name, address.getItems().get(0).getTitle(), "", getActualDate());
+                        Log.i("EDIT88", edits.getDataCreated());
+                        checkIfExists(id, edits);
+                    }
+                });
+
                 finish();
             }
         });
     }
-
-    public String generateId()
-    {
-        Random random = new Random();
-        StringBuilder chain = new StringBuilder();
-
-        for (int i = 1; i <= 10; i++)
-        {
-            char c = (char)(random.nextInt(26) + 'a');
-            chain.append(c);
-        }
-
-        return chain.toString();
-    }
-
     public String getActualDate()
     {
         Calendar calender = Calendar.getInstance();
@@ -204,5 +207,54 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
         {
             Log.i("DAY", entry.getKey() + " " + entry.getValue());
         }
+    }
+
+    public void checkIfExists(String id, Edits edits)
+    {
+        db.collection("edits").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task)
+            {
+                if (task.isSuccessful())
+                {
+                    DocumentSnapshot document = task.getResult();
+
+                    if (document.exists())
+                    {
+                        Log.i("REKORD", "istnieje " + id);
+                    }
+                    else
+                    {
+                        Log.i("REKORD", "nie istnieje " + id);
+                        addEdit(id, edits);
+                    }
+                }
+                else
+                {
+                    Log.d("ERROR", "Failed with: ", task.getException());
+                }
+            }
+        });
+    }
+
+    public void addEdit(String id, Edits edits)
+    {
+        Log.i("EDIT", edits.getId());
+        db.collection("edits").document(id).set(edits).addOnSuccessListener(new OnSuccessListener<Void>()
+        {
+            @Override
+            public void onSuccess(Void unused)
+            {
+                Log.i("CREATEDADD", "created");
+            }
+        }).addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+                Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
+            }
+        });
     }
 }

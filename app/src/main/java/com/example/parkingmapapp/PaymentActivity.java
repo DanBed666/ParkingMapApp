@@ -53,6 +53,7 @@ public class PaymentActivity extends AppCompatActivity
     FirebaseUser user = mAuth.getCurrentUser();
     String price;
     String finalPriceStr;
+    int hours;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -82,7 +83,7 @@ public class PaymentActivity extends AppCompatActivity
 
         id = getIntent().getStringExtra("KEYID");
         String price = getIntent().getStringExtra("PRICE");
-        int hours = getIntent().getIntExtra("HOURS", 0);
+        hours = getIntent().getIntExtra("HOURS", 0);
 
         int finalPrice = Integer.parseInt(price) * hours;
         finalPriceStr = finalPrice + "00";
@@ -114,7 +115,7 @@ public class PaymentActivity extends AppCompatActivity
             Intent intent = new Intent(getApplicationContext(), TicketActivity.class);
             intent.putExtra("TICKETID", ticketId);
             startActivity(intent);
-            Ticket ticket = new Ticket(user.getUid(), getActualDate(), ticketId);
+            Ticket ticket = new Ticket(user.getUid(), getActualDate(), getValidDate(hours), ticketId);
             addTicket(ticket);
             finish();
         }
@@ -194,19 +195,19 @@ public class PaymentActivity extends AppCompatActivity
 
     public void addTicket(Ticket ticket)
     {
-        db.collection("tickets").add(ticket).addOnSuccessListener(new OnSuccessListener<DocumentReference>()
+        db.collection("tickets").document(ticket.getTicketId()).set(ticket).addOnSuccessListener(new OnSuccessListener<Void>()
         {
             @Override
-            public void onSuccess(DocumentReference documentReference)
+            public void onSuccess(Void unused)
             {
-                Log.d("TEST", "DocumentSnapshot added with ID: " + documentReference.getId());
+                Log.i("CREATED", "created");
             }
         }).addOnFailureListener(new OnFailureListener()
         {
             @Override
             public void onFailure(@NonNull Exception e)
             {
-                Log.d("ERROR", "Error: " + e.getMessage());
+                Log.i("CREATED", e.getMessage());
             }
         });
     }
@@ -215,6 +216,15 @@ public class PaymentActivity extends AppCompatActivity
     {
         Calendar calender = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        String formattedDate = df.format(calender.getTime());
+        return formattedDate;
+    }
+
+    public String getValidDate(int hours)
+    {
+        Calendar calender = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        calender.add(Calendar.HOUR, hours);
         String formattedDate = df.format(calender.getTime());
         return formattedDate;
     }

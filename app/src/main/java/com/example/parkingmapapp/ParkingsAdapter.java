@@ -45,14 +45,14 @@ public class ParkingsAdapter extends RecyclerView.Adapter<ParkingsAdapter.Parkin
 
         if (edited)
         {
-            holder.nazwa.setText(Objects.requireNonNull(exampleList.get(position).get("name")).toString());
+            holder.nazwa.setText(Objects.requireNonNull(exampleList.get(position).get("nazwa")).toString());
             holder.status_edyt.setText("Edytowano");
             holder.data.setText(Objects.requireNonNull(exampleList.get(position).get("dataEdited")).toString());
         }
 
         if (created)
         {
-            holder.nazwa.setText(Objects.requireNonNull(exampleList.get(position).get("name")).toString());
+            holder.nazwa.setText(Objects.requireNonNull(exampleList.get(position).get("nazwa")).toString());
             holder.status_edyt.setText("Utworzono");
             holder.data.setText(Objects.requireNonNull(exampleList.get(position).get("dataCreated")).toString());
         }

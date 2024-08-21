@@ -6,14 +6,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.BookingsViewHolder>
@@ -21,6 +29,7 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.Bookin
     Context context;
     List<DocumentSnapshot> exampleList;
     AddressViewModel addressViewModel;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     public BookingsAdapter(Context applicationContext, List<DocumentSnapshot> example)
     {
         context = applicationContext;
@@ -43,6 +52,36 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.Bookin
 
         getAddressNominatim(exampleList.get(position).getDouble("latitude") + "," + exampleList.get(position).getDouble("longtitude"),
                 "FiyHNQAmeoWKRcEdp5KyYWOAaAKf-7hvtqkz--lGBDc", holder.adres);
+
+        if(!checkValidity(exampleList.get(position).getString("validThruDate")))
+        {
+            holder.isValid.setText("Bilet nieważny!");
+            holder.delete.setVisibility(View.VISIBLE);
+
+            holder.delete.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    db.collection("tickets").document("ticketId").delete().addOnSuccessListener(new OnSuccessListener<Void>()
+                    {
+                        @Override
+                        public void onSuccess(Void unused)
+                        {
+                            Log.i("CREATED", "usunieto");
+                        }
+                    }).addOnFailureListener(new OnFailureListener()
+                    {
+                        @Override
+                        public void onFailure(@NonNull Exception e)
+                        {
+                            Log.i("CREATED", e.getMessage());
+                        }
+                    });
+                }
+            });
+        }
+        //holder.isValid.setText();
         holder.itemView.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -67,6 +106,8 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.Bookin
         TextView nazwa;
         TextView adres;
         TextView data;
+        TextView isValid;
+        Button delete;
         public BookingsViewHolder(@NonNull View itemView)
         {
             super(itemView);
@@ -74,6 +115,8 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.Bookin
             nazwa = itemView.findViewById(R.id.nazwa);
             adres = itemView.findViewById(R.id.adres);
             data = itemView.findViewById(R.id.data);
+            isValid = itemView.findViewById(R.id.isValid);
+            delete = itemView.findViewById(R.id.btn_delete);
         }
     }
 
@@ -89,5 +132,28 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.Bookin
                 info.setText(address.getItems().get(0).getTitle());
             }
         });
+    }
+
+    public boolean checkValidity(String validDate)
+    {
+        Calendar calender = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        String actualDate = df.format(calender.getTime());
+        boolean isValid = true;
+
+        try
+        {
+            Date actual = df.parse(actualDate);
+            Date valid = df.parse(validDate);
+
+            if (actual.after(valid))
+                isValid = false;
+        }
+        catch(ParseException ex)
+        {
+            ex.printStackTrace();
+        }
+
+        return isValid;
     }
 }

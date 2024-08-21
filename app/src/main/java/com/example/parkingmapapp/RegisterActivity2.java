@@ -59,7 +59,8 @@ public class RegisterActivity2 extends AppCompatActivity
         emailET = findViewById(R.id.et_email);
         passwordET = findViewById(R.id.et_password);
         password2ET = findViewById(R.id.et_password2);
-        register = findViewById(R.id.btn_register);
+        register = findViewById(R.id.btn_next);
+        goToLogin = findViewById(R.id.tv_login);
 
         register.setOnClickListener(new View.OnClickListener()
         {

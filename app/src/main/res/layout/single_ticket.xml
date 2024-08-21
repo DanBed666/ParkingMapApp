@@ -32,4 +32,18 @@
         android:textSize="26dp"
         android:textAlignment="center"/>
 
+    <TextView
+        android:id="@+id/isValid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="26dp"
+        android:textAlignment="center"/>
+
+    <Button
+        android:id="@+id/btn_delete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:text="USUŃ BILET"/>
+
 </LinearLayout>

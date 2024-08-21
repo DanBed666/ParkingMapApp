@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -48,6 +49,8 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
     Map<String, String> schedule = new HashMap<>();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
+    String adres;
+    Edits edits;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -63,6 +66,7 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
 
         id = getIntent().getStringExtra("KEYID");
         documentId = getIntent().getStringExtra("DOCUMENTID");
+        adres = getIntent().getStringExtra("ADDRESS");
 
         Spinner spinnerType = findViewById(R.id.spinner_type);
         Spinner spinnerAccess = findViewById(R.id.spinner_access);
@@ -118,8 +122,6 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                         String cmot = (String) document.getData().get("capacity:motorcycle");
                         String cena = (String) document.getData().get("kwota");
                         schedule = (Map<String, String>) document.getData().get("harmonogram");
-                        assert schedule != null;
-                        Log.i("PON", Objects.requireNonNull(schedule.get("Poniedziałek")));
 
                         nameET.setText(nam);
                         capacityET.setText(cpc);
@@ -193,6 +195,10 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                 mapa.put("capacityMotorcycle", cmot);
                 mapa.put("dataEdited", getActualDate());
                 mapa.put("harmonogram", schedule);
+
+                checkIfExists(id);
+
+                edits = new Edits(user.getUid(), id, true, false, name, adres, getActualDate(), "");
 
                 for (Map.Entry<String, Object> element : mapa.entrySet())
                 {
@@ -274,5 +280,75 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
     public void onStringReceived(Map<String, String> ham)
     {
         schedule = ham;
+    }
+
+    public void checkIfExists(String id)
+    {
+        db.collection("edits").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task)
+            {
+                if (task.isSuccessful())
+                {
+                    DocumentSnapshot document = task.getResult();
+
+                    if (document.exists())
+                    {
+                        Log.i("REKORD", "istnieje " + id);
+                        Map<String, Object> mapa = new HashMap<>();
+                        mapa.put("edited", true);
+                        updateEdit(mapa);
+                    }
+                    else
+                    {
+                        Log.i("REKORD", "nie istnieje " + id);
+                        addEdit(id);
+                    }
+                }
+                else
+                {
+                    Log.d("ERROR", "Failed with: ", task.getException());
+                }
+            }
+        });
+    }
+
+    public void addEdit(String id)
+    {
+        db.collection("edits").document(id).set(edits).addOnSuccessListener(new OnSuccessListener<Void>()
+        {
+            @Override
+            public void onSuccess(Void unused)
+            {
+                Log.i("CREATEDADD", "created");
+            }
+        }).addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+                Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
+            }
+        });
+    }
+
+    public void updateEdit(Map<String, Object> mapa)
+    {
+        db.collection("parkings").document(documentId).update(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
+        {
+            @Override
+            public void onSuccess(Void documentReference)
+            {
+                Log.d("TEST", "DocumentSnapshot added with ID");
+            }
+        }).addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+                Log.d("ERROR", "Error: " + e.getMessage());
+            }
+        });
     }
 }

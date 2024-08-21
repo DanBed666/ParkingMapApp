@@ -6,11 +6,22 @@ public class Ticket
 {
     String uId;
     String reservationDate;
+    String validThruDate;
     String ticketId;
-    public Ticket(String uId, String reservationDate, String ticketId) {
+
+    public Ticket(String uId, String reservationDate, String validThruDate, String ticketId) {
         this.uId = uId;
         this.reservationDate = reservationDate;
+        this.validThruDate = validThruDate;
         this.ticketId = ticketId;
+    }
+
+    public String getValidThruDate() {
+        return validThruDate;
+    }
+
+    public void setValidThruDate(String validThruDate) {
+        this.validThruDate = validThruDate;
     }
 
     public String getuId() {

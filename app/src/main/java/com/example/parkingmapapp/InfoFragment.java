@@ -16,6 +16,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -49,6 +51,8 @@ public class InfoFragment extends Fragment
     private String mParam2;
     AddressViewModel addressViewModel;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    String addressStr;
+    Button delete;
 
     public InfoFragment() {
         // Required empty public constructor
@@ -96,6 +100,7 @@ public class InfoFragment extends Fragment
         info = v.findViewById(R.id.tv_info);
         infosp = v.findViewById(R.id.btn_info);
         reserve = v.findViewById(R.id.btn_reservation);
+        delete = v.findViewById(R.id.btn_delete);
 
         assert getArguments() != null;
         Utils u = (Utils) getArguments().getSerializable("OBJECT");
@@ -103,6 +108,7 @@ public class InfoFragment extends Fragment
         Parking p = (Parking) getArguments().getSerializable("PARKING");
 
         getInfo(keyId, info);
+        getEdits(keyId);
 
         route.setOnClickListener(new View.OnClickListener()
         {
@@ -121,6 +127,7 @@ public class InfoFragment extends Fragment
                 Intent intent = new Intent(requireActivity().getApplicationContext(), ParkingInfoActivity.class);
                 intent.putExtra("KEYID", keyId);
                 intent.putExtra("PARKING", p);
+                intent.putExtra("ADDRESS", addressStr);
                 startActivity(intent);
             }
         });
@@ -133,6 +140,16 @@ public class InfoFragment extends Fragment
                 Intent intent = new Intent(requireActivity().getApplicationContext(), ParkingBookingActivity.class);
                 intent.putExtra("KEYID", keyId);
                 startActivity(intent);
+            }
+        });
+
+        delete.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                deleteParking(keyId);
+                getParentFragmentManager().popBackStack();
             }
         });
 
@@ -169,6 +186,45 @@ public class InfoFragment extends Fragment
                 Log.i("ADRES", address.getItems().get(0).getTitle());
                 Log.i("ADRESADRADRADR", address.getItems().get(0).getTitle());
                 info.setText(address.getItems().get(0).getTitle());
+                addressStr = address.getItems().get(0).getTitle();
+            }
+        });
+    }
+
+    public void getEdits(String id)
+    {
+        db.collection("edits").whereEqualTo("id", id).addSnapshotListener(new EventListener<QuerySnapshot>()
+        {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error)
+            {
+                assert value != null;
+                for (DocumentChange d : value.getDocumentChanges())
+                {
+                    if (Boolean.TRUE.equals(d.getDocument().getBoolean("created")))
+                    {
+                        delete.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+        });
+    }
+
+    public void deleteParking(String id)
+    {
+        db.collection("parkings").document(id).delete().addOnSuccessListener(new OnSuccessListener<Void>()
+        {
+            @Override
+            public void onSuccess(Void unused)
+                {
+                    Log.i("CREATED", "usunieto");
+                }
+        }).addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+                Log.i("CREATED", e.getMessage());
             }
         });
     }

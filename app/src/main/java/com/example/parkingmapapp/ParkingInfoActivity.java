@@ -72,6 +72,7 @@ public class ParkingInfoActivity extends AppCompatActivity
 
         id = getIntent().getStringExtra("KEYID");
         Parking p = (Parking) getIntent().getSerializableExtra("PARKING");
+        String adr = getIntent().getStringExtra("ADDRESS");
 
         assert id != null;
         Log.i("PARKING_ID", id);
@@ -87,6 +88,7 @@ public class ParkingInfoActivity extends AppCompatActivity
                 intent.putExtra("KEYID", id);
                 intent.putExtra("PARKING", p);
                 intent.putExtra("DOCUMENTID", documentId);
+                intent.putExtra("ADDRESS", adr);
                 startActivity(intent);
             }
         });

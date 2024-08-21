@@ -111,7 +111,7 @@ public class HarmonogramFragment extends Fragment {
         {
             harmonogram = (Map<String, String>) getArguments().getSerializable("SCHEDULE");
             assert harmonogram != null;
-            Log.i("WT", Objects.requireNonNull(harmonogram.get("Wtorek")));
+            //Log.i("WT", Objects.requireNonNull(harmonogram.get("Wtorek")));
         }
 
         allDay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()

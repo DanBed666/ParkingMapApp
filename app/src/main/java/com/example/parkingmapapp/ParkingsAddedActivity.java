@@ -53,9 +53,7 @@ public class ParkingsAddedActivity extends AppCompatActivity
 
     public void getParkings()
     {
-        Query findingQuery = db.collection("parkings").where(Filter.or(Filter.equalTo("edited", true), Filter.equalTo("created", true)));
-
-        findingQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        db.collection("edited").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task)
