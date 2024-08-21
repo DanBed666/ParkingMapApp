@@ -23,7 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-public class BookingsActivity extends AppCompatActivity
+public class BookingsActivity extends AppCompatActivity implements RefreshListener
 {
     RecyclerView recyclerView;
     BookingsAdapter bookingsAdapter;
@@ -31,6 +31,7 @@ public class BookingsActivity extends AppCompatActivity
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
+    RefreshListener listener;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -49,6 +50,8 @@ public class BookingsActivity extends AppCompatActivity
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
 
+        listener = this;
+
         getTickets();
     }
 
@@ -61,7 +64,7 @@ public class BookingsActivity extends AppCompatActivity
             {
                 if (task.isSuccessful())
                 {
-                    bookingsAdapter = new BookingsAdapter(getApplicationContext(), task.getResult().getDocuments());
+                    bookingsAdapter = new BookingsAdapter(getApplicationContext(), task.getResult().getDocuments(), listener);
                     recyclerView.setAdapter(bookingsAdapter);
                     bookingsAdapter.notifyDataSetChanged();
                 }
@@ -71,5 +74,14 @@ public class BookingsActivity extends AppCompatActivity
                 }
             }
         });
+    }
+
+    @Override
+    public void refresh()
+    {
+        finish();
+        overridePendingTransition(0, 0);
+        startActivity(getIntent());
+        overridePendingTransition(0, 0);
     }
 }

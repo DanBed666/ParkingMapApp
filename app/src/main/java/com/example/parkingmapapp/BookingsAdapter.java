@@ -30,11 +30,13 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.Bookin
     List<DocumentSnapshot> exampleList;
     AddressViewModel addressViewModel;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    public BookingsAdapter(Context applicationContext, List<DocumentSnapshot> example)
+    RefreshListener refreshListener;
+    public BookingsAdapter(Context applicationContext, List<DocumentSnapshot> example, RefreshListener listener)
     {
         context = applicationContext;
         exampleList = example;
         addressViewModel = new AddressViewModel();
+        refreshListener = listener;
     }
     @NonNull
     @Override
@@ -63,12 +65,14 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.Bookin
                 @Override
                 public void onClick(View v)
                 {
-                    db.collection("tickets").document("ticketId").delete().addOnSuccessListener(new OnSuccessListener<Void>()
+                    assert ticketId != null;
+                    db.collection("tickets").document(ticketId).delete().addOnSuccessListener(new OnSuccessListener<Void>()
                     {
                         @Override
                         public void onSuccess(Void unused)
                         {
                             Log.i("CREATED", "usunieto");
+                            refreshListener.refresh();
                         }
                     }).addOnFailureListener(new OnFailureListener()
                     {
