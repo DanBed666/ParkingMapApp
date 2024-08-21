@@ -53,7 +53,7 @@ public class ParkingsAddedActivity extends AppCompatActivity
 
     public void getParkings()
     {
-        db.collection("edited").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        db.collection("edits").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task)

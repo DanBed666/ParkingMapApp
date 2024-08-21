@@ -298,7 +298,7 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                         Log.i("REKORD", "istnieje " + id);
                         Map<String, Object> mapa = new HashMap<>();
                         mapa.put("edited", true);
-                        updateEdit(mapa);
+                        updateEdit(id, mapa);
                     }
                     else
                     {
@@ -333,9 +333,9 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
         });
     }
 
-    public void updateEdit(Map<String, Object> mapa)
+    public void updateEdit(String id, Map<String, Object> mapa)
     {
-        db.collection("parkings").document(documentId).update(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
+        db.collection("edits").document(id).update(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
         {
             @Override
             public void onSuccess(Void documentReference)

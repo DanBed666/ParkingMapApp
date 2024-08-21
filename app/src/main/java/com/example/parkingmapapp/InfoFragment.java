@@ -1,11 +1,13 @@
 package com.example.parkingmapapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 
 import android.util.Log;
@@ -53,6 +55,7 @@ public class InfoFragment extends Fragment
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String addressStr;
     Button delete;
+    CloseMarker listener;
 
     public InfoFragment() {
         // Required empty public constructor
@@ -148,8 +151,9 @@ public class InfoFragment extends Fragment
             @Override
             public void onClick(View v)
             {
+                listener.closeMarker();
                 deleteParking(keyId);
-                getParentFragmentManager().popBackStack();
+                getFragmentManager().beginTransaction().remove(InfoFragment.this).commit();
             }
         });
 
@@ -227,5 +231,20 @@ public class InfoFragment extends Fragment
                 Log.i("CREATED", e.getMessage());
             }
         });
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context)
+    {
+        super.onAttach(context);
+
+        try
+        {
+            listener = (CloseMarker) context;
+        }
+        catch (ClassCastException castException)
+        {
+            /** The activity does not implement the listener. */
+        }
     }
 }

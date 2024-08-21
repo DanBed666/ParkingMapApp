@@ -175,7 +175,7 @@ public class FindParksOptionsFragment extends Fragment {
                 if (!capacityET.getText().toString().isEmpty())
                 {
                     findingTag += String.format("][capacity~'%s'", algos(Integer.parseInt(capacityET.getText().toString())));
-                    findingTag += "][capacity~'^([1-9])$'";
+                    //findingTag += "][capacity~'^([1-9])$'";
                     findingQuery = findingQuery.whereLessThan("capacity", capacityET.getText().toString());
                 }
 

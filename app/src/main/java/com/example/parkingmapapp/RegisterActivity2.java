@@ -107,7 +107,7 @@ public class RegisterActivity2 extends AppCompatActivity
                     FirebaseUser user = mAuth.getCurrentUser();
                     assert user != null;
                     User userObj = new User(user.getUid(), name, surname);
-                    addUser(userObj);
+                    addUser(userObj, user);
                     startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                     sendConfirmMail();
                     finish();
@@ -164,27 +164,21 @@ public class RegisterActivity2 extends AppCompatActivity
         });
     }
 
-    public void addUser(User user)
+    public void addUser(User user, FirebaseUser u)
     {
-        db.collection("users").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>()
-        {
+        db.collection("users").document(u.getUid()).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
-            public void onSuccess(DocumentReference documentReference)
+            public void onSuccess(Void unused)
             {
-                Log.d("TEST", "DocumentSnapshot added with ID: " + documentReference.getId());
+                Log.d("TEST", "DocumentSnapshot added with ID: ");
             }
         }).addOnFailureListener(new OnFailureListener()
         {
             @Override
             public void onFailure(@NonNull Exception e)
             {
-                Log.d("ERROR", "Error: " + e.getMessage());
+                Log.e("ERROR", "error");
             }
         });
-    }
-
-    public void ifExists()
-    {
-
     }
 }

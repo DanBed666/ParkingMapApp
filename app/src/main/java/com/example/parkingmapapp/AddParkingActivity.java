@@ -26,6 +26,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -33,6 +35,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 
 public class AddParkingActivity extends AppCompatActivity implements HarmValueListener
 {
@@ -40,7 +43,6 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
     Address addressAdr;
     Map<String, String> schedule;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    String generatedId;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -76,14 +78,13 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
         String[] opcje = getResources().getStringArray(R.array.options);
         String[] opcjeEN = {"", "yes", "no"};
 
-        generatedId = getIntent().getStringExtra("ID");
-
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         addressViewModel = new AddressViewModel();
 
         GeoPoint location = getIntent().getParcelableExtra("LOCATION");
+        Utils utils = (Utils) getIntent().getSerializableExtra("UTILS");
 
         harmonogram.setOnClickListener(new View.OnClickListener()
         {
@@ -119,7 +120,7 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
             @Override
             public void onClick(View v)
             {
-                String id = generatedId;
+                String id = generateId();
                 String name = nameET.getText().toString();
                 String capacity = capacityET.getText().toString();
                 String parking = getValue(spinnerType, typesEN);
@@ -169,6 +170,9 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
                         checkIfExists(id, edits);
                     }
                 });
+
+                assert utils != null;
+                utils.setMarker(new GeoPoint(location.getLatitude(), location.getLongitude()), id);
 
                 finish();
             }
@@ -256,5 +260,19 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
                 Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
             }
         });
+    }
+
+    public String generateId()
+    {
+        Random random = new Random();
+        StringBuilder chain = new StringBuilder();
+
+        for (int i = 1; i <= 20; i++)
+        {
+            char c = (char)(random.nextInt(26) + 'a');
+            chain.append(c);
+        }
+
+        return chain.toString();
     }
 }

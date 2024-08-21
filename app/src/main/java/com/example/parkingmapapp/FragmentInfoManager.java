@@ -51,6 +51,7 @@ public class FragmentInfoManager
                         setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                         .hide(fragment)
                         .commit();
+
                 return false;
             }
 

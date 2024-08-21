@@ -19,10 +19,12 @@ public class CarsAdapter extends RecyclerView.Adapter<CarsAdapter.CarsViewHolder
 {
     Context context;
     List<DocumentSnapshot> exampleList;
-    public CarsAdapter(Context applicationContext, List<DocumentSnapshot> example)
+    RefreshListener refreshListener;
+    public CarsAdapter(Context applicationContext, List<DocumentSnapshot> example, RefreshListener refresh)
     {
         context = applicationContext;
         exampleList = example;
+        refreshListener = refresh;
     }
 
     @NonNull

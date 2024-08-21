@@ -35,16 +35,18 @@ import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class MapActivity extends AppCompatActivity implements MapEventsReceiver
+public class MapActivity extends AppCompatActivity implements MapEventsReceiver, CloseMarker
 {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     MapView map;
     MyLocationNewOverlay mLocationOverlay;
     FragmentInterface listener;
     AddressViewModel addressViewModel;
+    Marker m;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -259,56 +261,17 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
     @Override
     public boolean longPressHelper(GeoPoint p)
     {
-        Marker m = new Marker(map);
-        m.setPosition(p);
-
-        m.setOnMarkerClickListener(new Marker.OnMarkerClickListener()
-        {
-            @Override
-            public boolean onMarkerClick(Marker marker, MapView mapView)
-            {
-                Log.i("KILK", "lklkl");
-                FragmentInfoManager fragmentInfoManager = new FragmentInfoManager(getApplicationContext(), map, mLocationOverlay.getMyLocation(), listener);
-                fragmentInfoManager.addFragment(marker.getPosition(), generateId());
-                Log.i("IDPOINT", generateId());
-                return true;
-            }
-        });
-
-        map.getOverlays().add(m);
-
-        getAddress(p.getLatitude() + "," + p.getLongitude(), "FiyHNQAmeoWKRcEdp5KyYWOAaAKf-7hvtqkz--lGBDc");
         Intent intent = new Intent(getApplicationContext(), AddParkingActivity.class);
+        Utils u = new Utils(getApplicationContext(), map, mLocationOverlay.getMyLocation(), listener);
         intent.putExtra("LOCATION", (Parcelable) p);
-        intent.putExtra("ID", generateId());
+        intent.putExtra("UTILS", (Serializable) u);
         startActivity(intent);
 
         return true;
     }
-
-    public void getAddress(String geoPoint, String apiKey)
+    @Override
+    public void closeMarker()
     {
-        addressViewModel.getAddressVM(geoPoint, apiKey).observeForever(new Observer<Address>()
-        {
-            @Override
-            public void onChanged(Address address)
-            {
-                Log.i("ADRES13", address.getItems().get(0).getTitle());
-            }
-        });
-    }
-
-    public String generateId()
-    {
-        Random random = new Random();
-        StringBuilder chain = new StringBuilder();
-
-        for (int i = 1; i <= 20; i++)
-        {
-            char c = (char)(random.nextInt(26) + 'a');
-            chain.append(c);
-        }
-
-        return chain.toString();
+        Log.i("DUPA", "chuj");
     }
 }

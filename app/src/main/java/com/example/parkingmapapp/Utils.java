@@ -206,4 +206,23 @@ public class Utils implements Serializable, Parcelable
             }
         });
     }
+
+    public void setMarker(GeoPoint position, String id)
+    {
+        Marker marker = new Marker(map);
+        marker.setPosition(position);
+
+        marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener()
+        {
+            @Override
+            public boolean onMarkerClick(Marker marker, MapView mapView)
+            {
+                fragmentInfoManager = new FragmentInfoManager(ctx, map, startPoint, listener);
+                fragmentInfoManager.addFragment(position, id);
+                return true;
+            }
+        });
+
+        map.getOverlays().add(marker);
+    }
 }

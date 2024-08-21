@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class CarsAddedActivity extends AppCompatActivity
+public class CarsAddedActivity extends AppCompatActivity implements RefreshListener
 {
     RecyclerView recyclerView;
     CarsAdapter carsAdapter;
@@ -42,6 +42,7 @@ public class CarsAddedActivity extends AppCompatActivity
     FirebaseAuth mAuth;
     FirebaseUser user;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    RefreshListener refreshListener;
     @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -59,6 +60,8 @@ public class CarsAddedActivity extends AppCompatActivity
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         new_car = findViewById(R.id.new_car);
+
+        refreshListener = this;
 
         recyclerView = findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
@@ -84,7 +87,7 @@ public class CarsAddedActivity extends AppCompatActivity
             {
                 if (task.isSuccessful())
                 {
-                    carsAdapter = new CarsAdapter(getApplicationContext(), task.getResult().getDocuments());
+                    carsAdapter = new CarsAdapter(getApplicationContext(), task.getResult().getDocuments(), refreshListener);
                     recyclerView.setAdapter(carsAdapter);
                     int pos = 0;
 
@@ -107,5 +110,31 @@ public class CarsAddedActivity extends AppCompatActivity
                 Log.e("ERR2", "Error getting documents.", e);
             }
         });
+    }
+
+    @Override
+    public void refresh()
+    {
+        finish();
+        overridePendingTransition(0, 0);
+        startActivity(getIntent());
+        overridePendingTransition(0, 0);
+    }
+
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+        Log.i("STOP", "stop");
+    }
+
+    @Override
+    protected void onRestart()
+    {
+        super.onRestart();
+        finish();
+        overridePendingTransition(0, 0);
+        startActivity(getIntent());
+        overridePendingTransition(0, 0);
     }
 }
