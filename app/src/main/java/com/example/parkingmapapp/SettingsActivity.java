@@ -61,6 +61,7 @@ public class SettingsActivity extends AppCompatActivity
         Button bookings = findViewById(R.id.btn_bookings);
         Button logout = findViewById(R.id.btn_logout);
         Button deleteAcc = findViewById(R.id.btn_delete);
+        Button profileInfo = findViewById(R.id.btn_info);
 
         email = findViewById(R.id.tv_email);
         mAuth = FirebaseAuth.getInstance();
@@ -69,6 +70,15 @@ public class SettingsActivity extends AppCompatActivity
         assert user != null;
         email.setText(user.getEmail());
         Log.i("UID", user.getUid());
+
+        profileInfo.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                startActivity(new Intent(getApplicationContext(), InfoProfileActivity.class));
+            }
+        });
 
         guy.setOnClickListener(new View.OnClickListener()
         {

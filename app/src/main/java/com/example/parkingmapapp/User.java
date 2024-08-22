@@ -7,12 +7,42 @@ public class User implements Serializable
     private String uId;
     private String name;
     private String surname;
+    private String ranga;
+    private String edits;
+    private String  created;
 
-    public User(String uId, String name, String surname)
+    public User(String uId, String name, String surname, String ranga, String  edits, String  created)
     {
         this.uId = uId;
         this.name = name;
         this.surname = surname;
+        this.ranga = ranga;
+        this.edits = edits;
+        this.created = created;
+    }
+
+    public String  getEdits() {
+        return edits;
+    }
+
+    public void setEdits(String  edits) {
+        this.edits = edits;
+    }
+
+    public String  getCreated() {
+        return created;
+    }
+
+    public void setCreated(String  created) {
+        this.created = created;
+    }
+
+    public String getRanga() {
+        return ranga;
+    }
+
+    public void setRanga(String ranga) {
+        this.ranga = ranga;
     }
 
     public String getuId() {
