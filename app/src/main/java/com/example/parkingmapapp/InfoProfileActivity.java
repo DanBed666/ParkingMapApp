@@ -1,7 +1,9 @@
 package com.example.parkingmapapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -52,6 +54,37 @@ public class InfoProfileActivity extends AppCompatActivity
         ranga = findViewById(R.id.tv_ranga);
         created = findViewById(R.id.tv_created);
         edited = findViewById(R.id.tv_edited);
+
+        Button guy = findViewById(R.id.btn_guy);
+        Button changePass = findViewById(R.id.btn_change_pass);
+        Button changeMail = findViewById(R.id.btn_change_email);
+
+        guy.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                startActivity(new Intent(getApplicationContext(), GuyActivity.class));
+            }
+        });
+
+        changeMail.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                startActivity(new Intent(getApplicationContext(), EmailChangeActivity.class));
+            }
+        });
+
+        changePass.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                startActivity(new Intent(getApplicationContext(), PasswordChangeActivity.class));
+            }
+        });
 
         getUser();
     }

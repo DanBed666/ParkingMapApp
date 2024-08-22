@@ -53,9 +53,6 @@ public class SettingsActivity extends AppCompatActivity
 
         TextView name = findViewById(R.id.tv_name);
         TextView surname = findViewById(R.id.tv_surname);
-        Button guy = findViewById(R.id.btn_guy);
-        Button changePass = findViewById(R.id.btn_change_pass);
-        Button changeMail = findViewById(R.id.btn_change_email);
         Button cars = findViewById(R.id.btn_cars);
         Button parkings = findViewById(R.id.btn_parkings);
         Button bookings = findViewById(R.id.btn_bookings);
@@ -77,33 +74,6 @@ public class SettingsActivity extends AppCompatActivity
             public void onClick(View v)
             {
                 startActivity(new Intent(getApplicationContext(), InfoProfileActivity.class));
-            }
-        });
-
-        guy.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                startActivity(new Intent(getApplicationContext(), GuyActivity.class));
-            }
-        });
-
-        changeMail.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                startActivity(new Intent(getApplicationContext(), EmailChangeActivity.class));
-            }
-        });
-
-        changePass.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                startActivity(new Intent(getApplicationContext(), PasswordChangeActivity.class));
             }
         });
 

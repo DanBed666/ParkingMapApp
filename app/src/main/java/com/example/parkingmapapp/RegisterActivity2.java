@@ -106,7 +106,7 @@ public class RegisterActivity2 extends AppCompatActivity
 
                     FirebaseUser user = mAuth.getCurrentUser();
                     assert user != null;
-                    User userObj = new User(user.getUid(), name, surname);
+                    User userObj = new User(user.getUid(), name, surname, "Użytkownik", "0", "0");
                     addUser(userObj, user);
                     startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                     sendConfirmMail();

@@ -88,20 +88,20 @@ public class GuyActivity extends AppCompatActivity
             {
                 String name = nameET.getText().toString();
                 String surname = surnameET.getText().toString();
-                User u = new User(user.getUid(), name, surname);
 
-                addUser(u);
+                Map<String, Object> mapa = new HashMap<>();
+                mapa.put("name", name);
+                mapa.put("surname", surname);
+
+                addUser(mapa);
                 finish();
                 Toast.makeText(getApplicationContext(), "Zmiany zostały zapisane!", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    public void addUser(User user)
+    public void addUser(Map<String, Object> mapa)
     {
-        Map<String, Object> mapa = new HashMap<>();
-        mapa.put("name", user.getName());
-        mapa.put("surname", user.getSurname());
         db.collection("users").document(documentId).update(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
         {
             @Override

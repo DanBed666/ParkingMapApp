@@ -40,24 +40,6 @@
         android:text="Informacje o profilu"/>
 
     <Button
-        android:id="@+id/btn_guy"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Dane osobowe"/>
-
-    <Button
-        android:id="@+id/btn_change_pass"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Zmiana hasła"/>
-
-    <Button
-        android:id="@+id/btn_change_email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Zmiana adresu email"/>
-
-    <Button
         android:id="@+id/btn_cars"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
