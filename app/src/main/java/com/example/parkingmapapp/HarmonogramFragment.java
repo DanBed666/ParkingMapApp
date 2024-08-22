@@ -198,6 +198,7 @@ public class HarmonogramFragment extends Fragment {
             {
                 element.setChecked(true);
                 allDay = true;
+                harmonogram.remove("Brak");
             }
         }
 
@@ -206,6 +207,7 @@ public class HarmonogramFragment extends Fragment {
 
     public void getValuesMap(SwitchMaterial element, EditText begin, EditText end, String day)
     {
+        harmonogram.remove("Brak");
         String hours = harmonogram.get(day);
         StringBuilder beginStr = new StringBuilder();
         StringBuilder endStr = new StringBuilder();

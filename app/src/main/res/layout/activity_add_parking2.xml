@@ -123,6 +123,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginBottom="10dp"
                     android:hint="Cena (zł/h)"
+                    android:visibility="gone"
                     android:layout_marginTop="10dp"/>
 
                 <TextView
@@ -149,7 +150,8 @@
                     android:id="@+id/btn_hours"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Ustaw godziny otwarcia"/>
+                    android:text="Ustaw godziny otwarcia"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:layout_width="match_parent"

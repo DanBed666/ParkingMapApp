@@ -122,14 +122,14 @@ public class FindParksOptionsFragment extends Fragment {
         Spinner spinnerFee = v.findViewById(R.id.spinner_fee);
         Spinner spinnerSupervised = v.findViewById(R.id.spinner_supervised);
         spinnerBus = v.findViewById(R.id.spinner_bus);
-        Spinner spinnerTrucks = v.findViewById(R.id.spinner_truck);
+        spinnerTrucks = v.findViewById(R.id.spinner_truck);
         Spinner spinnerDisabled = v.findViewById(R.id.spinner_disabled);
-        Spinner spinnerMoto = v.findViewById(R.id.spinner_moto);
+        spinnerMoto = v.findViewById(R.id.spinner_moto);
         capacityET = v.findViewById(R.id.et_capacity);
 
         busTV = v.findViewById(R.id.tv_bus);
-        TextView tirTV = v.findViewById(R.id.tv_tir);
-        TextView motoTV = v.findViewById(R.id.tv_moto);
+        tirTV = v.findViewById(R.id.tv_tir);
+        motoTV = v.findViewById(R.id.tv_moto);
 
         String[] types = getResources().getStringArray(R.array.types);
         String[] typesEN = {"", "surface", "street_side", "multi-storey", "underground"};
@@ -238,6 +238,31 @@ public class FindParksOptionsFragment extends Fragment {
                             {
                                 spinnerBus.setVisibility(View.GONE);
                                 busTV.setVisibility(View.GONE);
+                                spinnerTrucks.setVisibility(View.GONE);
+                                tirTV.setVisibility(View.GONE);
+                                spinnerMoto.setVisibility(View.GONE);
+                                motoTV.setVisibility(View.GONE);
+                            }
+                            else if (Objects.equals(typ, "Tir"))
+                            {
+                                spinnerBus.setVisibility(View.GONE);
+                                busTV.setVisibility(View.GONE);
+                                spinnerMoto.setVisibility(View.GONE);
+                                motoTV.setVisibility(View.GONE);
+                            }
+                            else if (Objects.equals(typ, "Motocykl"))
+                            {
+                                spinnerBus.setVisibility(View.GONE);
+                                busTV.setVisibility(View.GONE);
+                                spinnerTrucks.setVisibility(View.GONE);
+                                tirTV.setVisibility(View.GONE);
+                            }
+                            else if (Objects.equals(typ, "Autokar"))
+                            {
+                                spinnerTrucks.setVisibility(View.GONE);
+                                tirTV.setVisibility(View.GONE);
+                                spinnerMoto.setVisibility(View.GONE);
+                                motoTV.setVisibility(View.GONE);
                             }
                         }
                     }

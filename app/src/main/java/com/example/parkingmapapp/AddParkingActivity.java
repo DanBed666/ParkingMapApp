@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -98,7 +99,7 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
                 HarmonogramFragment fragment = new HarmonogramFragment();
                 Bundle bundle = new Bundle();
                 Map <String, String> schedule = new HashMap<>();
-                schedule.put("Brak", "Brak");
+                schedule.put("Brak", "Nie ma");
                 bundle.putSerializable("SCHEDULE", (Serializable) schedule);
                 fragment.setArguments(bundle);
 
@@ -118,6 +119,50 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
         initializeAdapter(opcje, spinnerTrucks);
         initializeAdapter(opcje, spinnerBus);
         initializeAdapter(opcje, spinnerMoto);
+
+        spinnerFee.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                if (position == 1)
+                {
+                    cena.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    cena.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+
+            }
+        });
+
+        spinnerSupervised.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                if (position == 1)
+                {
+                    harmonogram.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    harmonogram.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+
+            }
+        });
 
         createBTN.setOnClickListener(new View.OnClickListener()
         {
@@ -176,7 +221,7 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
                 });
 
                 Intent intent = new Intent(getApplicationContext(), MapActivity.class);
-                intent.putExtra("MyData", "xd");
+                intent.putExtra("MyData", "created");
                 intent.putExtra("ID", id);
                 intent.putExtra("GEOPOINT", (Parcelable) location);
                 setResult(1, intent);
@@ -299,7 +344,7 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
     public void onBackPressed()
     {
         Intent intent = new Intent(getApplicationContext(), MapActivity.class);
-        intent.putExtra("MyData", "lol");
+        intent.putExtra("MyData", "back");
         setResult(1, intent);
         super.onBackPressed();
     }

@@ -292,28 +292,30 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver,
         {
             assert data != null;
             String myStr = data.getStringExtra("MyData");
-            GeoPoint geoPoint = data.getParcelableExtra("GEOPOINT");
-            String id = data.getStringExtra("ID");
             assert myStr != null;
             Log.i("LUL", myStr);
-            Log.i("LUL", geoPoint.getLatitude() + " " + geoPoint.getLongitude());
 
-            Marker marker = new Marker(map);
-            marker.setPosition(geoPoint);
-            marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener()
+            if (myStr.equals("created"))
             {
-                @Override
-                public boolean onMarkerClick(Marker marker, MapView mapView)
-                {
-                    FragmentInfoManager fragmentInfoManager = new FragmentInfoManager(getApplicationContext(), map, mLocationOverlay.getMyLocation(), listener);
-                    fragmentInfoManager.addFragment(marker.getPosition(), id);
-                    Log.i("IDPOINT", id);
+                String id = data.getStringExtra("ID");
+                GeoPoint geoPoint = data.getParcelableExtra("GEOPOINT");
+                Log.i("LUL", geoPoint.getLatitude() + " " + geoPoint.getLongitude());
 
-                    return true;
-                }
-            });
+                Marker marker = new Marker(map);
+                marker.setPosition(geoPoint);
+                marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker, MapView mapView) {
+                        FragmentInfoManager fragmentInfoManager = new FragmentInfoManager(getApplicationContext(), map, mLocationOverlay.getMyLocation(), listener);
+                        fragmentInfoManager.addFragment(marker.getPosition(), id);
+                        Log.i("IDPOINT", id);
 
-            map.getOverlays().add(marker);
+                        return true;
+                    }
+                });
+
+                map.getOverlays().add(marker);
+            }
         }
     }
 }

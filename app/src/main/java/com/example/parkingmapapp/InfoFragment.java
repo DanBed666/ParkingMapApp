@@ -56,6 +56,8 @@ public class InfoFragment extends Fragment
     String addressStr;
     Button delete;
     CloseMarker listener;
+    Button reserve;
+    String keyId;
 
     public InfoFragment() {
         // Required empty public constructor
@@ -92,7 +94,6 @@ public class InfoFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         Button route;
-        Button reserve;
         TextView info;
         Button infosp;
         addressViewModel = new AddressViewModel();
@@ -107,7 +108,7 @@ public class InfoFragment extends Fragment
 
         assert getArguments() != null;
         Utils u = (Utils) getArguments().getSerializable("OBJECT");
-        String keyId = getArguments().getString("KEYID");
+        keyId = getArguments().getString("KEYID");
         Parking p = (Parking) getArguments().getSerializable("PARKING");
 
         getInfo(keyId, info);
@@ -134,18 +135,6 @@ public class InfoFragment extends Fragment
                 startActivity(intent);
             }
         });
-
-        reserve.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                Intent intent = new Intent(requireActivity().getApplicationContext(), ParkingBookingActivity.class);
-                intent.putExtra("KEYID", keyId);
-                startActivity(intent);
-            }
-        });
-
         delete.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -172,6 +161,16 @@ public class InfoFragment extends Fragment
                 {
                     getAddressNominatim(d.getDocument().get("latitude") + "," + d.getDocument().get("longtitude"),
                             "FiyHNQAmeoWKRcEdp5KyYWOAaAKf-7hvtqkz--lGBDc", info);
+
+                    if (d.getDocument().get("fee") == "yes" && d.getDocument().get("kwota") != null)
+                    {
+                        reserve.setVisibility(View.VISIBLE);
+                        setReserve(reserve);
+                    }
+                    else
+                    {
+                        reserve.setVisibility(View.GONE);
+                    }
 
                     Log.i("TYP", String.valueOf(d.getType()));
                     Log.i("EXDE", (String) Objects.requireNonNull(d.getDocument().get("name")));
@@ -246,5 +245,19 @@ public class InfoFragment extends Fragment
         {
             /** The activity does not implement the listener. */
         }
+    }
+
+    public void setReserve(Button reserve)
+    {
+        reserve.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(requireActivity().getApplicationContext(), ParkingBookingActivity.class);
+                intent.putExtra("KEYID", keyId);
+                startActivity(intent);
+            }
+        });
     }
 }

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -98,6 +99,50 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
         initializeAdapter(opcje, spinnerTrucks);
         initializeAdapter(opcje, spinnerBus);
         initializeAdapter(opcje, spinnerMoto);
+
+        spinnerFee.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                if (position == 1)
+                {
+                    cenaET.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    cenaET.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+
+            }
+        });
+
+        spinnerSupervised.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                if (position == 1)
+                {
+                    harmonogram.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    harmonogram.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+
+            }
+        });
         db.collection("parkings").whereEqualTo("id", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
             @Override
@@ -122,6 +167,7 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                         String cmot = (String) document.getData().get("capacity:motorcycle");
                         String cena = (String) document.getData().get("kwota");
                         schedule = (Map<String, String>) document.getData().get("harmonogram");
+                        assert schedule != null;
 
                         nameET.setText(nam);
                         capacityET.setText(cpc);
@@ -178,7 +224,8 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                 String cdis = getValue(spinnerDisabled, opcjeEN);
                 String ctru = getValue(spinnerTrucks, opcjeEN);
                 String cbus = getValue(spinnerBus, opcjeEN);
-                String cmot= getValue(spinnerMoto, opcjeEN);
+                String cmot = getValue(spinnerMoto, opcjeEN);
+                String price = cenaET.getText().toString();
 
                 Map<String, Object> mapa = new HashMap<>();
                 mapa.put("name", name);
@@ -195,6 +242,7 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                 mapa.put("capacityMotorcycle", cmot);
                 mapa.put("dataEdited", getActualDate());
                 mapa.put("harmonogram", schedule);
+                mapa.put("kwota", price);
 
                 checkIfExists(id);
 
