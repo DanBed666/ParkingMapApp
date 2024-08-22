@@ -133,14 +133,16 @@ public class HarmonogramFragment extends Fragment {
             }
         });
 
-        getValuesMapAll(allDay);
-        getValuesMap(monday, monBegin, monEnd, "Poniedziałek");
-        getValuesMap(tuesday, tueBegin, tueEnd, "Wtorek");
-        getValuesMap(wednesday, wedBegin, wedEnd, "Środa");
-        getValuesMap(thursday, thuBegin, thuEnd, "Czwartek");
-        getValuesMap(friday, friBegin, friEnd, "Piątek");
-        getValuesMap(saturday, satBegin, satEnd, "Sobota");
-        getValuesMap(sunday, sunBegin, sunEnd, "Niedziela");
+        if (!getValuesMapAll(allDay))
+        {
+            getValuesMap(monday, monBegin, monEnd, "Poniedziałek");
+            getValuesMap(tuesday, tueBegin, tueEnd, "Wtorek");
+            getValuesMap(wednesday, wedBegin, wedEnd, "Środa");
+            getValuesMap(thursday, thuBegin, thuEnd, "Czwartek");
+            getValuesMap(friday, friBegin, friEnd, "Piątek");
+            getValuesMap(saturday, satBegin, satEnd, "Sobota");
+            getValuesMap(sunday, sunBegin, sunEnd, "Niedziela");
+        }
 
         save.setOnClickListener(new View.OnClickListener()
         {
@@ -186,15 +188,20 @@ public class HarmonogramFragment extends Fragment {
                     + " must implement TaskIdListener");
         }
     }
-    public void getValuesMapAll(SwitchMaterial element)
+    public boolean getValuesMapAll(SwitchMaterial element)
     {
+        boolean allDay = false;
+
         for (Map.Entry<String, String> day : harmonogram.entrySet())
         {
             if (day.getKey() == element.getText())
             {
                 element.setChecked(true);
+                allDay = true;
             }
         }
+
+        return allDay;
     }
 
     public void getValuesMap(SwitchMaterial element, EditText begin, EditText end, String day)

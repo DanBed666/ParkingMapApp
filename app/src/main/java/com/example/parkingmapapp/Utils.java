@@ -59,7 +59,8 @@ public class Utils implements Serializable, Parcelable
         listener = end;
     }
 
-    protected Utils(Parcel in) {
+    protected Utils(Parcel in)
+    {
         startPoint = in.readParcelable(GeoPoint.class.getClassLoader());
         endPoint = in.readParcelable(GeoPoint.class.getClassLoader());
     }

@@ -1,6 +1,9 @@
 package com.example.parkingmapapp;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -42,6 +45,8 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
     AddressViewModel addressViewModel;
     Map<String, String> schedule;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    GeoPoint location;
+    String generatedId;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -82,8 +87,8 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
         FirebaseUser user = mAuth.getCurrentUser();
         addressViewModel = new AddressViewModel();
 
-        GeoPoint location = getIntent().getParcelableExtra("LOCATION");
-        Utils utils = (Utils) getIntent().getSerializableExtra("UTILS");
+        location = getIntent().getParcelableExtra("LOCATION");
+        generatedId = getIntent().getStringExtra("ID");
 
         harmonogram.setOnClickListener(new View.OnClickListener()
         {
@@ -170,8 +175,11 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
                     }
                 });
 
-                assert utils != null;
-                utils.setMarker(new GeoPoint(location.getLatitude(), location.getLongitude()), id);
+                Intent intent = new Intent(getApplicationContext(), MapActivity.class);
+                intent.putExtra("MyData", "xd");
+                intent.putExtra("ID", id);
+                intent.putExtra("GEOPOINT", (Parcelable) location);
+                setResult(1, intent);
 
                 finish();
             }
@@ -273,5 +281,26 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
         }
 
         return chain.toString();
+    }
+
+    /*
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+        SharedPreferences sp = getSharedPreferences("LoginInfos", 0);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("email", "dupa");
+        editor.apply();
+    }
+    */
+
+    @Override
+    public void onBackPressed()
+    {
+        Intent intent = new Intent(getApplicationContext(), MapActivity.class);
+        intent.putExtra("MyData", "lol");
+        setResult(1, intent);
+        super.onBackPressed();
     }
 }

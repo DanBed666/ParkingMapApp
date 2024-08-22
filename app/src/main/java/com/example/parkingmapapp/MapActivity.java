@@ -1,7 +1,9 @@
 package com.example.parkingmapapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -13,6 +15,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -179,6 +182,7 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver,
         //if you make changes to the configuration, use
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
+
         map.onResume(); //needed for compass, my location overlays, v6.0.0 and up
     }
 
@@ -263,8 +267,7 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver,
         Intent intent = new Intent(getApplicationContext(), AddParkingActivity.class);
         Utils u = new Utils(getApplicationContext(), map, mLocationOverlay.getMyLocation(), listener);
         intent.putExtra("LOCATION", (Parcelable) p);
-        intent.putExtra("UTILS", (Serializable) u);
-        startActivity(intent);
+        startActivityForResult(intent, 1);
 
         return true;
     }
@@ -272,5 +275,45 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver,
     public void closeMarker()
     {
 
+    }
+
+    @Override
+    protected void onRestart()
+    {
+        super.onRestart();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1)
+        {
+            assert data != null;
+            String myStr = data.getStringExtra("MyData");
+            GeoPoint geoPoint = data.getParcelableExtra("GEOPOINT");
+            String id = data.getStringExtra("ID");
+            assert myStr != null;
+            Log.i("LUL", myStr);
+            Log.i("LUL", geoPoint.getLatitude() + " " + geoPoint.getLongitude());
+
+            Marker marker = new Marker(map);
+            marker.setPosition(geoPoint);
+            marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener()
+            {
+                @Override
+                public boolean onMarkerClick(Marker marker, MapView mapView)
+                {
+                    FragmentInfoManager fragmentInfoManager = new FragmentInfoManager(getApplicationContext(), map, mLocationOverlay.getMyLocation(), listener);
+                    fragmentInfoManager.addFragment(marker.getPosition(), id);
+                    Log.i("IDPOINT", id);
+
+                    return true;
+                }
+            });
+
+            map.getOverlays().add(marker);
+        }
     }
 }
