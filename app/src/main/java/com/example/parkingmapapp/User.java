@@ -9,10 +9,11 @@ public class User implements Serializable
     private String surname;
     private String ranga;
     private String edits;
-    private String  created;
+    private String created;
     private String nick;
+    private String registerDate;
 
-    public User(String uId, String name, String surname, String ranga, String  edits, String  created, String nick)
+    public User(String uId, String name, String surname, String ranga, String  edits, String  created, String nick, String reg)
     {
         this.uId = uId;
         this.name = name;
@@ -21,6 +22,15 @@ public class User implements Serializable
         this.edits = edits;
         this.created = created;
         this.nick = nick;
+        this.registerDate = reg;
+    }
+
+    public String getRegisterDate() {
+        return registerDate;
+    }
+
+    public void setRegisterDate(String registerDate) {
+        this.registerDate = registerDate;
     }
 
     public String getNick() {

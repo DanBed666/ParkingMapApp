@@ -26,6 +26,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class RegisterActivity2 extends AppCompatActivity
 {
     EditText nameET;
@@ -109,7 +112,7 @@ public class RegisterActivity2 extends AppCompatActivity
 
                     FirebaseUser user = mAuth.getCurrentUser();
                     assert user != null;
-                    User userObj = new User(user.getUid(), name, surname, "Użytkownik", "0", "0", nick);
+                    User userObj = new User(user.getUid(), name, surname, "Użytkownik", "0", "0", nick, getActualDate());
                     addUser(userObj, user);
                     startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                     sendConfirmMail();
@@ -183,5 +186,13 @@ public class RegisterActivity2 extends AppCompatActivity
                 Log.e("ERROR", "error");
             }
         });
+    }
+
+    public String getActualDate()
+    {
+        Calendar calender = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        String formattedDate = df.format(calender.getTime());
+        return formattedDate;
     }
 }

@@ -36,6 +36,7 @@ public class InfoProfileActivity extends AppCompatActivity
     TextView ranga;
     TextView created;
     TextView edited;
+    TextView registered;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
@@ -59,6 +60,7 @@ public class InfoProfileActivity extends AppCompatActivity
         created = findViewById(R.id.tv_created);
         edited = findViewById(R.id.tv_edited);
         spinner = findViewById(R.id.spinner_access);
+        registered = findViewById(R.id.tv_date);
         String[] roles = getResources().getStringArray(R.array.ranga);
 
         Button guy = findViewById(R.id.btn_guy);
@@ -75,7 +77,7 @@ public class InfoProfileActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-
+                startActivity(new Intent(getApplicationContext(), AdminPanelActivity.class));
             }
         });
 
@@ -125,6 +127,7 @@ public class InfoProfileActivity extends AppCompatActivity
                         ranga.setText(ds.getString("ranga"));
                         created.setText(ds.getString("created"));
                         edited.setText(ds.getString("edited"));
+                        registered.setText(ds.getString("registerDate"));
                     }
                 }
             }
