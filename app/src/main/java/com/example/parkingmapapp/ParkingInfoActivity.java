@@ -17,13 +17,19 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.Observer;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.Objects;
 
 public class ParkingInfoActivity extends AppCompatActivity
 {
@@ -43,6 +49,13 @@ public class ParkingInfoActivity extends AppCompatActivity
     TextView capacityBus;
     TextView capacityMoto;
     AddressViewModel addressViewModel;
+    TextView created_date;
+    TextView edited_date;
+    TextView status;
+    Button viewChanges;
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseUser user = mAuth.getCurrentUser();
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -69,6 +82,10 @@ public class ParkingInfoActivity extends AppCompatActivity
         capacityTru = findViewById(R.id.tv_capacitytrucks);
         capacityBus = findViewById(R.id.tv_capacitybus);
         capacityMoto = findViewById(R.id.tv_capacitymoto);
+        created_date = findViewById(R.id.tv_created);
+        edited_date = findViewById(R.id.tv_edited);
+        status = findViewById(R.id.tv_status);
+        viewChanges = findViewById(R.id.btn_view);
 
         id = getIntent().getStringExtra("KEYID");
         Parking p = (Parking) getIntent().getSerializableExtra("PARKING");
@@ -89,6 +106,17 @@ public class ParkingInfoActivity extends AppCompatActivity
                 intent.putExtra("PARKING", p);
                 intent.putExtra("DOCUMENTID", documentId);
                 intent.putExtra("ADDRESS", adr);
+                startActivity(intent);
+            }
+        });
+
+        viewChanges.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(getApplicationContext(), VerifyChangesActivity.class);
+                intent.putExtra("ID", id);
                 startActivity(intent);
             }
         });
@@ -167,6 +195,38 @@ public class ParkingInfoActivity extends AppCompatActivity
                     supervised.setText("Supervised: " + sup);
                     operator.setText("Operator: " + ope);
                 }
+            }
+        });
+    }
+
+    public void getUsers()
+    {
+        db.collection("cars").whereEqualTo("uId", user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task)
+            {
+                if (task.isSuccessful())
+                {
+                    for (DocumentSnapshot ds : task.getResult().getDocuments())
+                    {
+                        if (Objects.equals(ds.getString("ranga"), "Moderator") || Objects.equals(ds.getString("ranga"), "Administrator"))
+                        {
+                            viewChanges.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }
+                else
+                {
+                    Log.w("ERR", "Error getting documents.", task.getException());
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+                Log.e("ERR2", "Error getting documents.", e);
             }
         });
     }

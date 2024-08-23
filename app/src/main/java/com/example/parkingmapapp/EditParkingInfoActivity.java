@@ -167,7 +167,6 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                         String cmot = (String) document.getData().get("capacity:motorcycle");
                         String cena = (String) document.getData().get("kwota");
                         schedule = (Map<String, String>) document.getData().get("harmonogram");
-                        assert schedule != null;
 
                         nameET.setText(nam);
                         capacityET.setText(cpc);
@@ -246,38 +245,45 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
 
                 checkIfExists(id);
 
-                edits = new Edits(user.getUid(), id, true, false, name, adres, getActualDate(), "");
-
                 for (Map.Entry<String, Object> element : mapa.entrySet())
                 {
                     if (element.getValue() == null)
                     {
                         mapa.put(element.getKey(), "Brak");
                     }
+                    else if (Objects.equals(element.getKey(), "harmonogram"))
+                    {
+                        if (schedule.isEmpty())
+                        {
+                            schedule.put("Brak", "Nic");
+                        }
+                    }
                 }
 
-                editParking(mapa);
+                //editParking(mapa);
+                addVerify(id, mapa);
 
                 finish();
             }
         });
     }
 
-    public void editParking(Map<String, Object> mapa)
+    public void addVerify(String id, Map<String, Object> mapa)
     {
-        db.collection("parkings").document(documentId).update(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
+        Log.i("EDIT", edits.getId());
+        db.collection("verifyparkings").document(id).set(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
         {
             @Override
-            public void onSuccess(Void documentReference)
+            public void onSuccess(Void unused)
             {
-                Log.d("TEST", "DocumentSnapshot added with ID");
+                Log.i("CREATEDADD", "created");
             }
         }).addOnFailureListener(new OnFailureListener()
         {
             @Override
             public void onFailure(@NonNull Exception e)
             {
-                Log.d("ERROR", "Error: " + e.getMessage());
+                Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
             }
         });
     }

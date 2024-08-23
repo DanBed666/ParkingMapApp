@@ -10,8 +10,9 @@ public class User implements Serializable
     private String ranga;
     private String edits;
     private String  created;
+    private String nick;
 
-    public User(String uId, String name, String surname, String ranga, String  edits, String  created)
+    public User(String uId, String name, String surname, String ranga, String  edits, String  created, String nick)
     {
         this.uId = uId;
         this.name = name;
@@ -19,6 +20,15 @@ public class User implements Serializable
         this.ranga = ranga;
         this.edits = edits;
         this.created = created;
+        this.nick = nick;
+    }
+
+    public String getNick() {
+        return nick;
+    }
+
+    public void setNick(String nick) {
+        this.nick = nick;
     }
 
     public String  getEdits() {

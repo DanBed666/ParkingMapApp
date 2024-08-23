@@ -51,6 +51,13 @@
         android:inputType="textEmailAddress"
         android:hint="Nazwisko"/>
 
+    <EditText
+        android:id="@+id/et_nick"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:hint="Nazwa użytkownika"/>
+
     <Button
         android:id="@+id/btn_next"
         android:text="Zakończ"

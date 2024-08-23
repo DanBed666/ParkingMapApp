@@ -43,6 +43,19 @@
         android:textSize="26dp"
         android:textAlignment="center"/>
 
+    <Spinner
+        android:id="@+id/spinner_access"
+        android:layout_height="50dp"
+        android:layout_width="280dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="10dp"
+        android:spinnerMode="dropdown"
+        android:background="@android:drawable/btn_dropdown"
+        android:theme="@style/ThemeOverlay.AppCompat.Light"
+        android:layout_marginTop="10dp"
+        android:entries="@array/ranga"/>
+
     <Button
         android:id="@+id/btn_guy"
         android:layout_width="match_parent"
@@ -60,5 +73,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Zmiana adresu email"/>
+
+    <Button
+        android:id="@+id/btn_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Panel administratora"
+        android:visibility="gone"/>
 
 </LinearLayout>

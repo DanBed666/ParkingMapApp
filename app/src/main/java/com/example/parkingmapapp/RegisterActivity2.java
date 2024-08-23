@@ -37,6 +37,7 @@ public class RegisterActivity2 extends AppCompatActivity
     TextView goToLogin;
     FirebaseAuth mAuth;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    EditText nickET;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -61,6 +62,7 @@ public class RegisterActivity2 extends AppCompatActivity
         password2ET = findViewById(R.id.et_password2);
         register = findViewById(R.id.btn_next);
         goToLogin = findViewById(R.id.tv_login);
+        nickET = findViewById(R.id.et_nick);
 
         register.setOnClickListener(new View.OnClickListener()
         {
@@ -102,11 +104,12 @@ public class RegisterActivity2 extends AppCompatActivity
                 {
                     String name = nameET.getText().toString();
                     String surname = surnameET.getText().toString();
+                    String nick = nickET.getText().toString();
                     Log.i("REJESTRACJA", "Zarejestrowano!");
 
                     FirebaseUser user = mAuth.getCurrentUser();
                     assert user != null;
-                    User userObj = new User(user.getUid(), name, surname, "Użytkownik", "0", "0");
+                    User userObj = new User(user.getUid(), name, surname, "Użytkownik", "0", "0", nick);
                     addUser(userObj, user);
                     startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                     sendConfirmMail();
