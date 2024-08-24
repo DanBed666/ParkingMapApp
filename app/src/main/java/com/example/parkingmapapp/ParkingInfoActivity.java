@@ -97,7 +97,6 @@ public class ParkingInfoActivity extends AppCompatActivity
         created_date = findViewById(R.id.tv_created);
         edited_date = findViewById(R.id.tv_edited);
         status = findViewById(R.id.tv_status);
-        viewChanges = findViewById(R.id.btn_view);
         history = findViewById(R.id.btn_hist);
         userTV = findViewById(R.id.tv_user);
         titleHarm = findViewById(R.id.tv_supervisedeins);

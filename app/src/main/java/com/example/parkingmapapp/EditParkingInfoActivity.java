@@ -1,6 +1,7 @@
 package com.example.parkingmapapp;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -51,7 +52,6 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
     String adres;
-    Edits edits;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -260,21 +260,22 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                     }
                 }
 
-                //editParking(mapa);
-
-                Parking newParking = new Parking(name, parking, access, capacity, cdis, ctru, cbus, cmot,
-                        fee, supervised, operator, true, "", schedule, price, adres);
+                Parking newParking = new Parking(user.getUid(), id, name, parking, access, capacity, cdis, ctru, cbus, cmot,
+                        fee, supervised, operator, true, getActualDate(), schedule, price, adres);
 
                 getUser(newParking, mapa);
 
+                Intent i = new Intent(getApplicationContext(), ParkingEditHistoryActivity.class);
+                i.putExtra("ID", id);
+                startActivity(i);
                 finish();
             }
         });
     }
 
-    public void addVerify(String id, Parking parking)
+    public void addVerify(String id, Parking parking, String col)
     {
-        db.collection("verifyparkings").document(id).set(parking).addOnSuccessListener(new OnSuccessListener<Void>()
+        db.collection(col).document(id).set(parking).addOnSuccessListener(new OnSuccessListener<Void>()
         {
             @Override
             public void onSuccess(Void unused)
@@ -322,9 +323,14 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                     for (DocumentSnapshot ds : task.getResult().getDocuments())
                     {
                         if (Objects.equals(ds.getString("ranga"), "Administrator") || Objects.equals(ds.getString("ranga"), "Moderator"))
+                        {
                             editParking(mapa);
+                            addVerify(id, newParking, "verifyparkings");
+                        }
                         else
-                            addVerify(id, newParking);
+                        {
+                            addVerify(id, newParking, "verifyparkings");
+                        }
                     }
                 }
             }
@@ -384,75 +390,5 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
     public void onStringReceived(Map<String, String> ham)
     {
         schedule = ham;
-    }
-
-    public void checkIfExists(String id)
-    {
-        db.collection("edits").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
-        {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task)
-            {
-                if (task.isSuccessful())
-                {
-                    DocumentSnapshot document = task.getResult();
-
-                    if (document.exists())
-                    {
-                        Log.i("REKORD", "istnieje " + id);
-                        Map<String, Object> mapa = new HashMap<>();
-                        mapa.put("edited", true);
-                        updateEdit(id, mapa);
-                    }
-                    else
-                    {
-                        Log.i("REKORD", "nie istnieje " + id);
-                        addEdit(id);
-                    }
-                }
-                else
-                {
-                    Log.d("ERROR", "Failed with: ", task.getException());
-                }
-            }
-        });
-    }
-
-    public void addEdit(String id)
-    {
-        db.collection("edits").document(id).set(edits).addOnSuccessListener(new OnSuccessListener<Void>()
-        {
-            @Override
-            public void onSuccess(Void unused)
-            {
-                Log.i("CREATEDADD", "created");
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
-            }
-        });
-    }
-
-    public void updateEdit(String id, Map<String, Object> mapa)
-    {
-        db.collection("edits").document(id).update(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
-        {
-            @Override
-            public void onSuccess(Void documentReference)
-            {
-                Log.d("TEST", "DocumentSnapshot added with ID");
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Log.d("ERROR", "Error: " + e.getMessage());
-            }
-        });
     }
 }

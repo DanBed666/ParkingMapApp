@@ -193,29 +193,16 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
                         fee, supervised, operator, location.getLatitude(), location.getLongitude(), true, true, getActualDate(), "",
                         schedule, prize, false);
 
-
-                addressViewModel.getAddressVM(location.getLatitude() + "," + location.getLongitude(),
-                        "FiyHNQAmeoWKRcEdp5KyYWOAaAKf-7hvtqkz--lGBDc").observeForever(new Observer<Address>()
-                {
-                    @Override
-                    public void onChanged(Address address)
-                    {
-                        Log.i("ADRES", address.getItems().get(0).getTitle());
-                        Log.i("ADRESADRADRADR", address.getItems().get(0).getTitle());
-                        Edits edits = new Edits(user.getUid(), id, false, true, name, address.getItems().get(0).getTitle(), "", getActualDate());
-                        Log.i("EDIT88", edits.getDataCreated());
-                        checkIfExists(id, edits);
-                    }
-                });
-
-                getUser(id, newParking);
-
                 Intent intent = new Intent(getApplicationContext(), MapActivity.class);
                 intent.putExtra("MyData", "created");
                 intent.putExtra("ID", id);
                 intent.putExtra("GEOPOINT", (Parcelable) location);
                 setResult(1, intent);
 
+                getUser(id, newParking);
+                Intent i = new Intent(getApplicationContext(), ParkingEditHistoryActivity.class);
+                intent.putExtra("ID", id);
+                startActivity(i);
                 finish();
             }
         });
@@ -233,9 +220,14 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
                     for (DocumentSnapshot ds : task.getResult().getDocuments())
                     {
                         if (Objects.equals(ds.getString("ranga"), "Administrator") || Objects.equals(ds.getString("ranga"), "Moderator"))
+                        {
                             addParking(id, newParking);
+                            addVerify(id, newParking, "verifyparkings");
+                        }
                         else
-                            addVerify(id, newParking);
+                        {
+                            addVerify(id, newParking, "verifyparkings");
+                        }
                     }
                 }
             }
@@ -249,9 +241,9 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
         });
     }
 
-    public void addVerify(String id, Parking newParking)
+    public void addVerify(String id, Parking newParking, String col)
     {
-        db.collection("verifyparkings").document(id).set(newParking).addOnSuccessListener(new OnSuccessListener<Void>()
+        db.collection(col).document(id).set(newParking).addOnSuccessListener(new OnSuccessListener<Void>()
         {
             @Override
             public void onSuccess(Void unused)
@@ -319,55 +311,6 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
         {
             Log.i("DAY", entry.getKey() + " " + entry.getValue());
         }
-    }
-
-    public void checkIfExists(String id, Edits edits)
-    {
-        db.collection("edits").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
-        {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task)
-            {
-                if (task.isSuccessful())
-                {
-                    DocumentSnapshot document = task.getResult();
-
-                    if (document.exists())
-                    {
-                        Log.i("REKORD", "istnieje " + id);
-                    }
-                    else
-                    {
-                        Log.i("REKORD", "nie istnieje " + id);
-                        addEdit(id, edits);
-                    }
-                }
-                else
-                {
-                    Log.d("ERROR", "Failed with: ", task.getException());
-                }
-            }
-        });
-    }
-
-    public void addEdit(String id, Edits edits)
-    {
-        Log.i("EDIT", edits.getId());
-        db.collection("edits").document(id).set(edits).addOnSuccessListener(new OnSuccessListener<Void>()
-        {
-            @Override
-            public void onSuccess(Void unused)
-            {
-                Log.i("CREATEDADD", "created");
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
-            }
-        });
     }
 
     public String generateId()

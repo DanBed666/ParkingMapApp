@@ -70,10 +70,12 @@ public class Parking implements Serializable
         this.createdVerified = createdVerified;
     }
 
-    public Parking(String name, String pking, String access, String capacity, String capacityDisabled,
+    public Parking(String uId, String id, String name, String pking, String access, String capacity, String capacityDisabled,
                    String capacityTrucks, String capacityBus, String capacityMotorcycle, String fee, String supervised,
                    String operator, boolean edited, String dataEdited, Map<String, String> harmonogram, String kwota, String address)
     {
+        this.uId = uId;
+        this.id = id;
         this.name = name;
         this.pking = pking;
         this.access = access;

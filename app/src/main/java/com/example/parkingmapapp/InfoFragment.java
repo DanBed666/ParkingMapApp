@@ -58,7 +58,6 @@ public class InfoFragment extends Fragment
     CloseMarker listener;
     Button reserve;
     String keyId;
-    Button verify;
 
     public InfoFragment() {
         // Required empty public constructor
@@ -106,7 +105,6 @@ public class InfoFragment extends Fragment
         infosp = v.findViewById(R.id.btn_info);
         reserve = v.findViewById(R.id.btn_reservation);
         delete = v.findViewById(R.id.btn_delete);
-        verify = v.findViewById(R.id.btn_verify);
 
         assert getArguments() != null;
         Utils u = (Utils) getArguments().getSerializable("OBJECT");
@@ -121,18 +119,7 @@ public class InfoFragment extends Fragment
         else
         {
             getVerify(keyId, info);
-            verify.setVisibility(View.VISIBLE);
         }
-
-        verify.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                Intent intent = new Intent(requireActivity().getApplicationContext(), VerifyChangesActivity.class);
-                startActivity(intent);
-            }
-        });
 
         route.setOnClickListener(new View.OnClickListener()
         {

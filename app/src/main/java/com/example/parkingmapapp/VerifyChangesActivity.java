@@ -159,8 +159,8 @@ public class VerifyChangesActivity extends AppCompatActivity
                             @Override
                             public void onClick(View v)
                             {
-                                editParking(mapa, adres);
-                                delete();
+                                editParking(mapa);
+                                finish();
                             }
                         });
 
@@ -169,7 +169,7 @@ public class VerifyChangesActivity extends AppCompatActivity
                             @Override
                             public void onClick(View v)
                             {
-                                delete();
+                                finish();
                             }
                         });
                     }
@@ -188,51 +188,14 @@ public class VerifyChangesActivity extends AppCompatActivity
             }
         });
     }
-
-    public void delete()
-    {
-        db.collection("tickets").document(id).delete().addOnSuccessListener(new OnSuccessListener<Void>()
-        {
-            @Override
-            public void onSuccess(Void unused)
-            {
-                Log.i("CREATED", "usunieto");
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Log.i("CREATED", e.getMessage());
-            }
-        });
-    }
-
-    public void editParking(Map<String, Object> mapa, String adres)
+    public void editParking(Map<String, Object> mapa)
     {
         db.collection("parkings").document(id).update(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
         {
             @Override
             public void onSuccess(Void documentReference)
             {
-                Log.d("TEST", "DocumentSnapshot added with ID");
-                Edits edits = new Edits(user.getUid(), id, true, false, (String) mapa.get("name"), adres, getActualDate(), "");
-
-                db.collection("edits").document(id).set(edits).addOnSuccessListener(new OnSuccessListener<Void>()
-                {
-                    @Override
-                    public void onSuccess(Void unused)
-                    {
-                        Log.i("CREATEDADD", "created");
-                    }
-                }).addOnFailureListener(new OnFailureListener()
-                {
-                    @Override
-                    public void onFailure(@NonNull Exception e)
-                    {
-                        Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
-                    }
-                });
+                Log.i("ERROdddsR", "GUT");
             }
         }).addOnFailureListener(new OnFailureListener()
         {
@@ -263,7 +226,8 @@ public class VerifyChangesActivity extends AppCompatActivity
                 {
                     for (DocumentSnapshot ds : task.getResult().getDocuments())
                     {
-                        if (Objects.equals(ds.getString("ranga"), "Administrator") || Objects.equals(ds.getString("ranga"), "Moderator")) {
+                        if (Objects.equals(ds.getString("ranga"), "Administrator") || Objects.equals(ds.getString("ranga"), "Moderator"))
+                        {
                             pass.setVisibility(View.VISIBLE);
                             notPass.setVisibility(View.VISIBLE);
                         }

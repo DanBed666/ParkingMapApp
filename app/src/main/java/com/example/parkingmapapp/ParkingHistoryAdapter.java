@@ -1,6 +1,7 @@
 package com.example.parkingmapapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,15 @@ public class ParkingHistoryAdapter extends RecyclerView.Adapter<ParkingHistoryAd
     {
         holder.status.setText(documentSnapshotList.get(position).getString("status"));
         holder.edited.setText(documentSnapshotList.get(position).getString("edited"));
+
+        holder.itemView.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                context.startActivity(new Intent(context, VerifyChangesActivity.class));
+            }
+        });
     }
 
     @Override
