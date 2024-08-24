@@ -265,7 +265,7 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                 Parking newParking = new Parking(name, parking, access, capacity, cdis, ctru, cbus, cmot,
                         fee, supervised, operator, true, "", schedule, price, adres);
 
-                addVerify(id, newParking);
+                getUser(newParking, mapa);
 
                 finish();
             }
@@ -287,6 +287,53 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
             public void onFailure(@NonNull Exception e)
             {
                 Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
+            }
+        });
+    }
+
+    public void editParking(Map<String, Object> mapa)
+    {
+        db.collection("parkings").document(documentId).update(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
+        {
+            @Override
+            public void onSuccess(Void unused)
+            {
+                Log.i("CREATEDADD", "created");
+            }
+        }).addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+                Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
+            }
+        });
+    }
+
+    public void getUser(Parking newParking, Map<String, Object> mapa)
+    {
+        db.collection("users").whereEqualTo("uId", user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task)
+            {
+                if (task.isSuccessful())
+                {
+                    for (DocumentSnapshot ds : task.getResult().getDocuments())
+                    {
+                        if (Objects.equals(ds.getString("ranga"), "Administrator") || Objects.equals(ds.getString("ranga"), "Moderator"))
+                            editParking(mapa);
+                        else
+                            addVerify(id, newParking);
+                    }
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+
             }
         });
     }

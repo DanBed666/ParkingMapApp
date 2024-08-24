@@ -28,6 +28,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -48,6 +49,8 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     GeoPoint location;
     String generatedId;
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseUser user = mAuth.getCurrentUser();
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -83,9 +86,6 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
         String[] opcje = getResources().getStringArray(R.array.options);
         String[] opcjeEN = {"", "yes", "no"};
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
         addressViewModel = new AddressViewModel();
 
         location = getIntent().getParcelableExtra("LOCATION");
@@ -193,21 +193,6 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
                         fee, supervised, operator, location.getLatitude(), location.getLongitude(), true, true, getActualDate(), "",
                         schedule, prize, false);
 
-                db.collection("verifyparkings").document(id).set(newParking).addOnSuccessListener(new OnSuccessListener<Void>()
-                {
-                    @Override
-                    public void onSuccess(Void unused)
-                    {
-                        Log.i("CREATEDADD", "created");
-                    }
-                }).addOnFailureListener(new OnFailureListener()
-                {
-                    @Override
-                    public void onFailure(@NonNull Exception e)
-                    {
-                        Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
-                    }
-                });
 
                 addressViewModel.getAddressVM(location.getLatitude() + "," + location.getLongitude(),
                         "FiyHNQAmeoWKRcEdp5KyYWOAaAKf-7hvtqkz--lGBDc").observeForever(new Observer<Address>()
@@ -223,6 +208,8 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
                     }
                 });
 
+                getUser(id, newParking);
+
                 Intent intent = new Intent(getApplicationContext(), MapActivity.class);
                 intent.putExtra("MyData", "created");
                 intent.putExtra("ID", id);
@@ -230,6 +217,72 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
                 setResult(1, intent);
 
                 finish();
+            }
+        });
+    }
+
+    public void getUser(String id, Parking newParking)
+    {
+        db.collection("users").whereEqualTo("uId", user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task)
+            {
+                if (task.isSuccessful())
+                {
+                    for (DocumentSnapshot ds : task.getResult().getDocuments())
+                    {
+                        if (Objects.equals(ds.getString("ranga"), "Administrator") || Objects.equals(ds.getString("ranga"), "Moderator"))
+                            addParking(id, newParking);
+                        else
+                            addVerify(id, newParking);
+                    }
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+
+            }
+        });
+    }
+
+    public void addVerify(String id, Parking newParking)
+    {
+        db.collection("verifyparkings").document(id).set(newParking).addOnSuccessListener(new OnSuccessListener<Void>()
+        {
+            @Override
+            public void onSuccess(Void unused)
+            {
+                Log.i("CREATEDADD", "created");
+            }
+        }).addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+                Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
+            }
+        });
+    }
+
+    public void addParking(String id, Parking newParking)
+    {
+        db.collection("parkings").document(id).set(newParking).addOnSuccessListener(new OnSuccessListener<Void>()
+        {
+            @Override
+            public void onSuccess(Void unused)
+            {
+                Log.i("CREATEDADD", "created");
+            }
+        }).addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+                Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
             }
         });
     }

@@ -115,9 +115,14 @@ public class InfoFragment extends Fragment
         boolean verified = getArguments().getBoolean("VERIFIED");
 
         if (verified)
+        {
             getInfo(keyId, info);
+        }
         else
+        {
             getVerify(keyId, info);
+            verify.setVisibility(View.VISIBLE);
+        }
 
         verify.setOnClickListener(new View.OnClickListener()
         {

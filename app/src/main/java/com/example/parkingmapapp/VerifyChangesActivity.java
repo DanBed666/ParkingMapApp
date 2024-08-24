@@ -98,6 +98,7 @@ public class VerifyChangesActivity extends AppCompatActivity
         price = findViewById(R.id.tv_price);
         addressViewModel = new AddressViewModel();
 
+        getUser();
         getVerifies();
     }
 
@@ -249,5 +250,33 @@ public class VerifyChangesActivity extends AppCompatActivity
         SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         String formattedDate = df.format(calender.getTime());
         return formattedDate;
+    }
+
+    public void getUser()
+    {
+        db.collection("users").whereEqualTo("uId", user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task)
+            {
+                if (task.isSuccessful())
+                {
+                    for (DocumentSnapshot ds : task.getResult().getDocuments())
+                    {
+                        if (Objects.equals(ds.getString("ranga"), "Administrator") || Objects.equals(ds.getString("ranga"), "Moderator")) {
+                            pass.setVisibility(View.VISIBLE);
+                            notPass.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+
+            }
+        });
     }
 }
