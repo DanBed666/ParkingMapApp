@@ -59,7 +59,7 @@ public class FindParksOptionsFragment extends Fragment {
     private String mParam2;
     String findingTag = "amenity=parking";
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    Query findingQuery = db.collection("parkings");
+    Query findingQuery = db.collection("parkings").whereEqualTo("verified", true);
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     Spinner spinnerBus;
     Spinner spinnerTrucks;

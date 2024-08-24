@@ -95,7 +95,7 @@ public class ParkingInfoActivity extends AppCompatActivity
         capacityBus = findViewById(R.id.tv_capacitybus);
         capacityMoto = findViewById(R.id.tv_capacitymoto);
         created_date = findViewById(R.id.tv_created);
-        edited_date = findViewById(R.id.tv_edited);
+        edited_date = findViewById(R.id.tv_date);
         status = findViewById(R.id.tv_status);
         history = findViewById(R.id.btn_hist);
         userTV = findViewById(R.id.tv_user);
@@ -117,8 +117,9 @@ public class ParkingInfoActivity extends AppCompatActivity
         Log.i("PARKING_ID", id);
 
         getElementsFromDB("parkings");
-        getElementsFromDB("verifyparkings");
-        updateElementsFromDB("parkings");
+        //getElementsFromDB("verifyparkings");
+        getUsers();
+
         edit.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -189,6 +190,10 @@ public class ParkingInfoActivity extends AppCompatActivity
                         String cmot = (String) document.getData().get("capacity:motorcycle");
                         String kwota = (String) document.getData().get("kwota");
                         Map<String, String> harm = (Map<String, String>) document.getData().get("harmonogram");
+                        String createdDate = (String) document.getData().get("dataCreated");
+                        String editedDate = (String) document.getData().get("dataEdited");
+                        String stat = (String) document.getData().get("status");
+                        String user = (String) document.getData().get("uId");
 
                         name.setText("Nazwa: " + nam);
                         parking.setText("Typ parkingu: " + pkg);
@@ -203,6 +208,12 @@ public class ParkingInfoActivity extends AppCompatActivity
                         capacityMoto.setText("Miejsca dla motocykli: " + cmot);
                         price.setText(kwota);
                         documentId = document.getId();
+
+                        created_date.setText(createdDate);
+                        edited_date.setText(editedDate);
+                        status.setText(stat);
+                        userTV.setText(user);
+
 
                         assert harm != null;
                         titleHarm.setText(harm.get("Brak"));
@@ -223,39 +234,9 @@ public class ParkingInfoActivity extends AppCompatActivity
         });
     }
 
-    public void updateElementsFromDB(String col)
-    {
-        db.collection(col).whereEqualTo("id", id).addSnapshotListener(new EventListener<QuerySnapshot>()
-        {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error)
-            {
-                assert value != null;
-                for (DocumentChange d : value.getDocumentChanges())
-                {
-                    Log.i("TYP", String.valueOf(d.getType()));
-
-                    String nam = (String) d.getDocument().get("name");
-                    String pkg = (String) d.getDocument().get("pking");
-                    String cpc = (String) d.getDocument().get("capacity");
-                    String f33 = (String) d.getDocument().get("fee");
-                    String sup = (String) d.getDocument().get("supervised");
-                    String ope = (String) d.getDocument().get("operator");
-
-                    name.setText("Name: " + nam);
-                    parking.setText("Parking: " + pkg);
-                    capacity.setText("Capacity: " + cpc);
-                    fee.setText("Fee: " + f33);
-                    supervised.setText("Supervised: " + sup);
-                    operator.setText("Operator: " + ope);
-                }
-            }
-        });
-    }
-
     public void getUsers()
     {
-        db.collection("cars").whereEqualTo("uId", user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        db.collection("users").whereEqualTo("uId", user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task)

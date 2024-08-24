@@ -260,10 +260,7 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                     }
                 }
 
-                Parking newParking = new Parking(user.getUid(), id, name, parking, access, capacity, cdis, ctru, cbus, cmot,
-                        fee, supervised, operator, true, getActualDate(), schedule, price, adres);
-
-                getUser(newParking, mapa);
+                getUser(mapa);
 
                 Intent i = new Intent(getApplicationContext(), ParkingEditHistoryActivity.class);
                 i.putExtra("ID", id);
@@ -272,26 +269,6 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
             }
         });
     }
-
-    public void addVerify(String id, Parking parking, String col)
-    {
-        db.collection(col).document(id).set(parking).addOnSuccessListener(new OnSuccessListener<Void>()
-        {
-            @Override
-            public void onSuccess(Void unused)
-            {
-                Log.i("CREATEDADD", "created");
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
-            }
-        });
-    }
-
     public void editParking(Map<String, Object> mapa)
     {
         db.collection("parkings").document(documentId).update(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
@@ -311,7 +288,7 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
         });
     }
 
-    public void getUser(Parking newParking, Map<String, Object> mapa)
+    public void getUser(Map<String, Object> mapa)
     {
         db.collection("users").whereEqualTo("uId", user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
@@ -324,12 +301,15 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                     {
                         if (Objects.equals(ds.getString("ranga"), "Administrator") || Objects.equals(ds.getString("ranga"), "Moderator"))
                         {
+                            mapa.put("verified", true);
+                            mapa.put("status", "Zweryfikowany");
                             editParking(mapa);
-                            addVerify(id, newParking, "verifyparkings");
                         }
                         else
                         {
-                            addVerify(id, newParking, "verifyparkings");
+                            mapa.put("verified", false);
+                            mapa.put("status", "Oczekujący");
+                            editParking(mapa);
                         }
                     }
                 }

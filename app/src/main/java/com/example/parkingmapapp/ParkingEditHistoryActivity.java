@@ -52,7 +52,7 @@ public class ParkingEditHistoryActivity extends AppCompatActivity
 
     public void getHistory()
     {
-        db.collection("verifyparkings").whereEqualTo("uId", user.getUid()).whereEqualTo("id", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        db.collection("parkings").whereEqualTo("uId", user.getUid()).whereEqualTo("id", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task)

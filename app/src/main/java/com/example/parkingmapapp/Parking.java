@@ -29,12 +29,13 @@ public class Parking implements Serializable
     private Map<String, String> harmonogram;
     private String kwota;
     private String address;
-    private boolean createdVerified;
+    private boolean verified;
+    private String status;
 
     public Parking(String uId, String id, String name, String pking, String access, String capacity, String capacityDisabled,
                    String capacityTrucks, String capacityBus, String capacityMotorcycle, String fee, String supervised,
                    String operator, double latitude, double longtitude, boolean edited, boolean created, String dataCreated,
-                   String dataEdited, Map<String, String> harmonogram, String kwota, boolean ver)
+                   String dataEdited, Map<String, String> harmonogram, String kwota, boolean verified, String status)
     {
         this.uId = uId;
         this.id = id;
@@ -57,41 +58,25 @@ public class Parking implements Serializable
         this.dataEdited = dataEdited;
         this.harmonogram = harmonogram;
         this.kwota = kwota;
-        createdVerified = ver;
-    }
-
-    public boolean isCreatedVerified()
-    {
-        return createdVerified;
-    }
-
-    public void setCreatedVerified(boolean createdVerified)
-    {
-        this.createdVerified = createdVerified;
-    }
-
-    public Parking(String uId, String id, String name, String pking, String access, String capacity, String capacityDisabled,
-                   String capacityTrucks, String capacityBus, String capacityMotorcycle, String fee, String supervised,
-                   String operator, boolean edited, String dataEdited, Map<String, String> harmonogram, String kwota, String address)
-    {
-        this.uId = uId;
-        this.id = id;
-        this.name = name;
-        this.pking = pking;
-        this.access = access;
-        this.capacity = capacity;
-        this.capacityDisabled = capacityDisabled;
-        this.capacityTrucks = capacityTrucks;
-        this.capacityBus = capacityBus;
-        this.capacityMotorcycle = capacityMotorcycle;
-        this.fee = fee;
-        this.supervised = supervised;
-        this.operator = operator;
-        this.edited = edited;
-        this.dataEdited = dataEdited;
-        this.harmonogram = harmonogram;
-        this.kwota = kwota;
         this.address = address;
+        this.verified = verified;
+        this.status = status;
+    }
+
+    public boolean isVerified() {
+        return verified;
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getAddress() {

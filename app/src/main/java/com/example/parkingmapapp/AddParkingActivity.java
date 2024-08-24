@@ -191,7 +191,7 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
                 assert user != null;
                 Parking newParking = new Parking(user.getUid(), id, name, parking, access, capacity, capacityDis, capacityTru, capacityBus, capacityMoto,
                         fee, supervised, operator, location.getLatitude(), location.getLongitude(), true, true, getActualDate(), "",
-                        schedule, prize, false);
+                        schedule, prize, false, "Oczekujący");
 
                 Intent intent = new Intent(getApplicationContext(), MapActivity.class);
                 intent.putExtra("MyData", "created");

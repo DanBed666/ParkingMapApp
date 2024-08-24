@@ -104,7 +104,7 @@ public class VerifyChangesActivity extends AppCompatActivity
 
     public void getVerifies()
     {
-        db.collection("verifyparkings").whereEqualTo("id", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        db.collection("parkings").whereEqualTo("id", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task)
@@ -159,6 +159,8 @@ public class VerifyChangesActivity extends AppCompatActivity
                             @Override
                             public void onClick(View v)
                             {
+                                mapa.put("verified", true);
+                                mapa.put("status", "Zweryfikowany");
                                 editParking(mapa);
                                 finish();
                             }
@@ -169,6 +171,9 @@ public class VerifyChangesActivity extends AppCompatActivity
                             @Override
                             public void onClick(View v)
                             {
+                                mapa.put("verified", false);
+                                mapa.put("status", "Odrzucony");
+                                editParking(mapa);
                                 finish();
                             }
                         });
