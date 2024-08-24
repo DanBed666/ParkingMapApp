@@ -28,6 +28,7 @@ public class Parking implements Serializable
     private String dataEdited;
     private Map<String, String> harmonogram;
     private String kwota;
+    private String address;
 
     public Parking(String uId, String id, String name, String pking, String access, String capacity, String capacityDisabled,
                    String capacityTrucks, String capacityBus, String capacityMotorcycle, String fee, String supervised,
@@ -55,6 +56,36 @@ public class Parking implements Serializable
         this.dataEdited = dataEdited;
         this.harmonogram = harmonogram;
         this.kwota = kwota;
+    }
+
+    public Parking(String name, String pking, String access, String capacity, String capacityDisabled,
+                   String capacityTrucks, String capacityBus, String capacityMotorcycle, String fee, String supervised,
+                   String operator, boolean edited, String dataEdited, Map<String, String> harmonogram, String kwota, String address)
+    {
+        this.name = name;
+        this.pking = pking;
+        this.access = access;
+        this.capacity = capacity;
+        this.capacityDisabled = capacityDisabled;
+        this.capacityTrucks = capacityTrucks;
+        this.capacityBus = capacityBus;
+        this.capacityMotorcycle = capacityMotorcycle;
+        this.fee = fee;
+        this.supervised = supervised;
+        this.operator = operator;
+        this.edited = edited;
+        this.dataEdited = dataEdited;
+        this.harmonogram = harmonogram;
+        this.kwota = kwota;
+        this.address = address;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public Map<String, String> getHarmonogram() {

@@ -261,17 +261,21 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                 }
 
                 //editParking(mapa);
-                addVerify(id, mapa);
+
+                Parking newParking = new Parking(name, parking, access, capacity, cdis, ctru, cbus, cmot,
+                        fee, supervised, operator, true, "", schedule, price, adres);
+
+                addVerify(id, newParking);
 
                 finish();
             }
         });
     }
 
-    public void addVerify(String id, Map<String, Object> mapa)
+    public void addVerify(String id, Parking parking)
     {
         Log.i("EDIT", edits.getId());
-        db.collection("verifyparkings").document(id).set(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
+        db.collection("verifyparkings").document(id).set(parking).addOnSuccessListener(new OnSuccessListener<Void>()
         {
             @Override
             public void onSuccess(Void unused)

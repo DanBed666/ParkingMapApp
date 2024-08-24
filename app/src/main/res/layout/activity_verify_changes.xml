@@ -72,11 +72,81 @@
         android:textSize="22dp"/>
 
     <TextView
+        android:id="@+id/tv_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="fee"
+        android:textSize="22dp"/>
+
+    <TextView
         android:id="@+id/tv_supervised"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="supervised"
         android:textSize="22dp"/>
+
+    <TextView
+        android:id="@+id/tv_supervisedeins"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="supervised"
+        android:textSize="22dp"/>
+
+    <TextView
+        android:id="@+id/tv_supervisedmon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="supervised"
+        android:textSize="22dp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/tv_supervisedtue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="supervised"
+        android:textSize="22dp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/tv_supervisedwed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="supervised"
+        android:textSize="22dp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/tv_supervisedthu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="supervised"
+        android:textSize="22dp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/tv_supervisedfri"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="supervised"
+        android:textSize="22dp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/tv_supervisedsat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="supervised"
+        android:textSize="22dp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/tv_supervisedsun"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="supervised"
+        android:textSize="22dp"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/tv_operator"

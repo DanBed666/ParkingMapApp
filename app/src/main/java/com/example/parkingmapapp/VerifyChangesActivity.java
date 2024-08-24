@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.Observer;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -49,6 +50,16 @@ public class VerifyChangesActivity extends AppCompatActivity
     Button notPass;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
+    TextView titleHarm;
+    TextView monHarm;
+    TextView tueHarm;
+    TextView wedHarm;
+    TextView thuHarm;
+    TextView friHarm;
+    TextView satHarm;
+    TextView sunHarm;
+    TextView price;
+    AddressViewModel addressViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -76,13 +87,23 @@ public class VerifyChangesActivity extends AppCompatActivity
         capacityMoto = findViewById(R.id.tv_capacitymoto);
         pass = findViewById(R.id.btn_pass);
         notPass = findViewById(R.id.btn_notpass);
+        titleHarm = findViewById(R.id.tv_supervisedeins);
+        monHarm = findViewById(R.id.tv_supervisedmon);
+        tueHarm = findViewById(R.id.tv_supervisedtue);
+        wedHarm = findViewById(R.id.tv_supervisedwed);
+        thuHarm = findViewById(R.id.tv_supervisedthu);
+        friHarm = findViewById(R.id.tv_supervisedfri);
+        satHarm = findViewById(R.id.tv_supervisedsat);
+        sunHarm = findViewById(R.id.tv_supervisedsun);
+        price = findViewById(R.id.tv_price);
+        addressViewModel = new AddressViewModel();
 
         getVerifies();
     }
 
     public void getVerifies()
     {
-        db.collection("cars").whereEqualTo("id", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        db.collection("parkings").whereEqualTo("id", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task)
@@ -102,8 +123,18 @@ public class VerifyChangesActivity extends AppCompatActivity
                         capacityTru.setText(ds.getString("capacityTrucks"));
                         capacityBus.setText(ds.getString("capacityBus"));
                         capacityMoto.setText(ds.getString("capacityMotorcycle"));
-                        ds.getString("kwota");
-                        ds.get("harmonogram");
+                        price.setText(ds.getString("kwota"));
+                        Map<String, String> schedule = (Map<String, String>) ds.get("harmonogram");
+                        assert schedule != null;
+                        titleHarm.setText(schedule.get("Brak"));
+                        monHarm.setText(schedule.get("Poniedziałek"));
+                        tueHarm.setText(schedule.get("Wtorek"));
+                        wedHarm.setText(schedule.get("Środa"));
+                        thuHarm.setText(schedule.get("Czwartek"));
+                        friHarm.setText(schedule.get("Piątek"));
+                        satHarm.setText(schedule.get("Sobota"));
+                        sunHarm.setText(schedule.get("Niedziela"));
+                        String adres = ds.getString("address");
 
                         Map<String, Object> mapa = new HashMap<>();
                         mapa.put("name", ds.getString("name"));
@@ -127,7 +158,7 @@ public class VerifyChangesActivity extends AppCompatActivity
                             @Override
                             public void onClick(View v)
                             {
-                                editParking(mapa);
+                                editParking(mapa, adres);
                                 delete();
                             }
                         });
@@ -176,7 +207,7 @@ public class VerifyChangesActivity extends AppCompatActivity
         });
     }
 
-    public void editParking(Map<String, Object> mapa)
+    public void editParking(Map<String, Object> mapa, String adres)
     {
         db.collection("parkings").document(id).update(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
         {
@@ -184,7 +215,23 @@ public class VerifyChangesActivity extends AppCompatActivity
             public void onSuccess(Void documentReference)
             {
                 Log.d("TEST", "DocumentSnapshot added with ID");
-                Edits edits = new Edits(user.getUid(), id, true, false, name, adres, getActualDate(), "");
+                Edits edits = new Edits(user.getUid(), id, true, false, (String) mapa.get("name"), adres, getActualDate(), "");
+
+                db.collection("edits").document(id).set(edits).addOnSuccessListener(new OnSuccessListener<Void>()
+                {
+                    @Override
+                    public void onSuccess(Void unused)
+                    {
+                        Log.i("CREATEDADD", "created");
+                    }
+                }).addOnFailureListener(new OnFailureListener()
+                {
+                    @Override
+                    public void onFailure(@NonNull Exception e)
+                    {
+                        Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
+                    }
+                });
             }
         }).addOnFailureListener(new OnFailureListener()
         {

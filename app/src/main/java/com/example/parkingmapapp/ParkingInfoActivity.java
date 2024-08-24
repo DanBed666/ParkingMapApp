@@ -29,6 +29,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.Map;
 import java.util.Objects;
 
 public class ParkingInfoActivity extends AppCompatActivity
@@ -55,6 +56,17 @@ public class ParkingInfoActivity extends AppCompatActivity
     Button viewChanges;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
+    Button history;
+    TextView userTV;
+    TextView titleHarm;
+    TextView monHarm;
+    TextView tueHarm;
+    TextView wedHarm;
+    TextView thuHarm;
+    TextView friHarm;
+    TextView satHarm;
+    TextView sunHarm;
+    TextView price;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -86,6 +98,17 @@ public class ParkingInfoActivity extends AppCompatActivity
         edited_date = findViewById(R.id.tv_edited);
         status = findViewById(R.id.tv_status);
         viewChanges = findViewById(R.id.btn_view);
+        history = findViewById(R.id.btn_hist);
+        userTV = findViewById(R.id.tv_user);
+        titleHarm = findViewById(R.id.tv_supervisedeins);
+        monHarm = findViewById(R.id.tv_supervisedmon);
+        tueHarm = findViewById(R.id.tv_supervisedtue);
+        wedHarm = findViewById(R.id.tv_supervisedwed);
+        thuHarm = findViewById(R.id.tv_supervisedthu);
+        friHarm = findViewById(R.id.tv_supervisedfri);
+        satHarm = findViewById(R.id.tv_supervisedsat);
+        sunHarm = findViewById(R.id.tv_supervisedsun);
+        price = findViewById(R.id.tv_price);
 
         id = getIntent().getStringExtra("KEYID");
         Parking p = (Parking) getIntent().getSerializableExtra("PARKING");
@@ -107,6 +130,24 @@ public class ParkingInfoActivity extends AppCompatActivity
                 intent.putExtra("DOCUMENTID", documentId);
                 intent.putExtra("ADDRESS", adr);
                 startActivity(intent);
+            }
+        });
+
+        userTV.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                startActivity(new Intent(getApplicationContext(), InfoProfileActivity.class));
+            }
+        });
+
+        history.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                startActivity(new Intent(getApplicationContext(), ParkingEditHistoryActivity.class));
             }
         });
 
@@ -146,6 +187,8 @@ public class ParkingInfoActivity extends AppCompatActivity
                         String ctru = (String) document.getData().get("capacity:truck");
                         String cbus = (String) document.getData().get("capacity:bus");
                         String cmot = (String) document.getData().get("capacity:motorcycle");
+                        String kwota = (String) document.getData().get("kwota");
+                        Map<String, String> harm = (Map<String, String>) document.getData().get("harmonogram");
 
                         name.setText("Nazwa: " + nam);
                         parking.setText("Typ parkingu: " + pkg);
@@ -158,7 +201,18 @@ public class ParkingInfoActivity extends AppCompatActivity
                         capacityTru.setText("Miejsca dla tirów: " + ctru);
                         capacityBus.setText("Miejsca dla busów: " + cbus);
                         capacityMoto.setText("Miejsca dla motocykli: " + cmot);
+                        price.setText(kwota);
                         documentId = document.getId();
+
+                        assert harm != null;
+                        titleHarm.setText(harm.get("Brak"));
+                        monHarm.setText(harm.get("Poniedziałek"));
+                        tueHarm.setText(harm.get("Wtorek"));
+                        wedHarm.setText(harm.get("Środa"));
+                        thuHarm.setText(harm.get("Czwartek"));
+                        friHarm.setText(harm.get("Piątek"));
+                        satHarm.setText(harm.get("Sobota"));
+                        sunHarm.setText(harm.get("Niedziela"));
                     }
                 }
                 else
