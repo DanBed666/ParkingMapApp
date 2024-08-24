@@ -29,11 +29,12 @@ public class Parking implements Serializable
     private Map<String, String> harmonogram;
     private String kwota;
     private String address;
+    private boolean createdVerified;
 
     public Parking(String uId, String id, String name, String pking, String access, String capacity, String capacityDisabled,
                    String capacityTrucks, String capacityBus, String capacityMotorcycle, String fee, String supervised,
                    String operator, double latitude, double longtitude, boolean edited, boolean created, String dataCreated,
-                   String dataEdited, Map<String, String> harmonogram, String kwota)
+                   String dataEdited, Map<String, String> harmonogram, String kwota, boolean ver)
     {
         this.uId = uId;
         this.id = id;
@@ -56,6 +57,17 @@ public class Parking implements Serializable
         this.dataEdited = dataEdited;
         this.harmonogram = harmonogram;
         this.kwota = kwota;
+        createdVerified = ver;
+    }
+
+    public boolean isCreatedVerified()
+    {
+        return createdVerified;
+    }
+
+    public void setCreatedVerified(boolean createdVerified)
+    {
+        this.createdVerified = createdVerified;
     }
 
     public Parking(String name, String pking, String access, String capacity, String capacityDisabled,

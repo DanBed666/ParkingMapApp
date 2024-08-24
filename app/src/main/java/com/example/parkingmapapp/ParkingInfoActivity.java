@@ -118,6 +118,7 @@ public class ParkingInfoActivity extends AppCompatActivity
         Log.i("PARKING_ID", id);
 
         getElementsFromDB("parkings");
+        getElementsFromDB("verifyparkings");
         updateElementsFromDB("parkings");
         edit.setOnClickListener(new View.OnClickListener()
         {

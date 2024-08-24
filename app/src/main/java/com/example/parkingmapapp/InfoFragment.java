@@ -58,6 +58,7 @@ public class InfoFragment extends Fragment
     CloseMarker listener;
     Button reserve;
     String keyId;
+    Button verify;
 
     public InfoFragment() {
         // Required empty public constructor
@@ -105,14 +106,28 @@ public class InfoFragment extends Fragment
         infosp = v.findViewById(R.id.btn_info);
         reserve = v.findViewById(R.id.btn_reservation);
         delete = v.findViewById(R.id.btn_delete);
+        verify = v.findViewById(R.id.btn_verify);
 
         assert getArguments() != null;
         Utils u = (Utils) getArguments().getSerializable("OBJECT");
         keyId = getArguments().getString("KEYID");
         Parking p = (Parking) getArguments().getSerializable("PARKING");
+        boolean verified = getArguments().getBoolean("VERIFIED");
 
-        getInfo(keyId, info);
-        getEdits(keyId);
+        if (verified)
+            getInfo(keyId, info);
+        else
+            getVerify(keyId, info);
+
+        verify.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(requireActivity().getApplicationContext(), VerifyChangesActivity.class);
+                startActivity(intent);
+            }
+        });
 
         route.setOnClickListener(new View.OnClickListener()
         {
@@ -194,9 +209,9 @@ public class InfoFragment extends Fragment
         });
     }
 
-    public void getEdits(String id)
+    public void getVerify(String id, TextView info)
     {
-        db.collection("edits").whereEqualTo("id", id).addSnapshotListener(new EventListener<QuerySnapshot>()
+        db.collection("verifyparkings").whereEqualTo("id", id).addSnapshotListener(new EventListener<QuerySnapshot>()
         {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error)
@@ -204,10 +219,11 @@ public class InfoFragment extends Fragment
                 assert value != null;
                 for (DocumentChange d : value.getDocumentChanges())
                 {
-                    if (Boolean.TRUE.equals(d.getDocument().getBoolean("created")))
-                    {
-                        delete.setVisibility(View.VISIBLE);
-                    }
+                    getAddressNominatim(d.getDocument().get("latitude") + "," + d.getDocument().get("longtitude"),
+                            "FiyHNQAmeoWKRcEdp5KyYWOAaAKf-7hvtqkz--lGBDc", info);
+
+                    Log.i("TYP", String.valueOf(d.getType()));
+                    Log.i("EXDE", (String) Objects.requireNonNull(d.getDocument().get("name")));
                 }
             }
         });

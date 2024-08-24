@@ -243,7 +243,7 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                 mapa.put("harmonogram", schedule);
                 mapa.put("kwota", price);
 
-                checkIfExists(id);
+                //checkIfExists(id);
 
                 for (Map.Entry<String, Object> element : mapa.entrySet())
                 {
@@ -274,7 +274,6 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
 
     public void addVerify(String id, Parking parking)
     {
-        Log.i("EDIT", edits.getId());
         db.collection("verifyparkings").document(id).set(parking).addOnSuccessListener(new OnSuccessListener<Void>()
         {
             @Override

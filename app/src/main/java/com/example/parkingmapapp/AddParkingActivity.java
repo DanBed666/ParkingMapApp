@@ -44,7 +44,7 @@ import java.util.Random;
 public class AddParkingActivity extends AppCompatActivity implements HarmValueListener
 {
     AddressViewModel addressViewModel;
-    Map<String, String> schedule;
+    Map<String, String> schedule = new HashMap<>();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     GeoPoint location;
     String generatedId;
@@ -183,14 +183,17 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
                 String capacityMoto = getValue(spinnerMoto, opcjeEN);
                 String prize = cena.getText().toString();
 
+                if (schedule.isEmpty())
+                    schedule.put("Brak", "nie ma");
+
                 assert location != null;
 
                 assert user != null;
                 Parking newParking = new Parking(user.getUid(), id, name, parking, access, capacity, capacityDis, capacityTru, capacityBus, capacityMoto,
                         fee, supervised, operator, location.getLatitude(), location.getLongitude(), true, true, getActualDate(), "",
-                        schedule, prize);
+                        schedule, prize, false);
 
-                db.collection("parkings").document(id).set(newParking).addOnSuccessListener(new OnSuccessListener<Void>()
+                db.collection("verifyparkings").document(id).set(newParking).addOnSuccessListener(new OnSuccessListener<Void>()
                 {
                     @Override
                     public void onSuccess(Void unused)

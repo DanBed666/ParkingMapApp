@@ -15,13 +15,15 @@ public class FragmentInfoManager
     MapView map;
     GeoPoint startPoint;
     FragmentInterface listener;
+    boolean verified;
 
-    public FragmentInfoManager(Context context, MapView map, GeoPoint startPoint, FragmentInterface listener)
+    public FragmentInfoManager(Context context, MapView map, GeoPoint startPoint, FragmentInterface listener, boolean ver)
     {
         this.context = context;
         this.map = map;
         this.startPoint = startPoint;
         this.listener = listener;
+        verified = ver;
     }
 
     public void addFragment(GeoPoint endPoint, String id)
@@ -33,6 +35,7 @@ public class FragmentInfoManager
         Bundle bundle = new Bundle();
         bundle.putSerializable("OBJECT", u);
         bundle.putString("KEYID", id);
+        bundle.putBoolean("VERIFIED", verified);
         fragment.setArguments(bundle);
         Log.i("IDFRAG", id);
 

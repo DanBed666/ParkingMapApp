@@ -40,7 +40,6 @@ public class InfoProfileActivity extends AppCompatActivity
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
-    Spinner spinner;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -59,18 +58,12 @@ public class InfoProfileActivity extends AppCompatActivity
         ranga = findViewById(R.id.tv_ranga);
         created = findViewById(R.id.tv_created);
         edited = findViewById(R.id.tv_edited);
-        spinner = findViewById(R.id.spinner_access);
         registered = findViewById(R.id.tv_date);
-        String[] roles = getResources().getStringArray(R.array.ranga);
 
         Button guy = findViewById(R.id.btn_guy);
         Button changePass = findViewById(R.id.btn_change_pass);
         Button changeMail = findViewById(R.id.btn_change_email);
         Button adminPanel = findViewById(R.id.btn_panel);
-
-        ArrayAdapter<String> aa = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, roles);
-        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(aa);
 
         adminPanel.setOnClickListener(new View.OnClickListener()
         {
@@ -126,7 +119,7 @@ public class InfoProfileActivity extends AppCompatActivity
                         surname.setText(ds.getString("surname"));
                         ranga.setText(ds.getString("ranga"));
                         created.setText(ds.getString("created"));
-                        edited.setText(ds.getString("edited"));
+                        edited.setText(ds.getString("edits"));
                         registered.setText(ds.getString("registerDate"));
                     }
                 }

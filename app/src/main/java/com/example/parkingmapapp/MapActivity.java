@@ -305,8 +305,10 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver,
                 marker.setPosition(geoPoint);
                 marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
                     @Override
-                    public boolean onMarkerClick(Marker marker, MapView mapView) {
-                        FragmentInfoManager fragmentInfoManager = new FragmentInfoManager(getApplicationContext(), map, mLocationOverlay.getMyLocation(), listener);
+                    public boolean onMarkerClick(Marker marker, MapView mapView)
+                    {
+                        boolean verified = false;
+                        FragmentInfoManager fragmentInfoManager = new FragmentInfoManager(getApplicationContext(), map, mLocationOverlay.getMyLocation(), listener, verified);
                         fragmentInfoManager.addFragment(marker.getPosition(), id);
                         Log.i("IDPOINT", id);
 

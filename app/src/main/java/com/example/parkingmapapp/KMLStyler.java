@@ -63,7 +63,8 @@ public class KMLStyler implements KmlFeature.Styler
             @Override
             public boolean onMarkerClick(Marker marker, MapView mapView)
             {
-                fragmentInfoManager = new FragmentInfoManager(context, map, startPoint, listener);
+                boolean verified = true;
+                fragmentInfoManager = new FragmentInfoManager(context, map, startPoint, listener, verified);
                 fragmentInfoManager.addFragment(marker.getPosition(), id);
                 Log.i("IDPOINT", id);
 
@@ -93,7 +94,8 @@ public class KMLStyler implements KmlFeature.Styler
             @Override
             public boolean onMarkerClick(Marker marker, MapView mapView)
             {
-                fragmentInfoManager = new FragmentInfoManager(context, map, startPoint, listener);
+                boolean verified = true;
+                fragmentInfoManager = new FragmentInfoManager(context, map, startPoint, listener, verified);
                 fragmentInfoManager.addFragment(marker.getPosition(), id);
                 Log.i("IDPOINT", id);
 

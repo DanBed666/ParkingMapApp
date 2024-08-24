@@ -13,7 +13,7 @@ public class User implements Serializable
     private String nick;
     private String registerDate;
 
-    public User(String uId, String name, String surname, String ranga, String  edits, String  created, String nick, String reg)
+    public User(String uId, String name, String surname, String ranga, String edits, String created, String nick, String reg)
     {
         this.uId = uId;
         this.name = name;
