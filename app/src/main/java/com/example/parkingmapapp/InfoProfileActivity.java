@@ -19,6 +19,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,6 +29,10 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class InfoProfileActivity extends AppCompatActivity
 {
@@ -40,6 +45,10 @@ public class InfoProfileActivity extends AppCompatActivity
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
+    String caseC;
+    Spinner spinner;
+    Button adminPanel;
+    String id;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -53,17 +62,46 @@ public class InfoProfileActivity extends AppCompatActivity
             return insets;
         });
 
+        caseC = getIntent().getStringExtra("CASE");
+        id = getIntent().getStringExtra("ID");
         name = findViewById(R.id.tv_name);
         surname = findViewById(R.id.tv_surname);
         ranga = findViewById(R.id.tv_ranga);
         created = findViewById(R.id.tv_created);
         edited = findViewById(R.id.tv_edited);
         registered = findViewById(R.id.tv_date);
+        spinner = findViewById(R.id.spinner_access);
+        String[] roles = getResources().getStringArray(R.array.ranga);
 
         Button guy = findViewById(R.id.btn_guy);
         Button changePass = findViewById(R.id.btn_change_pass);
         Button changeMail = findViewById(R.id.btn_change_email);
-        Button adminPanel = findViewById(R.id.btn_panel);
+        adminPanel = findViewById(R.id.btn_panel);
+        Button confirm = findViewById(R.id.btn_confirm);
+
+        ArrayAdapter<String> aa = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, roles);
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(aa);
+
+        if (Objects.equals(caseC, "admin"))
+        {
+            guy.setVisibility(View.GONE);
+            changePass.setVisibility(View.GONE);
+            changeMail.setVisibility(View.GONE);
+            adminPanel.setVisibility(View.GONE);
+        }
+
+        confirm.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                int position = spinner.getSelectedItemPosition();
+                Map<String, Object> map = new HashMap<>();
+                map.put("ranga", roles[position]);
+                addUser(map);
+            }
+        });
 
         adminPanel.setOnClickListener(new View.OnClickListener()
         {
@@ -121,6 +159,11 @@ public class InfoProfileActivity extends AppCompatActivity
                         created.setText(ds.getString("created"));
                         edited.setText(ds.getString("edits"));
                         registered.setText(ds.getString("registerDate"));
+
+                        if (Objects.equals(ds.getString("ranga"), "Administrator"))
+                        {
+                            adminPanel.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
             }
@@ -130,6 +173,25 @@ public class InfoProfileActivity extends AppCompatActivity
             public void onFailure(@NonNull Exception e)
             {
 
+            }
+        });
+    }
+
+    public void addUser(Map<String, Object> mapa)
+    {
+        db.collection("users").document(id).update(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
+        {
+            @Override
+            public void onSuccess(Void documentReference)
+            {
+                Log.d("TEST", "DocumentSnapshot added with ID");
+            }
+        }).addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+                Log.d("ERROR", "Error: " + e.getMessage());
             }
         });
     }

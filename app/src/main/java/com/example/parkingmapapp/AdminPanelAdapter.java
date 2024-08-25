@@ -37,13 +37,15 @@ public class AdminPanelAdapter extends RecyclerView.Adapter<AdminPanelAdapter.Ad
     public void onBindViewHolder(@NonNull AdminPanelAdapter.AdminPanelViewHolder holder, int position)
     {
         holder.nazwa.setText(documentSnapshots.get(position).getString("nick"));
-
+        String id = documentSnapshots.get(position).getString("uId");
         holder.itemView.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
                 Intent intent = new Intent(context, InfoProfileActivity.class);
+                intent.putExtra("CASE", "admin");
+                intent.putExtra("ID", id);
                 context.startActivity(intent);
             }
         });

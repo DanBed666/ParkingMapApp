@@ -73,7 +73,9 @@ public class SettingsActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                startActivity(new Intent(getApplicationContext(), InfoProfileActivity.class));
+                Intent intent = new Intent(getApplicationContext(), InfoProfileActivity.class);
+                intent.putExtra("CASE", "konto");
+                startActivity(intent);
             }
         });
 
