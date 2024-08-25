@@ -75,4 +75,14 @@ public class ParkingEditHistoryActivity extends AppCompatActivity
             }
         });
     }
+
+    @Override
+    protected void onRestart()
+    {
+        super.onRestart();
+        finish();
+        overridePendingTransition(0, 0);
+        startActivity(getIntent());
+        overridePendingTransition(0, 0);
+    }
 }

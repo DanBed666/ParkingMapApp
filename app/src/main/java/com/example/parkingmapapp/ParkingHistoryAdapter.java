@@ -37,8 +37,20 @@ public class ParkingHistoryAdapter extends RecyclerView.Adapter<ParkingHistoryAd
     public void onBindViewHolder(@NonNull ParkingHistoryAdapter.ParkingHistoryViewHolder holder, int position)
     {
         holder.status.setText(documentSnapshotList.get(position).getString("status"));
-        holder.edited.setText(documentSnapshotList.get(position).getString("name"));
+        holder.name.setText(documentSnapshotList.get(position).getString("name"));
         String id = documentSnapshotList.get(position).getString("id");
+        String data;
+
+        if (documentSnapshotList.get(position).getString("dataCreated") != null)
+        {
+            data = documentSnapshotList.get(position).getString("dataCreated");
+        }
+        else
+        {
+            data = documentSnapshotList.get(position).getString("dataEdited");
+        }
+
+        holder.edited.setText(data);
 
         holder.itemView.setOnClickListener(new View.OnClickListener()
         {
@@ -62,11 +74,13 @@ public class ParkingHistoryAdapter extends RecyclerView.Adapter<ParkingHistoryAd
     {
         TextView status;
         TextView edited;
+        TextView name;
         public ParkingHistoryViewHolder(@NonNull View itemView)
         {
             super(itemView);
             status = itemView.findViewById(R.id.tv_status);
             edited = itemView.findViewById(R.id.tv_dataEdited);
+            name = itemView.findViewById(R.id.tv_name);
         }
     }
 }

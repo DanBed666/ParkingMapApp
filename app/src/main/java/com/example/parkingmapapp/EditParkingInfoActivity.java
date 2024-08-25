@@ -261,8 +261,12 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                     }
                 }
 
-                Parking newParking = new Parking(user.getUid(), id, generateId(), name, parking, access, capacity, cdis, ctru, cbus, cmot,
+                String editedId = generateId();
+
+                Parking newParking = new Parking(user.getUid(), id, editedId, name, parking, access, capacity, cdis, ctru, cbus, cmot,
                         fee, supervised, operator, getActualDate(), schedule, price, false, "Oczekujący", adres);
+
+                Log.i("EDS", editedId);
 
                 getUser(mapa, newParking);
 
@@ -292,7 +296,7 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
 
     public void addEdit(Parking parking)
     {
-        db.collection("edits").document(documentId).set(parking).addOnSuccessListener(new OnSuccessListener<Void>()
+        db.collection("edits").document(parking.getEditId()).set(parking).addOnSuccessListener(new OnSuccessListener<Void>()
         {
             @Override
             public void onSuccess(Void unused)

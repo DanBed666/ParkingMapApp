@@ -164,6 +164,7 @@ public class VerifyChangesActivity extends AppCompatActivity
                                 mapa.put("verified", true);
                                 mapa.put("status", "Zweryfikowany");
                                 editParking(mapa, "parkings");
+                                editParking(mapa, "edits");
                                 finish();
                             }
                         });
