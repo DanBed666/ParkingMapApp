@@ -57,7 +57,7 @@ public class DatabaseManager
         double finalLat = lat;
         double finalLon = lon;
 
-        Parking parking = new Parking("xyz123", id, nm, pk, acc, cpc, cpcd, cpct, cpcb, cpcm, fee, svd, ope,
+        Parking parking = new Parking("xyz123", id, "editId", nm, pk, acc, cpc, cpcd, cpct, cpcb, cpcm, fee, svd, ope,
                 finalLat, finalLon, false, false,
                 "18-03-2024 18:19", "28-06-2024 06:47", new ExampleHarms().getHarmonogram(), "12", true, "Zweryfikowany");
 

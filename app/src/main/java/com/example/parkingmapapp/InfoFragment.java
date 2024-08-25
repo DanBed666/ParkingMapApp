@@ -112,14 +112,7 @@ public class InfoFragment extends Fragment
         Parking p = (Parking) getArguments().getSerializable("PARKING");
         boolean verified = getArguments().getBoolean("VERIFIED");
 
-        if (verified)
-        {
-            getInfo(keyId, info);
-        }
-        else
-        {
-            getVerify(keyId, info);
-        }
+        getInfo(keyId, info);
 
         route.setOnClickListener(new View.OnClickListener()
         {
@@ -200,27 +193,6 @@ public class InfoFragment extends Fragment
             }
         });
     }
-
-    public void getVerify(String id, TextView info)
-    {
-        db.collection("verifyparkings").whereEqualTo("id", id).addSnapshotListener(new EventListener<QuerySnapshot>()
-        {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error)
-            {
-                assert value != null;
-                for (DocumentChange d : value.getDocumentChanges())
-                {
-                    getAddressNominatim(d.getDocument().get("latitude") + "," + d.getDocument().get("longtitude"),
-                            "FiyHNQAmeoWKRcEdp5KyYWOAaAKf-7hvtqkz--lGBDc", info);
-
-                    Log.i("TYP", String.valueOf(d.getType()));
-                    Log.i("EXDE", (String) Objects.requireNonNull(d.getDocument().get("name")));
-                }
-            }
-        });
-    }
-
     public void deleteParking(String id)
     {
         db.collection("parkings").document(id).delete().addOnSuccessListener(new OnSuccessListener<Void>()

@@ -53,7 +53,6 @@ public class ParkingInfoActivity extends AppCompatActivity
     TextView created_date;
     TextView edited_date;
     TextView status;
-    Button viewChanges;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
     Button history;
@@ -69,8 +68,7 @@ public class ParkingInfoActivity extends AppCompatActivity
     TextView price;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_parking_info);
@@ -118,13 +116,10 @@ public class ParkingInfoActivity extends AppCompatActivity
 
         getElementsFromDB("parkings");
         //getElementsFromDB("verifyparkings");
-        getUsers();
 
-        edit.setOnClickListener(new View.OnClickListener()
-        {
+        edit.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), EditParkingInfoActivity.class);
                 intent.putExtra("KEYID", id);
                 intent.putExtra("PARKING", p);
@@ -134,30 +129,18 @@ public class ParkingInfoActivity extends AppCompatActivity
             }
         });
 
-        userTV.setOnClickListener(new View.OnClickListener()
-        {
+        userTV.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), InfoProfileActivity.class));
             }
         });
 
-        history.setOnClickListener(new View.OnClickListener()
-        {
+        history.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
             {
-                startActivity(new Intent(getApplicationContext(), ParkingEditHistoryActivity.class));
-            }
-        });
-
-        viewChanges.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                Intent intent = new Intent(getApplicationContext(), VerifyChangesActivity.class);
+                Intent intent = new Intent(getApplicationContext(), ParkingEditHistoryActivity.class);
                 intent.putExtra("ID", id);
                 startActivity(intent);
             }
@@ -234,35 +217,13 @@ public class ParkingInfoActivity extends AppCompatActivity
         });
     }
 
-    public void getUsers()
+    @Override
+    protected void onRestart()
     {
-        db.collection("users").whereEqualTo("uId", user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
-        {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task)
-            {
-                if (task.isSuccessful())
-                {
-                    for (DocumentSnapshot ds : task.getResult().getDocuments())
-                    {
-                        if (Objects.equals(ds.getString("ranga"), "Moderator") || Objects.equals(ds.getString("ranga"), "Administrator"))
-                        {
-                            viewChanges.setVisibility(View.VISIBLE);
-                        }
-                    }
-                }
-                else
-                {
-                    Log.w("ERR", "Error getting documents.", task.getException());
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Log.e("ERR2", "Error getting documents.", e);
-            }
-        });
+        super.onRestart();
+        finish();
+        overridePendingTransition(0, 0);
+        startActivity(getIntent());
+        overridePendingTransition(0, 0);
     }
 }

@@ -98,13 +98,13 @@ public class VerifyChangesActivity extends AppCompatActivity
         price = findViewById(R.id.tv_price);
         addressViewModel = new AddressViewModel();
 
-        getUser();
         getVerifies();
     }
 
     public void getVerifies()
     {
-        db.collection("parkings").whereEqualTo("id", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        Log.i("VIERFIEIS", id);
+        db.collection("edits").whereEqualTo("id", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task)
@@ -154,6 +154,8 @@ public class VerifyChangesActivity extends AppCompatActivity
                         mapa.put("harmonogram", ds.get("harmonogram"));
                         mapa.put("kwota", ds.getString("kwota"));
 
+                        getUser(ds.getBoolean("verified"));
+
                         pass.setOnClickListener(new View.OnClickListener()
                         {
                             @Override
@@ -161,7 +163,7 @@ public class VerifyChangesActivity extends AppCompatActivity
                             {
                                 mapa.put("verified", true);
                                 mapa.put("status", "Zweryfikowany");
-                                editParking(mapa);
+                                editParking(mapa, "parkings");
                                 finish();
                             }
                         });
@@ -173,7 +175,7 @@ public class VerifyChangesActivity extends AppCompatActivity
                             {
                                 mapa.put("verified", false);
                                 mapa.put("status", "Odrzucony");
-                                editParking(mapa);
+                                editParking(mapa, "edits");
                                 finish();
                             }
                         });
@@ -193,9 +195,9 @@ public class VerifyChangesActivity extends AppCompatActivity
             }
         });
     }
-    public void editParking(Map<String, Object> mapa)
+    public void editParking(Map<String, Object> mapa, String col)
     {
-        db.collection("parkings").document(id).update(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
+        db.collection(col).document(id).update(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
         {
             @Override
             public void onSuccess(Void documentReference)
@@ -220,7 +222,7 @@ public class VerifyChangesActivity extends AppCompatActivity
         return formattedDate;
     }
 
-    public void getUser()
+    public void getUser(boolean verified)
     {
         db.collection("users").whereEqualTo("uId", user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
@@ -231,7 +233,7 @@ public class VerifyChangesActivity extends AppCompatActivity
                 {
                     for (DocumentSnapshot ds : task.getResult().getDocuments())
                     {
-                        if (Objects.equals(ds.getString("ranga"), "Administrator") || Objects.equals(ds.getString("ranga"), "Moderator"))
+                        if ((Objects.equals(ds.getString("ranga"), "Administrator") || Objects.equals(ds.getString("ranga"), "Moderator")) && !verified)
                         {
                             pass.setVisibility(View.VISIBLE);
                             notPass.setVisibility(View.VISIBLE);

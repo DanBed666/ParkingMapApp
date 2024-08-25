@@ -187,9 +187,10 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
                     schedule.put("Brak", "nie ma");
 
                 assert location != null;
+                String editId = generateId();
 
                 assert user != null;
-                Parking newParking = new Parking(user.getUid(), id, name, parking, access, capacity, capacityDis, capacityTru, capacityBus, capacityMoto,
+                Parking newParking = new Parking(user.getUid(), id, editId, name, parking, access, capacity, capacityDis, capacityTru, capacityBus, capacityMoto,
                         fee, supervised, operator, location.getLatitude(), location.getLongitude(), true, true, getActualDate(), "",
                         schedule, prize, false, "Oczekujący");
 
@@ -199,16 +200,14 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
                 intent.putExtra("GEOPOINT", (Parcelable) location);
                 setResult(1, intent);
 
-                getUser(id, newParking);
-                Intent i = new Intent(getApplicationContext(), ParkingEditHistoryActivity.class);
-                intent.putExtra("ID", id);
-                startActivity(i);
+                getUser(id, editId, newParking);
+
                 finish();
             }
         });
     }
 
-    public void getUser(String id, Parking newParking)
+    public void getUser(String id, String editId, Parking newParking)
     {
         db.collection("users").whereEqualTo("uId", user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
@@ -221,12 +220,22 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
                     {
                         if (Objects.equals(ds.getString("ranga"), "Administrator") || Objects.equals(ds.getString("ranga"), "Moderator"))
                         {
-                            addParking(id, newParking);
-                            addVerify(id, newParking, "verifyparkings");
+                            newParking.setVerified(true);
+                            newParking.setStatus("Zweryfikowany");
+                            addParking(id, newParking, "parkings");
+                            addParking(editId, newParking, "edits");
+                            Intent i = new Intent(getApplicationContext(), ParkingEditHistoryActivity.class);
+                            i.putExtra("ID", id);
+                            startActivity(i);
                         }
                         else
                         {
-                            addVerify(id, newParking, "verifyparkings");
+                            newParking.setVerified(false);
+                            newParking.setStatus("Oczekujący");
+                            addParking(editId, newParking, "edits");
+                            Intent i = new Intent(getApplicationContext(), ParkingEditHistoryActivity.class);
+                            i.putExtra("ID", id);
+                            startActivity(i);
                         }
                     }
                 }
@@ -241,28 +250,9 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
         });
     }
 
-    public void addVerify(String id, Parking newParking, String col)
+    public void addParking(String id, Parking newParking, String col)
     {
         db.collection(col).document(id).set(newParking).addOnSuccessListener(new OnSuccessListener<Void>()
-        {
-            @Override
-            public void onSuccess(Void unused)
-            {
-                Log.i("CREATEDADD", "created");
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
-            }
-        });
-    }
-
-    public void addParking(String id, Parking newParking)
-    {
-        db.collection("parkings").document(id).set(newParking).addOnSuccessListener(new OnSuccessListener<Void>()
         {
             @Override
             public void onSuccess(Void unused)

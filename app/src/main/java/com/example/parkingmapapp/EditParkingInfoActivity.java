@@ -42,6 +42,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 
 public class EditParkingInfoActivity extends AppCompatActivity implements HarmValueListener
 {
@@ -260,17 +261,18 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                     }
                 }
 
-                getUser(mapa);
+                Parking newParking = new Parking(user.getUid(), id, generateId(), name, parking, access, capacity, cdis, ctru, cbus, cmot,
+                        fee, supervised, operator, getActualDate(), schedule, price, false, "Oczekujący", adres);
 
-                Intent i = new Intent(getApplicationContext(), ParkingEditHistoryActivity.class);
-                i.putExtra("ID", id);
-                startActivity(i);
+                getUser(mapa, newParking);
+
                 finish();
             }
         });
     }
     public void editParking(Map<String, Object> mapa)
     {
+        Log.i("EDITPAR", documentId);
         db.collection("parkings").document(documentId).update(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
         {
             @Override
@@ -288,7 +290,26 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
         });
     }
 
-    public void getUser(Map<String, Object> mapa)
+    public void addEdit(Parking parking)
+    {
+        db.collection("edits").document(documentId).set(parking).addOnSuccessListener(new OnSuccessListener<Void>()
+        {
+            @Override
+            public void onSuccess(Void unused)
+            {
+                Log.i("CREATEDADD", "created");
+            }
+        }).addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+                Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
+            }
+        });
+    }
+
+    public void getUser(Map<String, Object> mapa, Parking newParking)
     {
         db.collection("users").whereEqualTo("uId", user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
@@ -303,13 +324,20 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                         {
                             mapa.put("verified", true);
                             mapa.put("status", "Zweryfikowany");
+                            newParking.setVerified(true);
+                            newParking.setStatus("Zweryfikowany");
                             editParking(mapa);
+                            addEdit(newParking);
+                            Intent i = new Intent(getApplicationContext(), ParkingEditHistoryActivity.class);
+                            i.putExtra("ID", id);
+                            startActivity(i);
                         }
                         else
                         {
-                            mapa.put("verified", false);
-                            mapa.put("status", "Oczekujący");
-                            editParking(mapa);
+                            addEdit(newParking);
+                            Intent i = new Intent(getApplicationContext(), ParkingEditHistoryActivity.class);
+                            i.putExtra("ID", id);
+                            startActivity(i);
                         }
                     }
                 }
@@ -364,6 +392,20 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
         }
 
         return position;
+    }
+
+    public String generateId()
+    {
+        Random random = new Random();
+        StringBuilder chain = new StringBuilder();
+
+        for (int i = 1; i <= 20; i++)
+        {
+            char c = (char)(random.nextInt(26) + 'a');
+            chain.append(c);
+        }
+
+        return chain.toString();
     }
 
     @Override

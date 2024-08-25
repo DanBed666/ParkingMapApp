@@ -37,14 +37,17 @@ public class ParkingHistoryAdapter extends RecyclerView.Adapter<ParkingHistoryAd
     public void onBindViewHolder(@NonNull ParkingHistoryAdapter.ParkingHistoryViewHolder holder, int position)
     {
         holder.status.setText(documentSnapshotList.get(position).getString("status"));
-        holder.edited.setText(documentSnapshotList.get(position).getString("edited"));
+        holder.edited.setText(documentSnapshotList.get(position).getString("name"));
+        String id = documentSnapshotList.get(position).getString("id");
 
         holder.itemView.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                context.startActivity(new Intent(context, VerifyChangesActivity.class));
+                Intent intent = new Intent(new Intent(context, VerifyChangesActivity.class));
+                intent.putExtra("ID", id);
+                context.startActivity(intent);
             }
         });
     }
@@ -63,7 +66,7 @@ public class ParkingHistoryAdapter extends RecyclerView.Adapter<ParkingHistoryAd
         {
             super(itemView);
             status = itemView.findViewById(R.id.tv_status);
-            edited = itemView.findViewById(R.id.tv_edited);
+            edited = itemView.findViewById(R.id.tv_dataEdited);
         }
     }
 }

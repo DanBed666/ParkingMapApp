@@ -1,6 +1,7 @@
 package com.example.parkingmapapp;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -52,7 +53,8 @@ public class ParkingEditHistoryActivity extends AppCompatActivity
 
     public void getHistory()
     {
-        db.collection("parkings").whereEqualTo("uId", user.getUid()).whereEqualTo("id", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        Log.i("HISTORY", id);
+        db.collection("edits").whereEqualTo("id", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task)
