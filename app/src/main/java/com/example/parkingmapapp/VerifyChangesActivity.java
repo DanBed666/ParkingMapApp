@@ -104,7 +104,7 @@ public class VerifyChangesActivity extends AppCompatActivity
     public void getVerifies()
     {
         Log.i("VIERFIEIS", id);
-        db.collection("edits").whereEqualTo("id", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        db.collection("edits").whereEqualTo("editId", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task)
@@ -113,28 +113,28 @@ public class VerifyChangesActivity extends AppCompatActivity
                 {
                     for (DocumentSnapshot ds : task.getResult().getDocuments())
                     {
-                        name.setText(ds.getString("name"));
-                        parking.setText(ds.getString("pking"));
-                        capacity.setText(ds.getString("capacity"));
-                        fee.setText(ds.getString("fee"));
-                        supervised.setText(ds.getString("supervised"));
-                        operator.setText(ds.getString("operator"));
-                        access.setText(ds.getString("access"));
-                        capacityDis.setText(ds.getString("capacityDisabled"));
-                        capacityTru.setText(ds.getString("capacityTrucks"));
-                        capacityBus.setText(ds.getString("capacityBus"));
-                        capacityMoto.setText(ds.getString("capacityMotorcycle"));
-                        price.setText(ds.getString("kwota"));
+                        name.setText("Nazwa: " + ds.getString("name"));
+                        parking.setText("Nawierzchnia: " + ds.getString("pking"));
+                        capacity.setText("Wielkość: " + ds.getString("capacity"));
+                        fee.setText("Płatny: " + ds.getString("fee"));
+                        supervised.setText("Strzeżony: " + ds.getString("supervised"));
+                        operator.setText("Operator: " + ds.getString("operator"));
+                        access.setText("Dostęp: " + ds.getString("access"));
+                        capacityDis.setText("Miejsca dla niepełnosprawnych: " + ds.getString("capacityDisabled"));
+                        capacityTru.setText("Miejsca dla tirów: " + ds.getString("capacityTrucks"));
+                        capacityBus.setText("Miejsca dla autobusów: " + ds.getString("capacityBus"));
+                        capacityMoto.setText("Miejsca dla motocykli: " + ds.getString("capacityMotorcycle"));
+                        price.setText("Cena: " + ds.getString("kwota"));
                         Map<String, String> schedule = (Map<String, String>) ds.get("harmonogram");
                         assert schedule != null;
-                        titleHarm.setText(schedule.get("Brak"));
-                        monHarm.setText(schedule.get("Poniedziałek"));
-                        tueHarm.setText(schedule.get("Wtorek"));
-                        wedHarm.setText(schedule.get("Środa"));
-                        thuHarm.setText(schedule.get("Czwartek"));
-                        friHarm.setText(schedule.get("Piątek"));
-                        satHarm.setText(schedule.get("Sobota"));
-                        sunHarm.setText(schedule.get("Niedziela"));
+                        titleHarm.setText("Brak: " + schedule.get("Brak"));
+                        monHarm.setText("Poniedziałek: " + schedule.get("Poniedziałek"));
+                        tueHarm.setText("Wtorek: " + schedule.get("Wtorek"));
+                        wedHarm.setText("Środa: " + schedule.get("Środa"));
+                        thuHarm.setText("Czwartek: " + schedule.get("Czwartek"));
+                        friHarm.setText("Piątek: " + schedule.get("Piątek"));
+                        satHarm.setText("Sobota: " + schedule.get("Sobota"));
+                        sunHarm.setText("Niedziela: " + schedule.get("Niedziela"));
                         String adres = ds.getString("address");
 
                         Map<String, Object> mapa = new HashMap<>();

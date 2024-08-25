@@ -38,7 +38,7 @@ public class ParkingHistoryAdapter extends RecyclerView.Adapter<ParkingHistoryAd
     {
         holder.status.setText(documentSnapshotList.get(position).getString("status"));
         holder.name.setText(documentSnapshotList.get(position).getString("name"));
-        String id = documentSnapshotList.get(position).getString("id");
+        String id = documentSnapshotList.get(position).getString("editId");
         String data;
 
         if (documentSnapshotList.get(position).getString("dataCreated") != null)

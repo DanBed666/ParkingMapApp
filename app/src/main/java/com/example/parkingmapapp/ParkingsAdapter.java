@@ -1,6 +1,7 @@
 package com.example.parkingmapapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +38,7 @@ public class ParkingsAdapter extends RecyclerView.Adapter<ParkingsAdapter.Parkin
     {
         boolean edited = Boolean.TRUE.equals(exampleList.get(position).get("edited"));
         boolean created = Boolean.TRUE.equals(exampleList.get(position).get("created"));
+        String id = exampleList.get(position).getString("editId");
 
         Log.i("HISTORIA88", String.valueOf(exampleList.size()));
         Log.i("HISTORIA88", String.valueOf(position));
@@ -45,17 +47,28 @@ public class ParkingsAdapter extends RecyclerView.Adapter<ParkingsAdapter.Parkin
 
         if (edited)
         {
-            holder.nazwa.setText(Objects.requireNonNull(exampleList.get(position).get("nazwa")).toString());
+            holder.nazwa.setText(Objects.requireNonNull(exampleList.get(position).get("name")).toString());
             holder.status_edyt.setText("Edytowano");
             holder.data.setText(Objects.requireNonNull(exampleList.get(position).get("dataEdited")).toString());
         }
 
         if (created)
         {
-            holder.nazwa.setText(Objects.requireNonNull(exampleList.get(position).get("nazwa")).toString());
+            holder.nazwa.setText(Objects.requireNonNull(exampleList.get(position).get("name")).toString());
             holder.status_edyt.setText("Utworzono");
             holder.data.setText(Objects.requireNonNull(exampleList.get(position).get("dataCreated")).toString());
         }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(new Intent(context, VerifyChangesActivity.class));
+                intent.putExtra("ID", id);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
