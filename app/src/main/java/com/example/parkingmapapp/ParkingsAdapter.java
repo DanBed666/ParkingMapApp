@@ -38,7 +38,8 @@ public class ParkingsAdapter extends RecyclerView.Adapter<ParkingsAdapter.Parkin
     {
         boolean edited = Boolean.TRUE.equals(exampleList.get(position).get("edited"));
         boolean created = Boolean.TRUE.equals(exampleList.get(position).get("created"));
-        String id = exampleList.get(position).getString("editId");
+        String editId = exampleList.get(position).getString("editId");
+        String id = exampleList.get(position).getString("id");
 
         Log.i("HISTORIA88", String.valueOf(exampleList.size()));
         Log.i("HISTORIA88", String.valueOf(position));
@@ -65,7 +66,8 @@ public class ParkingsAdapter extends RecyclerView.Adapter<ParkingsAdapter.Parkin
             public void onClick(View v)
             {
                 Intent intent = new Intent(new Intent(context, VerifyChangesActivity.class));
-                intent.putExtra("ID", id);
+                intent.putExtra("EDITID", editId);
+                intent.putExtra("PARKINGID", id);
                 context.startActivity(intent);
             }
         });

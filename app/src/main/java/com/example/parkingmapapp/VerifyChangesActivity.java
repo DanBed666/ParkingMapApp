@@ -35,6 +35,7 @@ public class VerifyChangesActivity extends AppCompatActivity
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String id;
+    String editId;
     TextView name;
     TextView parking;
     TextView capacity;
@@ -73,7 +74,8 @@ public class VerifyChangesActivity extends AppCompatActivity
             return insets;
         });
 
-        id = getIntent().getStringExtra("ID");
+        id = getIntent().getStringExtra("PARKINGID");
+        editId = getIntent().getStringExtra("EDITID");
         name = findViewById(R.id.tv_name);
         parking = findViewById(R.id.tv_parking);
         capacity = findViewById(R.id.tv_capacity);
@@ -104,7 +106,7 @@ public class VerifyChangesActivity extends AppCompatActivity
     public void getVerifies()
     {
         Log.i("VIERFIEIS", id);
-        db.collection("edits").whereEqualTo("editId", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        db.collection("edits").whereEqualTo("editId", editId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task)
@@ -154,7 +156,7 @@ public class VerifyChangesActivity extends AppCompatActivity
                         mapa.put("harmonogram", ds.get("harmonogram"));
                         mapa.put("kwota", ds.getString("kwota"));
 
-                        getUser(ds.getBoolean("verified"));
+                        getUser(Boolean.TRUE.equals(ds.getBoolean("verified")));
 
                         pass.setOnClickListener(new View.OnClickListener()
                         {
@@ -163,8 +165,8 @@ public class VerifyChangesActivity extends AppCompatActivity
                             {
                                 mapa.put("verified", true);
                                 mapa.put("status", "Zweryfikowany");
-                                editParking(mapa, "parkings");
-                                editParking(mapa, "edits");
+                                editParking(mapa, "parkings", id);
+                                editParking(mapa, "edits", editId);
                                 finish();
                             }
                         });
@@ -176,7 +178,7 @@ public class VerifyChangesActivity extends AppCompatActivity
                             {
                                 mapa.put("verified", false);
                                 mapa.put("status", "Odrzucony");
-                                editParking(mapa, "edits");
+                                editParking(mapa, "edits", editId);
                                 finish();
                             }
                         });
@@ -196,9 +198,9 @@ public class VerifyChangesActivity extends AppCompatActivity
             }
         });
     }
-    public void editParking(Map<String, Object> mapa, String col)
+    public void editParking(Map<String, Object> mapa, String col, String idNumber)
     {
-        db.collection(col).document(id).update(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
+        db.collection(col).document(idNumber).update(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
         {
             @Override
             public void onSuccess(Void documentReference)
@@ -234,10 +236,10 @@ public class VerifyChangesActivity extends AppCompatActivity
                 {
                     for (DocumentSnapshot ds : task.getResult().getDocuments())
                     {
-                        if ((Objects.equals(ds.getString("ranga"), "Administrator") || Objects.equals(ds.getString("ranga"), "Moderator")) && !verified)
+                        if ((Objects.equals(ds.getString("ranga"), "Użytkownik") || verified))
                         {
-                            pass.setVisibility(View.VISIBLE);
-                            notPass.setVisibility(View.VISIBLE);
+                            pass.setVisibility(View.GONE);
+                            notPass.setVisibility(View.GONE);
                         }
                     }
                 }
