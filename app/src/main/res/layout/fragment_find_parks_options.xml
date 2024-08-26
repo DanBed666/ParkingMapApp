@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="22dp"
                 android:textAlignment="center"
-                android:text="Filtrowanie"/>
+                android:text="Znajdź parking"/>
 
             <TextView
                 android:layout_width="match_parent"

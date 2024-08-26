@@ -46,19 +46,10 @@ public class ParkingsAdapter extends RecyclerView.Adapter<ParkingsAdapter.Parkin
         //Log.i("HIST", Objects.requireNonNull(exampleList.get(position).getString("edited")));
         //Log.i("HIST", Objects.requireNonNull(exampleList.get(position).getString("dataEdited")));
 
-        if (edited)
-        {
-            holder.nazwa.setText(Objects.requireNonNull(exampleList.get(position).get("name")).toString());
-            holder.status_edyt.setText("Edytowano");
-            holder.data.setText(Objects.requireNonNull(exampleList.get(position).get("dataEdited")).toString());
-        }
+        holder.nazwa.setText(Objects.requireNonNull(exampleList.get(position).get("name")).toString());
+        holder.data.setText(Objects.requireNonNull(exampleList.get(position).get("dataEdited")).toString());
+        holder.data.setText(Objects.requireNonNull(exampleList.get(position).get("dataCreated")).toString());
 
-        if (created)
-        {
-            holder.nazwa.setText(Objects.requireNonNull(exampleList.get(position).get("name")).toString());
-            holder.status_edyt.setText("Utworzono");
-            holder.data.setText(Objects.requireNonNull(exampleList.get(position).get("dataCreated")).toString());
-        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener()
         {

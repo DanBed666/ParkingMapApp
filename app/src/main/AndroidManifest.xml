@@ -20,6 +20,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".HarmonogramActivity"
+            android:exported="false" />
+        <activity
             android:name=".MapActivityShow"
             android:exported="false" />
         <activity
@@ -39,9 +42,6 @@
             android:exported="false" />
         <activity
             android:name=".ScheduleActivity"
-            android:exported="false" />
-        <activity
-            android:name=".HarmonogramActivity"
             android:exported="false" />
         <activity
             android:name=".EditCarActivity"

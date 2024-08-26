@@ -8,6 +8,13 @@
     tools:context=".PaymentActivity"
     android:orientation="vertical">
 
+    <TextView
+        android:text="Płatność"
+        android:textAlignment="center"
+        android:textSize="26dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <Button
         android:id="@+id/btn_pay"
         android:layout_width="match_parent"

@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="22dp"
                 android:textAlignment="center"
-                android:text="Dodaj parking"/>
+                android:text="Edycja parkingu"/>
 
             <EditText
                 android:id="@+id/et_nazwa"
@@ -237,7 +237,7 @@
                 android:id="@+id/btn_create"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="STWÓRZ"
+                android:text="EDYTUJ"
                 android:layout_marginTop="10dp"/>
 
         </LinearLayout>

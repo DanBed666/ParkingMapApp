@@ -8,6 +8,13 @@
     tools:context=".EmailChangeActivity"
     android:orientation="vertical">
 
+    <TextView
+        android:text="Zmiana adresu email"
+        android:textAlignment="center"
+        android:textSize="26dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <EditText
         android:id="@+id/et_email"
         android:layout_width="match_parent"

@@ -11,6 +11,13 @@
         android:orientation="vertical"
         android:background="#FFF000">
 
+        <TextView
+            android:text="Edytuj godziny otwarcia"
+            android:textAlignment="center"
+            android:textSize="26dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/switch_all"
             android:layout_width="match_parent"

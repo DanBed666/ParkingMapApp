@@ -11,7 +11,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Historia parkingów"
+        android:text="Historia edycji parkingów"
         android:textAlignment="center"
         android:textSize="22dp"/>
 

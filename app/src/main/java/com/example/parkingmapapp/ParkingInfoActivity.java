@@ -29,6 +29,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
 
@@ -57,15 +58,8 @@ public class ParkingInfoActivity extends AppCompatActivity
     FirebaseUser user = mAuth.getCurrentUser();
     Button history;
     TextView userTV;
-    TextView titleHarm;
-    TextView monHarm;
-    TextView tueHarm;
-    TextView wedHarm;
-    TextView thuHarm;
-    TextView friHarm;
-    TextView satHarm;
-    TextView sunHarm;
     TextView price;
+    Button btnHarm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,14 +91,7 @@ public class ParkingInfoActivity extends AppCompatActivity
         status = findViewById(R.id.tv_status);
         history = findViewById(R.id.btn_hist);
         userTV = findViewById(R.id.tv_user);
-        titleHarm = findViewById(R.id.tv_supervisedeins);
-        monHarm = findViewById(R.id.tv_supervisedmon);
-        tueHarm = findViewById(R.id.tv_supervisedtue);
-        wedHarm = findViewById(R.id.tv_supervisedwed);
-        thuHarm = findViewById(R.id.tv_supervisedthu);
-        friHarm = findViewById(R.id.tv_supervisedfri);
-        satHarm = findViewById(R.id.tv_supervisedsat);
-        sunHarm = findViewById(R.id.tv_supervisedsun);
+        btnHarm = findViewById(R.id.btn_harm);
         price = findViewById(R.id.tv_price);
 
         id = getIntent().getStringExtra("KEYID");
@@ -179,6 +166,22 @@ public class ParkingInfoActivity extends AppCompatActivity
                         String stat = (String) document.getData().get("status");
                         String user = (String) document.getData().get("uId");
 
+                        if (sup.equals("yes"))
+                        {
+                            btnHarm.setVisibility(View.VISIBLE);
+                        }
+
+                        btnHarm.setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View v)
+                            {
+                                Intent intent = new Intent(getApplicationContext(), HarmonogramActivity.class);
+                                intent.putExtra("SCHEDULE", (Serializable) harm);
+                                startActivity(new Intent(getApplicationContext(), HarmonogramActivity.class));
+                            }
+                        });
+
                         name.setText("Nazwa: " + nam);
                         parking.setText("Typ parkingu: " + pkg);
                         capacity.setText("Wielkość: " + cpc);
@@ -197,17 +200,6 @@ public class ParkingInfoActivity extends AppCompatActivity
                         edited_date.setText(editedDate);
                         status.setText(stat);
                         userTV.setText(user);
-
-
-                        assert harm != null;
-                        titleHarm.setText(harm.get("Brak"));
-                        monHarm.setText(harm.get("Poniedziałek"));
-                        tueHarm.setText(harm.get("Wtorek"));
-                        wedHarm.setText(harm.get("Środa"));
-                        thuHarm.setText(harm.get("Czwartek"));
-                        friHarm.setText(harm.get("Piątek"));
-                        satHarm.setText(harm.get("Sobota"));
-                        sunHarm.setText(harm.get("Niedziela"));
                     }
                 }
                 else

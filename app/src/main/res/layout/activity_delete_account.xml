@@ -8,6 +8,13 @@
     tools:context=".DeleteAccountActivity"
     android:orientation="vertical">
 
+    <TextView
+        android:text="Usuwanie konta"
+        android:textAlignment="center"
+        android:textSize="26dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <EditText
         android:id="@+id/et_email"
         android:layout_width="match_parent"

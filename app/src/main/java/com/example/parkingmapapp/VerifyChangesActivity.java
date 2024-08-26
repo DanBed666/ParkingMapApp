@@ -27,6 +27,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -54,17 +55,10 @@ public class VerifyChangesActivity extends AppCompatActivity
     Button notPass;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
-    TextView titleHarm;
-    TextView monHarm;
-    TextView tueHarm;
-    TextView wedHarm;
-    TextView thuHarm;
-    TextView friHarm;
-    TextView satHarm;
-    TextView sunHarm;
     TextView price;
     AddressViewModel addressViewModel;
     Button showOnMap;
+    Button harmBut;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -93,18 +87,11 @@ public class VerifyChangesActivity extends AppCompatActivity
         capacityMoto = findViewById(R.id.tv_capacitymoto);
         pass = findViewById(R.id.btn_pass);
         notPass = findViewById(R.id.btn_notpass);
-        titleHarm = findViewById(R.id.tv_supervisedeins);
-        monHarm = findViewById(R.id.tv_supervisedmon);
-        tueHarm = findViewById(R.id.tv_supervisedtue);
-        wedHarm = findViewById(R.id.tv_supervisedwed);
-        thuHarm = findViewById(R.id.tv_supervisedthu);
-        friHarm = findViewById(R.id.tv_supervisedfri);
-        satHarm = findViewById(R.id.tv_supervisedsat);
-        sunHarm = findViewById(R.id.tv_supervisedsun);
         price = findViewById(R.id.tv_price);
         addressViewModel = new AddressViewModel();
         showOnMap = findViewById(R.id.btn_showonmap);
         String edit = "nic";
+        harmBut = findViewById(R.id.btn_harm);
 
         if (getIntent().getStringExtra("EDITST") != null)
         {
@@ -144,36 +131,26 @@ public class VerifyChangesActivity extends AppCompatActivity
                         capacityMoto.setText("Miejsca dla motocykli: " + ds.getString("capacityMotorcycle"));
                         price.setText("Cena: " + ds.getString("kwota"));
                         Map<String, String> schedule = (Map<String, String>) ds.get("harmonogram");
-                        assert schedule != null;
-                        titleHarm.setText("Brak: " + schedule.get("Brak"));
-                        monHarm.setText("Poniedziałek: " + schedule.get("Poniedziałek"));
-                        tueHarm.setText("Wtorek: " + schedule.get("Wtorek"));
-                        wedHarm.setText("Środa: " + schedule.get("Środa"));
-                        thuHarm.setText("Czwartek: " + schedule.get("Czwartek"));
-                        friHarm.setText("Piątek: " + schedule.get("Piątek"));
-                        satHarm.setText("Sobota: " + schedule.get("Sobota"));
-                        sunHarm.setText("Niedziela: " + schedule.get("Niedziela"));
-                        String adres = ds.getString("address");
+
+                        Map<String, Object> mapa = new HashMap<>();
+
+                        if (Objects.equals(ds.getString("supervised"), "yes"))
+                        {
+                            harmBut.setVisibility(View.VISIBLE);
+                        }
+                        harmBut.setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View v)
+                            {
+                                Intent intent = new Intent(getApplicationContext(), HarmonogramActivity.class);
+                                intent.putExtra("SCHEDULE", (Serializable) schedule);
+                                startActivity(new Intent(getApplicationContext(), HarmonogramActivity.class));
+                            }
+                        });
 
                         double lat = ds.getDouble("latitude");
                         double lon = ds.getDouble("longitude");
-
-                        Map<String, Object> mapa = new HashMap<>();
-                        mapa.put("name", ds.getString("name"));
-                        mapa.put("pking", ds.getString("pking"));
-                        mapa.put("capacity", ds.getString("capacity"));
-                        mapa.put("fee", ds.getString("fee"));
-                        mapa.put("supervised", ds.getString("supervised"));
-                        mapa.put("operator", ds.getString("operator"));
-                        mapa.put("edited", false);
-                        mapa.put("access", ds.getString("access"));
-                        mapa.put("capacityDisabled", ds.getString("capacityDisabled"));
-                        mapa.put("capacityTrucks", ds.getString("capacityTrucks"));
-                        mapa.put("capacityBus", ds.getString("capacityBus"));
-                        mapa.put("capacityMotorcycle", ds.getString("capacityMotorcycle"));
-                        mapa.put("dataEdited", getActualDate());
-                        mapa.put("harmonogram", ds.get("harmonogram"));
-                        mapa.put("kwota", ds.getString("kwota"));
 
                         getUser(Boolean.TRUE.equals(ds.getBoolean("verified")));
 
@@ -194,6 +171,7 @@ public class VerifyChangesActivity extends AppCompatActivity
                             @Override
                             public void onClick(View v)
                             {
+                                addMap(mapa, ds);
                                 mapa.put("verified", true);
                                 mapa.put("status", "Zweryfikowany");
                                 mapa.put("edited", true);
@@ -208,6 +186,7 @@ public class VerifyChangesActivity extends AppCompatActivity
                             @Override
                             public void onClick(View v)
                             {
+                                addMap(mapa, ds);
                                 mapa.put("verified", false);
                                 mapa.put("status", "Odrzucony");
                                 editParking(mapa, "edits", editId);
@@ -284,5 +263,24 @@ public class VerifyChangesActivity extends AppCompatActivity
 
             }
         });
+    }
+
+    public void addMap(Map<String, Object> mapa, DocumentSnapshot ds)
+    {
+        mapa.put("name", ds.getString("name"));
+        mapa.put("pking", ds.getString("pking"));
+        mapa.put("capacity", ds.getString("capacity"));
+        mapa.put("fee", ds.getString("fee"));
+        mapa.put("supervised", ds.getString("supervised"));
+        mapa.put("operator", ds.getString("operator"));
+        mapa.put("edited", false);
+        mapa.put("access", ds.getString("access"));
+        mapa.put("capacityDisabled", ds.getString("capacityDisabled"));
+        mapa.put("capacityTrucks", ds.getString("capacityTrucks"));
+        mapa.put("capacityBus", ds.getString("capacityBus"));
+        mapa.put("capacityMotorcycle", ds.getString("capacityMotorcycle"));
+        mapa.put("dataEdited", getActualDate());
+        mapa.put("harmonogram", ds.get("harmonogram"));
+        mapa.put("kwota", ds.getString("kwota"));
     }
 }

@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:textSize="26dp"
         android:textAlignment="center"
-        android:text="Dodaj samochód"/>
+        android:text="Edytuj wybrany samochód"/>
 
     <EditText
         android:id="@+id/et_marka"
