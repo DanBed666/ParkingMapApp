@@ -9,34 +9,39 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="26dp"
-        android:textAlignment="center"/>
+        android:textAlignment="center"
+        android:text="lol"/>
 
     <TextView
         android:id="@+id/adres"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="26dp"
-        android:textAlignment="center"/>
+        android:textAlignment="center"
+        android:text="lol"/>
 
     <TextView
         android:id="@+id/status_edyt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="26dp"
-        android:textAlignment="center"/>
+        android:textAlignment="center"
+        android:text="lol"/>
 
     <TextView
         android:id="@+id/status_weryf"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="26dp"
-        android:textAlignment="center"/>
+        android:textAlignment="center"
+        android:text="lol"/>
 
     <TextView
         android:id="@+id/data"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="26dp"
-        android:textAlignment="center"/>
+        android:textAlignment="center"
+        android:text="lol"/>
 
 </LinearLayout>

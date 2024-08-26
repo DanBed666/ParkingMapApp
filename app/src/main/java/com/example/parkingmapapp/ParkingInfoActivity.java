@@ -142,6 +142,7 @@ public class ParkingInfoActivity extends AppCompatActivity
             {
                 Intent intent = new Intent(getApplicationContext(), ParkingEditHistoryActivity.class);
                 intent.putExtra("ID", id);
+                intent.putExtra("EDIT", "info");
                 startActivity(intent);
             }
         });

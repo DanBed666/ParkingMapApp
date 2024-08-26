@@ -159,7 +159,7 @@ public class InfoFragment extends Fragment
                 assert value != null;
                 for (DocumentChange d : value.getDocumentChanges())
                 {
-                    getAddressNominatim(d.getDocument().get("latitude") + "," + d.getDocument().get("longtitude"),
+                    getAddressNominatim(d.getDocument().get("latitude") + "," + d.getDocument().get("longitude"),
                             "FiyHNQAmeoWKRcEdp5KyYWOAaAKf-7hvtqkz--lGBDc", info);
 
                     if (d.getDocument().get("fee") == "yes" && d.getDocument().get("kwota") != null)

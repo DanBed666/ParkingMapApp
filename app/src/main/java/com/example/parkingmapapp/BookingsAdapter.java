@@ -52,7 +52,7 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.Bookin
         holder.data.setText(exampleList.get(position).getString("reservationDate"));
         String ticketId = exampleList.get(position).getString("ticketId");
 
-        getAddressNominatim(exampleList.get(position).getDouble("latitude") + "," + exampleList.get(position).getDouble("longtitude"),
+        getAddressNominatim(exampleList.get(position).getDouble("latitude") + "," + exampleList.get(position).getDouble("longitude"),
                 "FiyHNQAmeoWKRcEdp5KyYWOAaAKf-7hvtqkz--lGBDc", holder.adres);
 
         if(!checkValidity(exampleList.get(position).getString("validThruDate")))

@@ -318,6 +318,14 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver,
 
                 map.getOverlays().add(marker);
             }
+            else if (myStr.equals("show"))
+            {
+                Marker marker = new Marker(map);
+                double lat = data.getDoubleExtra("LAT", 0);
+                double lon = data.getDoubleExtra("LON", 0);
+                marker.setPosition(new GeoPoint(lat, lon));
+                map.getOverlays().add(marker);
+            }
         }
     }
 }

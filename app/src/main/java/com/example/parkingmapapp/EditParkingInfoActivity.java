@@ -53,6 +53,23 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
     String adres;
+    Spinner spinnerType;
+    Spinner spinnerAccess;
+    Spinner spinnerFee;
+    Spinner spinnerSupervised;
+    Spinner spinnerBus;
+    Spinner spinnerTrucks;
+    Spinner spinnerDisabled;
+    Spinner spinnerMoto;
+    EditText nameET;
+    EditText capacityET;
+    EditText operatorET;
+    Button edit;
+    EditText cenaET;
+    Button harmonogram;
+    String [] typesEN = {"", "surface", "street_side", "multi-storey", "underground"};;
+    String [] accessTabEN = {"", "yes", "private", "customers"};
+    String [] opcjeEN = {"", "yes", "no"};
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -70,27 +87,24 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
         documentId = getIntent().getStringExtra("DOCUMENTID");
         adres = getIntent().getStringExtra("ADDRESS");
 
-        Spinner spinnerType = findViewById(R.id.spinner_type);
-        Spinner spinnerAccess = findViewById(R.id.spinner_access);
-        Spinner spinnerFee = findViewById(R.id.spinner_fee);
-        Spinner spinnerSupervised = findViewById(R.id.spinner_supervised);
-        Spinner spinnerBus = findViewById(R.id.spinner_bus);
-        Spinner spinnerTrucks = findViewById(R.id.spinner_truck);
-        Spinner spinnerDisabled = findViewById(R.id.spinner_disabled);
-        Spinner spinnerMoto = findViewById(R.id.spinner_moto);
-        EditText nameET = findViewById(R.id.et_nazwa);
-        EditText capacityET = findViewById(R.id.et_capacity);
-        EditText operatorET = findViewById(R.id.et_operator);
-        Button edit = findViewById(R.id.btn_create);
-        EditText cenaET = findViewById(R.id.et_cena);
-        Button harmonogram = findViewById(R.id.btn_hours);
+        spinnerType = findViewById(R.id.spinner_type);
+        spinnerAccess = findViewById(R.id.spinner_access);
+        spinnerFee = findViewById(R.id.spinner_fee);
+        spinnerSupervised = findViewById(R.id.spinner_supervised);
+        spinnerBus = findViewById(R.id.spinner_bus);
+        spinnerTrucks = findViewById(R.id.spinner_truck);
+        spinnerDisabled = findViewById(R.id.spinner_disabled);
+        spinnerMoto = findViewById(R.id.spinner_moto);
+        nameET = findViewById(R.id.et_nazwa);
+        capacityET = findViewById(R.id.et_capacity);
+        operatorET = findViewById(R.id.et_operator);
+        edit = findViewById(R.id.btn_create);
+        cenaET = findViewById(R.id.et_cena);
+        harmonogram = findViewById(R.id.btn_hours);
 
         String[] types = getResources().getStringArray(R.array.types);
-        String[] typesEN = {"", "surface", "street_side", "multi-storey", "underground"};
         String[] accessTab = getResources().getStringArray(R.array.access);
-        String[] accessTabEN = {"", "yes", "private", "customers"};
         String[] opcje = getResources().getStringArray(R.array.options);
-        String[] opcjeEN = {"", "yes", "no"};
 
         initializeAdapter(types, spinnerType);
         initializeAdapter(opcje, spinnerFee);
@@ -169,6 +183,9 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                         String cena = (String) document.getData().get("kwota");
                         schedule = (Map<String, String>) document.getData().get("harmonogram");
 
+                        double latitude = (double) document.getData().get("latitude");
+                        double longitude = (double) document.getData().get("longitude");
+
                         nameET.setText(nam);
                         capacityET.setText(cpc);
                         operatorET.setText(ope);
@@ -182,6 +199,8 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                         spinnerBus.setSelection(getPosition(cbus, opcjeEN));
                         spinnerMoto.setSelection(getPosition(cmot, opcjeEN));
                         spinnerTrucks.setSelection(getPosition(ctru, opcjeEN));
+
+                        editListener(latitude, longitude);
                     }
                 }
                 else
@@ -208,7 +227,10 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                         .commit();
             }
         });
+    }
 
+    private void editListener(double lat, double lon)
+    {
         edit.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -264,7 +286,7 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                 String editedId = generateId();
 
                 Parking newParking = new Parking(user.getUid(), id, editedId, name, parking, access, capacity, cdis, ctru, cbus, cmot,
-                        fee, supervised, operator, getActualDate(), schedule, price, false, "Oczekujący", adres);
+                        fee, supervised, operator, getActualDate(), schedule, price, false, "Oczekujący", lat, lon, false);
 
                 Log.i("EDS", editedId);
 
@@ -274,6 +296,7 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
             }
         });
     }
+
     public void editParking(Map<String, Object> mapa)
     {
         Log.i("EDITPAR", documentId);
@@ -330,6 +353,7 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                             mapa.put("status", "Zweryfikowany");
                             newParking.setVerified(true);
                             newParking.setStatus("Zweryfikowany");
+                            newParking.setEdited(true);
                             editParking(mapa);
                             addEdit(newParking);
                             Intent i = new Intent(getApplicationContext(), ParkingEditHistoryActivity.class);

@@ -158,13 +158,13 @@ public class Utils implements Serializable, Parcelable
                     {
                         Marker marker = new Marker(map);
                         Double latitude = ds.getDouble("latitude");
-                        Double longtitude = ds.getDouble("longtitude");
+                        Double longitude = ds.getDouble("longitude");
 
                         Log.i("WYNIK", ds.getId());
 
-                        if (latitude != null && longtitude != null)
+                        if (latitude != null && longitude != null)
                         {
-                            GeoPoint position = new GeoPoint(latitude, longtitude);
+                            GeoPoint position = new GeoPoint(latitude, longitude);
                             marker.setPosition(position);
                             Log.i("MARKER", position.getLatitude() + " " + position.getLongitude());
                             marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener()

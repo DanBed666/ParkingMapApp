@@ -1,7 +1,5 @@
 package com.example.parkingmapapp;
 
-import org.osmdroid.util.GeoPoint;
-
 import java.io.Serializable;
 import java.util.Map;
 
@@ -21,7 +19,7 @@ public class Parking implements Serializable
     private String supervised;
     private String operator;
     private double latitude;
-    private double longtitude;
+    private double longitude;
     private boolean edited;
     private boolean created;
     private String dataCreated;
@@ -53,7 +51,7 @@ public class Parking implements Serializable
         this.supervised = supervised;
         this.operator = operator;
         this.latitude = latitude;
-        this.longtitude = longtitude;
+        this.longitude = longtitude;
         this.edited = edited;
         this.created = created;
         this.dataCreated = dataCreated;
@@ -67,7 +65,7 @@ public class Parking implements Serializable
     public Parking(String uId, String id, String editId, String name, String pking, String access, String capacity, String capacityDisabled,
                    String capacityTrucks, String capacityBus, String capacityMotorcycle, String fee, String supervised,
                    String operator, String dataEdited, Map<String, String> harmonogram,
-                   String kwota, boolean verified, String status, String address)
+                   String kwota, boolean verified, String status, double lat, double lon, boolean edited)
     {
         this.uId = uId;
         this.id = id;
@@ -88,7 +86,9 @@ public class Parking implements Serializable
         this.kwota = kwota;
         this.verified = verified;
         this.status = status;
-        this.address = address;
+        this.latitude = lat;
+        this.longitude = lon;
+        this.edited = edited;
     }
 
     public String getEditId() {
@@ -226,12 +226,12 @@ public class Parking implements Serializable
         this.latitude = latitude;
     }
 
-    public double getLongtitude() {
-        return longtitude;
+    public double getLongitude() {
+        return longitude;
     }
 
-    public void setLongtitude(double longtitude) {
-        this.longtitude = longtitude;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public String getName() { return name; }

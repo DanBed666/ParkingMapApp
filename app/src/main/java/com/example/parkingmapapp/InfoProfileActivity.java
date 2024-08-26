@@ -49,6 +49,7 @@ public class InfoProfileActivity extends AppCompatActivity
     Spinner spinner;
     Button adminPanel;
     String id;
+    Button verifyPanel;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -78,6 +79,7 @@ public class InfoProfileActivity extends AppCompatActivity
         Button changeMail = findViewById(R.id.btn_change_email);
         adminPanel = findViewById(R.id.btn_panel);
         Button confirm = findViewById(R.id.btn_confirm);
+        verifyPanel = findViewById(R.id.btn_ver);
 
         ArrayAdapter<String> aa = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, roles);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -112,6 +114,15 @@ public class InfoProfileActivity extends AppCompatActivity
             }
         });
 
+        verifyPanel.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                startActivity(new Intent(getApplicationContext(), VerifyPanelActivity.class));
+            }
+        });
+
         guy.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -139,6 +150,8 @@ public class InfoProfileActivity extends AppCompatActivity
             }
         });
 
+        getEdits("created", created);
+        getEdits("edited", edited);
         getUser();
     }
 
@@ -156,13 +169,16 @@ public class InfoProfileActivity extends AppCompatActivity
                         name.setText(ds.getString("name"));
                         surname.setText(ds.getString("surname"));
                         ranga.setText(ds.getString("ranga"));
-                        created.setText(ds.getString("created"));
-                        edited.setText(ds.getString("edits"));
                         registered.setText(ds.getString("registerDate"));
 
                         if (Objects.equals(ds.getString("ranga"), "Administrator"))
                         {
                             adminPanel.setVisibility(View.VISIBLE);
+                        }
+
+                        if (Objects.equals(ds.getString("ranga"), "Administrator") || Objects.equals(ds.getString("ranga"), "Moderator"))
+                        {
+                            verifyPanel.setVisibility(View.VISIBLE);
                         }
                     }
                 }
@@ -192,6 +208,30 @@ public class InfoProfileActivity extends AppCompatActivity
             public void onFailure(@NonNull Exception e)
             {
                 Log.d("ERROR", "Error: " + e.getMessage());
+            }
+        });
+    }
+
+    public void getEdits(String field, TextView textView)
+    {
+        db.collection("edits").whereEqualTo("uId", user.getUid()).whereEqualTo(field, true).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task)
+            {
+                Log.i("DUPPP", String.valueOf(task.getResult().getDocuments().size()));
+
+                if (task.isSuccessful())
+                {
+                    textView.setText(String.valueOf(task.getResult().getDocuments().size()));
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+
             }
         });
     }

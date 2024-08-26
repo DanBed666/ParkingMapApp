@@ -1,6 +1,8 @@
 package com.example.parkingmapapp;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
@@ -61,6 +64,7 @@ public class VerifyChangesActivity extends AppCompatActivity
     TextView sunHarm;
     TextView price;
     AddressViewModel addressViewModel;
+    Button showOnMap;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -99,6 +103,18 @@ public class VerifyChangesActivity extends AppCompatActivity
         sunHarm = findViewById(R.id.tv_supervisedsun);
         price = findViewById(R.id.tv_price);
         addressViewModel = new AddressViewModel();
+        showOnMap = findViewById(R.id.btn_showonmap);
+        String edit = "nic";
+
+        if (getIntent().getStringExtra("EDITST") != null)
+        {
+            edit = getIntent().getStringExtra("EDITST");
+        }
+
+        if (Objects.equals(edit, "info"))
+        {
+            showOnMap.setVisibility(View.GONE);
+        }
 
         getVerifies();
     }
@@ -139,6 +155,9 @@ public class VerifyChangesActivity extends AppCompatActivity
                         sunHarm.setText("Niedziela: " + schedule.get("Niedziela"));
                         String adres = ds.getString("address");
 
+                        double lat = ds.getDouble("latitude");
+                        double lon = ds.getDouble("longitude");
+
                         Map<String, Object> mapa = new HashMap<>();
                         mapa.put("name", ds.getString("name"));
                         mapa.put("pking", ds.getString("pking"));
@@ -146,7 +165,7 @@ public class VerifyChangesActivity extends AppCompatActivity
                         mapa.put("fee", ds.getString("fee"));
                         mapa.put("supervised", ds.getString("supervised"));
                         mapa.put("operator", ds.getString("operator"));
-                        mapa.put("edited", true);
+                        mapa.put("edited", false);
                         mapa.put("access", ds.getString("access"));
                         mapa.put("capacityDisabled", ds.getString("capacityDisabled"));
                         mapa.put("capacityTrucks", ds.getString("capacityTrucks"));
@@ -158,6 +177,18 @@ public class VerifyChangesActivity extends AppCompatActivity
 
                         getUser(Boolean.TRUE.equals(ds.getBoolean("verified")));
 
+                        showOnMap.setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View v)
+                            {
+                                Intent i = new Intent(getApplicationContext(), MapActivityShow.class);
+                                i.putExtra("LAT", lat);
+                                i.putExtra("LON", lon);
+                                startActivity(i);
+                            }
+                        });
+
                         pass.setOnClickListener(new View.OnClickListener()
                         {
                             @Override
@@ -165,6 +196,7 @@ public class VerifyChangesActivity extends AppCompatActivity
                             {
                                 mapa.put("verified", true);
                                 mapa.put("status", "Zweryfikowany");
+                                mapa.put("edited", true);
                                 editParking(mapa, "parkings", id);
                                 editParking(mapa, "edits", editId);
                                 finish();

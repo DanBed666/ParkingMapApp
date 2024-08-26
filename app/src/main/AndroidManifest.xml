@@ -20,6 +20,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".MapActivityShow"
+            android:exported="false" />
+        <activity
+            android:name=".VerifyPanelActivity"
+            android:exported="false" />
+        <activity
             android:name=".ParkingEditHistoryActivity"
             android:exported="false" />
         <activity

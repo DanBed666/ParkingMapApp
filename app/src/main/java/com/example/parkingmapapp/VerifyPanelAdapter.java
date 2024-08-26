@@ -14,29 +14,27 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.List;
 
-public class ParkingHistoryAdapter extends RecyclerView.Adapter<ParkingHistoryAdapter.ParkingHistoryViewHolder>
+public class VerifyPanelAdapter extends RecyclerView.Adapter<VerifyPanelAdapter.VerifyPanelViewHolder>
 {
-    Context context;
+    Context applicationContext;
     List<DocumentSnapshot> documentSnapshotList;
-    String edit;
 
-    public ParkingHistoryAdapter(Context context, List<DocumentSnapshot> documentSnapshotList, String edit)
+    public VerifyPanelAdapter(Context applicationContext, List<DocumentSnapshot> documents)
     {
-        this.context = context;
-        this.documentSnapshotList = documentSnapshotList;
-        this.edit = edit;
+        this.applicationContext = applicationContext;
+        this.documentSnapshotList = documents;
     }
 
     @NonNull
     @Override
-    public ParkingHistoryAdapter.ParkingHistoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
+    public VerifyPanelAdapter.VerifyPanelViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
     {
-        View view = LayoutInflater.from(context).inflate(R.layout.single_parking_history, parent, false);
-        return new ParkingHistoryAdapter.ParkingHistoryViewHolder(view);
+        View view = LayoutInflater.from(applicationContext).inflate(R.layout.single_verify, parent, false);
+        return new VerifyPanelAdapter.VerifyPanelViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ParkingHistoryAdapter.ParkingHistoryViewHolder holder, int position)
+    public void onBindViewHolder(@NonNull VerifyPanelAdapter.VerifyPanelViewHolder holder, int position)
     {
         holder.status.setText(documentSnapshotList.get(position).getString("status"));
         holder.name.setText(documentSnapshotList.get(position).getString("name"));
@@ -54,17 +52,15 @@ public class ParkingHistoryAdapter extends RecyclerView.Adapter<ParkingHistoryAd
         }
 
         holder.edited.setText(data);
-
         holder.itemView.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                Intent intent = new Intent(new Intent(context, VerifyChangesActivity.class));
+                Intent intent = new Intent(new Intent(applicationContext, VerifyChangesActivity.class));
                 intent.putExtra("EDITID", editId);
                 intent.putExtra("PARKINGID", id);
-                intent.putExtra("EDITST", edit);
-                context.startActivity(intent);
+                applicationContext.startActivity(intent);
             }
         });
     }
@@ -75,17 +71,17 @@ public class ParkingHistoryAdapter extends RecyclerView.Adapter<ParkingHistoryAd
         return documentSnapshotList.size();
     }
 
-    public static class ParkingHistoryViewHolder extends RecyclerView.ViewHolder
+    public static class VerifyPanelViewHolder extends RecyclerView.ViewHolder
     {
+        TextView name;
         TextView status;
         TextView edited;
-        TextView name;
-        public ParkingHistoryViewHolder(@NonNull View itemView)
+        public VerifyPanelViewHolder(@NonNull View itemView)
         {
             super(itemView);
+            name = itemView.findViewById(R.id.tv_name);
             status = itemView.findViewById(R.id.tv_status);
             edited = itemView.findViewById(R.id.tv_dataEdited);
-            name = itemView.findViewById(R.id.tv_name);
         }
     }
 }
