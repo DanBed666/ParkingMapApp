@@ -75,6 +75,7 @@ public class SettingsActivity extends AppCompatActivity
             {
                 Intent intent = new Intent(getApplicationContext(), InfoProfileActivity.class);
                 intent.putExtra("CASE", "konto");
+                intent.putExtra("ID", user.getUid());
                 startActivity(intent);
             }
         });

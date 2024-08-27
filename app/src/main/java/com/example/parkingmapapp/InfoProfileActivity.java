@@ -150,14 +150,14 @@ public class InfoProfileActivity extends AppCompatActivity
             }
         });
 
-        getEdits("created", created);
-        getEdits("edited", edited);
+        getEdits("Utworzono", created);
+        getEdits("Edytowano", edited);
         getUser();
     }
 
     public void getUser()
     {
-        db.collection("users").whereEqualTo("uId", user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        db.collection("users").whereEqualTo("uId", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task)
@@ -212,9 +212,9 @@ public class InfoProfileActivity extends AppCompatActivity
         });
     }
 
-    public void getEdits(String field, TextView textView)
+    public void getEdits(String value, TextView textView)
     {
-        db.collection("edits").whereEqualTo("uId", user.getUid()).whereEqualTo(field, true).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        db.collection("edits").whereEqualTo("uId", id).whereEqualTo("action", value).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task)

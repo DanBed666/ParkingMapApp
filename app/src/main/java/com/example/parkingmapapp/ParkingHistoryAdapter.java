@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ParkingHistoryAdapter extends RecyclerView.Adapter<ParkingHistoryAdapter.ParkingHistoryViewHolder>
 {
@@ -42,13 +43,13 @@ public class ParkingHistoryAdapter extends RecyclerView.Adapter<ParkingHistoryAd
         holder.name.setText(documentSnapshotList.get(position).getString("name"));
         String editId = documentSnapshotList.get(position).getString("editId");
         String id = documentSnapshotList.get(position).getString("id");
-        String data;
+        String data = "Brak";
 
-        if (documentSnapshotList.get(position).getString("dataCreated") != null)
+        if (Objects.equals(documentSnapshotList.get(position).getString("action"), "Utworzono"))
         {
             data = documentSnapshotList.get(position).getString("dataCreated");
         }
-        else
+        else if (Objects.equals(documentSnapshotList.get(position).getString("action"), "Edytowano"))
         {
             data = documentSnapshotList.get(position).getString("dataEdited");
         }

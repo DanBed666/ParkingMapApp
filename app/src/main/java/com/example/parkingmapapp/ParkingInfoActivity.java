@@ -53,6 +53,7 @@ public class ParkingInfoActivity extends AppCompatActivity
     AddressViewModel addressViewModel;
     TextView created_date;
     TextView edited_date;
+    TextView verified_date;
     TextView status;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
@@ -87,7 +88,8 @@ public class ParkingInfoActivity extends AppCompatActivity
         capacityBus = findViewById(R.id.tv_capacitybus);
         capacityMoto = findViewById(R.id.tv_capacitymoto);
         created_date = findViewById(R.id.tv_created);
-        edited_date = findViewById(R.id.tv_date);
+        edited_date = findViewById(R.id.tv_edited);
+        verified_date = findViewById(R.id.tv_verified);
         status = findViewById(R.id.tv_status);
         history = findViewById(R.id.btn_hist);
         userTV = findViewById(R.id.tv_user);
@@ -163,8 +165,11 @@ public class ParkingInfoActivity extends AppCompatActivity
                         Map<String, String> harm = (Map<String, String>) document.getData().get("harmonogram");
                         String createdDate = (String) document.getData().get("dataCreated");
                         String editedDate = (String) document.getData().get("dataEdited");
+                        String verifiedDate = (String) document.getData().get("dataVerified");
                         String stat = (String) document.getData().get("status");
                         String user = (String) document.getData().get("uId");
+
+                        getUser(user);
 
                         if (sup.equals("yes"))
                         {
@@ -198,14 +203,39 @@ public class ParkingInfoActivity extends AppCompatActivity
 
                         created_date.setText(createdDate);
                         edited_date.setText(editedDate);
+                        verified_date.setText(verifiedDate);
                         status.setText(stat);
-                        userTV.setText(user);
                     }
                 }
                 else
                 {
                     Log.w("ERR", "Error getting documents.", task.getException());
                 }
+            }
+        });
+    }
+
+    public void getUser(String uId)
+    {
+        db.collection("users").whereEqualTo("uId", uId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task)
+            {
+                if (task.isSuccessful())
+                {
+                    for (DocumentSnapshot ds : task.getResult().getDocuments())
+                    {
+                        userTV.setText(ds.getString("nick"));
+                    }
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+
             }
         });
     }

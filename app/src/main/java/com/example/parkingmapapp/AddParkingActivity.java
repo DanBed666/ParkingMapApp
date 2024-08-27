@@ -191,7 +191,7 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
 
                 assert user != null;
                 Parking newParking = new Parking(user.getUid(), id, editId, name, parking, access, capacity, capacityDis, capacityTru, capacityBus, capacityMoto,
-                        fee, supervised, operator, location.getLatitude(), location.getLongitude(), false, true, getActualDate(), "",
+                        fee, supervised, operator, location.getLatitude(), location.getLongitude(), getActualDate(), "", "", "Utworzono",
                         schedule, prize, false, "Oczekujący");
 
                 Intent intent = new Intent(getApplicationContext(), MapActivity.class);
@@ -222,6 +222,7 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
                         {
                             newParking.setVerified(true);
                             newParking.setStatus("Zweryfikowany");
+                            newParking.setDataVerified(getActualDate());
                             addParking(id, newParking, "parkings");
                             addParking(editId, newParking, "edits");
                             Intent i = new Intent(getApplicationContext(), ParkingEditHistoryActivity.class);
@@ -230,9 +231,6 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
                         }
                         else
                         {
-                            newParking.setVerified(false);
-                            newParking.setStatus("Oczekujący");
-                            newParking.setCreated(false);
                             addParking(editId, newParking, "edits");
                             Intent i = new Intent(getApplicationContext(), ParkingEditHistoryActivity.class);
                             i.putExtra("ID", id);

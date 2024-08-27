@@ -38,6 +38,8 @@ public class VerifyPanelActivity extends AppCompatActivity
         recyclerView = findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
+
+        getEdits();
     }
 
     public void getEdits()
@@ -62,5 +64,16 @@ public class VerifyPanelActivity extends AppCompatActivity
 
             }
         });
+    }
+
+    @Override
+    protected void onRestart()
+    {
+        super.onRestart();
+        super.onRestart();
+        finish();
+        overridePendingTransition(0, 0);
+        startActivity(getIntent());
+        overridePendingTransition(0, 0);
     }
 }

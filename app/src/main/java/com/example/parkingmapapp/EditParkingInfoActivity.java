@@ -185,6 +185,11 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
 
                         double latitude = (double) document.getData().get("latitude");
                         double longitude = (double) document.getData().get("longitude");
+                        String created = (String) document.getData().get("dataCreated");
+                        String edited = (String) document.getData().get("dataEdited");
+                        String verified = (String) document.getData().get("dataVerified");
+                        String action = (String) document.getData().get("action");
+                        String status = (String) document.getData().get("status");
 
                         nameET.setText(nam);
                         capacityET.setText(cpc);
@@ -200,7 +205,7 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                         spinnerMoto.setSelection(getPosition(cmot, opcjeEN));
                         spinnerTrucks.setSelection(getPosition(ctru, opcjeEN));
 
-                        editListener(latitude, longitude);
+                        editListener(latitude, longitude, created);
                     }
                 }
                 else
@@ -229,7 +234,7 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
         });
     }
 
-    private void editListener(double lat, double lon)
+    private void editListener(double lat, double lon, String created)
     {
         edit.setOnClickListener(new View.OnClickListener()
         {
@@ -256,7 +261,6 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                 mapa.put("fee", fee);
                 mapa.put("supervised", supervised);
                 mapa.put("operator", operator);
-                mapa.put("edited", true);
                 mapa.put("access", access);
                 mapa.put("capacityDisabled", cdis);
                 mapa.put("capacityTrucks", ctru);
@@ -265,6 +269,7 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                 mapa.put("dataEdited", getActualDate());
                 mapa.put("harmonogram", schedule);
                 mapa.put("kwota", price);
+                mapa.put("action", "Edytowano");
 
                 //checkIfExists(id);
 
@@ -285,12 +290,13 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
 
                 String editedId = generateId();
 
-                Parking newParking = new Parking(user.getUid(), id, editedId, name, parking, access, capacity, cdis, ctru, cbus, cmot,
-                        fee, supervised, operator, getActualDate(), schedule, price, false, "Oczekujący", lat, lon, false);
+                Parking newParking2 = new Parking(user.getUid(), id, editedId, name, parking, access, capacity, cdis, ctru, cbus, cmot,
+                        fee, supervised, operator, lat, lon, created, getActualDate(), "", "Edytowano",
+                        schedule, price, false, "Oczekujący");
 
                 Log.i("EDS", editedId);
 
-                getUser(mapa, newParking);
+                getUser(mapa, newParking2);
 
                 finish();
             }
@@ -351,9 +357,10 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                         {
                             mapa.put("verified", true);
                             mapa.put("status", "Zweryfikowany");
+                            mapa.put("dataVerified", getActualDate());
                             newParking.setVerified(true);
                             newParking.setStatus("Zweryfikowany");
-                            newParking.setEdited(true);
+                            newParking.setDataVerified(getActualDate());
                             editParking(mapa);
                             addEdit(newParking);
                             Intent i = new Intent(getApplicationContext(), ParkingEditHistoryActivity.class);

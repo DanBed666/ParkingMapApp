@@ -7,6 +7,7 @@ public class Parking implements Serializable
 {
     private String uId;
     private String id;
+    private String editId;
     private String name;
     private String pking;
     private String access;
@@ -20,21 +21,19 @@ public class Parking implements Serializable
     private String operator;
     private double latitude;
     private double longitude;
-    private boolean edited;
-    private boolean created;
     private String dataCreated;
     private String dataEdited;
+    private String dataVerified;
+    private String action;
     private Map<String, String> harmonogram;
     private String kwota;
-    private String address;
     private boolean verified;
     private String status;
-    private String editId;
 
     public Parking(String uId, String id, String editId, String name, String pking, String access, String capacity, String capacityDisabled,
                    String capacityTrucks, String capacityBus, String capacityMotorcycle, String fee, String supervised,
-                   String operator, double latitude, double longtitude, boolean edited, boolean created, String dataCreated,
-                   String dataEdited, Map<String, String> harmonogram, String kwota, boolean verified, String status)
+                   String operator, double latitude, double longitude, String dataCreated, String dataEdited, String dataVerified, String action,
+                   Map<String, String> harmonogram, String kwota, boolean verified, String status)
     {
         this.uId = uId;
         this.id = id;
@@ -51,44 +50,31 @@ public class Parking implements Serializable
         this.supervised = supervised;
         this.operator = operator;
         this.latitude = latitude;
-        this.longitude = longtitude;
-        this.edited = edited;
-        this.created = created;
+        this.longitude = longitude;
         this.dataCreated = dataCreated;
         this.dataEdited = dataEdited;
+        this.dataVerified = dataVerified;
+        this.action = action;
         this.harmonogram = harmonogram;
         this.kwota = kwota;
         this.verified = verified;
         this.status = status;
     }
 
-    public Parking(String uId, String id, String editId, String name, String pking, String access, String capacity, String capacityDisabled,
-                   String capacityTrucks, String capacityBus, String capacityMotorcycle, String fee, String supervised,
-                   String operator, String dataEdited, Map<String, String> harmonogram,
-                   String kwota, boolean verified, String status, double lat, double lon, boolean edited)
-    {
-        this.uId = uId;
-        this.id = id;
-        this.editId = editId;
-        this.name = name;
-        this.pking = pking;
-        this.access = access;
-        this.capacity = capacity;
-        this.capacityDisabled = capacityDisabled;
-        this.capacityTrucks = capacityTrucks;
-        this.capacityBus = capacityBus;
-        this.capacityMotorcycle = capacityMotorcycle;
-        this.fee = fee;
-        this.supervised = supervised;
-        this.operator = operator;
+    public String getDataEdited() {
+        return dataEdited;
+    }
+
+    public void setDataEdited(String dataEdited) {
         this.dataEdited = dataEdited;
-        this.harmonogram = harmonogram;
-        this.kwota = kwota;
-        this.verified = verified;
-        this.status = status;
-        this.latitude = lat;
-        this.longitude = lon;
-        this.edited = edited;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
     }
 
     public String getEditId() {
@@ -115,14 +101,6 @@ public class Parking implements Serializable
         this.status = status;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public Map<String, String> getHarmonogram() {
         return harmonogram;
     }
@@ -147,12 +125,12 @@ public class Parking implements Serializable
         this.dataCreated = dataCreated;
     }
 
-    public String getDataEdited() {
-        return dataEdited;
+    public String getDataVerified() {
+        return dataVerified;
     }
 
-    public void setDataEdited(String dataEdited) {
-        this.dataEdited = dataEdited;
+    public void setDataVerified(String dataVerified) {
+        this.dataVerified = dataVerified;
     }
 
     public String getAccess() {
@@ -193,14 +171,6 @@ public class Parking implements Serializable
 
     public void setCapacityMotorcycle(String capacityMotorcycle) {
         this.capacityMotorcycle = capacityMotorcycle;
-    }
-
-    public boolean isCreated() {
-        return created;
-    }
-
-    public void setCreated(boolean created) {
-        this.created = created;
     }
     public String getuId() {
         return uId;
@@ -275,11 +245,5 @@ public class Parking implements Serializable
 
     public void setOperator(String operator) {
         this.operator = operator;
-    }
-    public boolean isEdited() {
-        return edited;
-    }
-    public void setEdited(boolean edited) {
-        this.edited = edited;
     }
 }
