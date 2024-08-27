@@ -12,6 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import java.text.SimpleDateFormat;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 public class VerifyPanelAdapter extends RecyclerView.Adapter<VerifyPanelAdapter.VerifyPanelViewHolder>
@@ -40,18 +43,11 @@ public class VerifyPanelAdapter extends RecyclerView.Adapter<VerifyPanelAdapter.
         holder.name.setText(documentSnapshotList.get(position).getString("name"));
         String editId = documentSnapshotList.get(position).getString("editId");
         String id = documentSnapshotList.get(position).getString("id");
-        String data;
+        Date date = documentSnapshotList.get(position).getDate("lastActionDate");
 
-        if (documentSnapshotList.get(position).getString("dataCreated") != null)
-        {
-            data = documentSnapshotList.get(position).getString("dataCreated");
-        }
-        else
-        {
-            data = documentSnapshotList.get(position).getString("dataEdited");
-        }
-
-        holder.edited.setText(data);
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        String formattedDate = df.format(date.getTime());
+        holder.edited.setText(formattedDate);
         holder.itemView.setOnClickListener(new View.OnClickListener()
         {
             @Override

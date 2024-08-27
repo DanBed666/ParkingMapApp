@@ -24,9 +24,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -192,7 +194,7 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
                 assert user != null;
                 Parking newParking = new Parking(user.getUid(), id, editId, name, parking, access, capacity, capacityDis, capacityTru, capacityBus, capacityMoto,
                         fee, supervised, operator, location.getLatitude(), location.getLongitude(), getActualDate(), "", "", "Utworzono",
-                        schedule, prize, false, "Oczekujący");
+                        schedule, prize, false, "Oczekujący", Calendar.getInstance().getTime());
 
                 Intent intent = new Intent(getApplicationContext(), MapActivity.class);
                 intent.putExtra("MyData", "created");

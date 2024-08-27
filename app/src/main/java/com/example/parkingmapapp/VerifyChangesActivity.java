@@ -20,9 +20,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -118,6 +120,7 @@ public class VerifyChangesActivity extends AppCompatActivity
                 {
                     for (DocumentSnapshot ds : task.getResult().getDocuments())
                     {
+                        String uId = ds.getString("uId");
                         String name = ds.getString("name");
                         String parking = ds.getString("pking");
                         String access = ds.getString("access");
@@ -131,6 +134,7 @@ public class VerifyChangesActivity extends AppCompatActivity
                         String operator = ds.getString("operator");
                         String price = ds.getString("kwota");
                         String created = ds.getString("dataCreated");
+                        String edited = ds.getString("dataEdited");
 
                         nameTV.setText("Nazwa: " + name);
                         parkingTV.setText("Nawierzchnia: " + parking);
@@ -159,7 +163,7 @@ public class VerifyChangesActivity extends AppCompatActivity
                             {
                                 Intent intent = new Intent(getApplicationContext(), HarmonogramActivity.class);
                                 intent.putExtra("SCHEDULE", (Serializable) schedule);
-                                startActivity(new Intent(getApplicationContext(), HarmonogramActivity.class));
+                                startActivity(intent);
                             }
                         });
 
@@ -181,9 +185,9 @@ public class VerifyChangesActivity extends AppCompatActivity
                             }
                         });
 
-                        Parking newParking = new Parking(user.getUid(), id, editId, name, parking, access, capacity, capacityDis, capacityTru, capacityBus, capacityMoto,
-                                fee, supervised, operator, lat, lon, created, "", getActualDate(), "Utworzono",
-                                schedule, price, true, "Zweryfikowany");
+                        Parking newParking = new Parking(uId, id, editId, name, parking, access, capacity, capacityDis, capacityTru, capacityBus, capacityMoto,
+                                fee, supervised, operator, lat, lon, created, edited, getActualDate(), "Utworzono",
+                                schedule, price, true, "Zweryfikowany", Calendar.getInstance().getTime());
 
                         pass.setOnClickListener(new View.OnClickListener()
                         {
@@ -203,6 +207,7 @@ public class VerifyChangesActivity extends AppCompatActivity
                                     addMap(mapa, ds);
                                     mapa.put("verified", true);
                                     mapa.put("status", "Zweryfikowany");
+                                    mapa.put("dataVerified", getActualDate());
                                     editParking(mapa, "parkings", id);
                                     editParking(mapa, "edits", editId);
                                 }

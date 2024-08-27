@@ -61,6 +61,7 @@ public class ParkingInfoActivity extends AppCompatActivity
     TextView userTV;
     TextView price;
     Button btnHarm;
+    TextView nickVer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +96,7 @@ public class ParkingInfoActivity extends AppCompatActivity
         userTV = findViewById(R.id.tv_user);
         btnHarm = findViewById(R.id.btn_harm);
         price = findViewById(R.id.tv_price);
+        nickVer = findViewById(R.id.tv_ver);
 
         id = getIntent().getStringExtra("KEYID");
         Parking p = (Parking) getIntent().getSerializableExtra("PARKING");
@@ -183,7 +185,7 @@ public class ParkingInfoActivity extends AppCompatActivity
                             {
                                 Intent intent = new Intent(getApplicationContext(), HarmonogramActivity.class);
                                 intent.putExtra("SCHEDULE", (Serializable) harm);
-                                startActivity(new Intent(getApplicationContext(), HarmonogramActivity.class));
+                                startActivity(intent);
                             }
                         });
 

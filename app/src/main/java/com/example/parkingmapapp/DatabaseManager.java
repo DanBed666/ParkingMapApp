@@ -9,11 +9,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.osmdroid.bonuspack.kml.KmlFeature;
 import org.osmdroid.util.GeoPoint;
+
+import java.util.Calendar;
 import java.util.Objects;
 
 public class DatabaseManager
@@ -59,7 +63,7 @@ public class DatabaseManager
 
         Parking parking = new Parking("xyz123", id, "editId", nm, pk, acc, cpc, cpcd, cpct, cpcb, cpcm, fee, svd, ope,
                 finalLat, finalLon, "18-03-2024 18:19", "28-06-2024 06:47", "28-06-2024 09:27", "Edytowano", new ExampleHarms().getHarmonogram(), "12",
-                true, "Zweryfikowany");
+                true, "Zweryfikowany", Calendar.getInstance().getTime());
 
         addRecord(id, parking);
     }

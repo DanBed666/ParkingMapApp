@@ -22,6 +22,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -30,6 +31,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -186,7 +188,7 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                         double latitude = (double) document.getData().get("latitude");
                         double longitude = (double) document.getData().get("longitude");
                         String created = (String) document.getData().get("dataCreated");
-                        String edited = (String) document.getData().get("dataEdited");
+                        String uId = (String) document.getData().get("uId");
                         String verified = (String) document.getData().get("dataVerified");
                         String action = (String) document.getData().get("action");
                         String status = (String) document.getData().get("status");
@@ -205,7 +207,7 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                         spinnerMoto.setSelection(getPosition(cmot, opcjeEN));
                         spinnerTrucks.setSelection(getPosition(ctru, opcjeEN));
 
-                        editListener(latitude, longitude, created);
+                        editListener(latitude, longitude, created, uId);
                     }
                 }
                 else
@@ -234,7 +236,7 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
         });
     }
 
-    private void editListener(double lat, double lon, String created)
+    private void editListener(double lat, double lon, String created, String uId)
     {
         edit.setOnClickListener(new View.OnClickListener()
         {
@@ -292,7 +294,7 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
 
                 Parking newParking2 = new Parking(user.getUid(), id, editedId, name, parking, access, capacity, cdis, ctru, cbus, cmot,
                         fee, supervised, operator, lat, lon, created, getActualDate(), "", "Edytowano",
-                        schedule, price, false, "Oczekujący");
+                        schedule, price, false, "Oczekujący", Calendar.getInstance().getTime());
 
                 Log.i("EDS", editedId);
 

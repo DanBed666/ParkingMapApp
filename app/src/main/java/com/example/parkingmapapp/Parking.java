@@ -1,6 +1,10 @@
 package com.example.parkingmapapp;
 
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.FieldValue;
+
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Map;
 
 public class Parking implements Serializable
@@ -29,11 +33,12 @@ public class Parking implements Serializable
     private String kwota;
     private boolean verified;
     private String status;
+    private Date lastActionDate;
 
     public Parking(String uId, String id, String editId, String name, String pking, String access, String capacity, String capacityDisabled,
                    String capacityTrucks, String capacityBus, String capacityMotorcycle, String fee, String supervised,
                    String operator, double latitude, double longitude, String dataCreated, String dataEdited, String dataVerified, String action,
-                   Map<String, String> harmonogram, String kwota, boolean verified, String status)
+                   Map<String, String> harmonogram, String kwota, boolean verified, String status, Date last)
     {
         this.uId = uId;
         this.id = id;
@@ -59,6 +64,15 @@ public class Parking implements Serializable
         this.kwota = kwota;
         this.verified = verified;
         this.status = status;
+        this.lastActionDate = last;
+    }
+
+    public Date getLastActionDate() {
+        return lastActionDate;
+    }
+
+    public void setLastActionDate(Date lastActionDate) {
+        this.lastActionDate = lastActionDate;
     }
 
     public String getDataEdited() {
