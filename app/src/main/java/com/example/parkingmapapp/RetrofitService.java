@@ -27,15 +27,6 @@ public interface RetrofitService
     @POST("ephemeral_keys")
     Call<EphemeralKey> createEphemeralKey(@HeaderMap Map<String, String> headers, @Field("customer") String customerID);
 
-    /*
-    @POST("payment_intents")
-    Call<PaymentIntent> createPaymentIntent(@Header("Authorization") String authorization,
-                                            @Body String customerID,
-                                            @Body String amount,
-                                            @Body String currency,
-                                            @Body String automatic_payment_methods_enabled);
-
-     */
     @FormUrlEncoded
     @POST("payment_intents")
     Call<PaymentIntent2> createPaymentIntent(@Header("Authorization") String authorization,

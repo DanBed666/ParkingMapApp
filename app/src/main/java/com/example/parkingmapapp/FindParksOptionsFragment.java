@@ -101,10 +101,7 @@ public class FindParksOptionsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        RadioGroup feeRG;
-        RadioGroup supervisedRG;
         EditText capacityET;
-        EditText parkingET;
         Button find;
 
         // Inflate the layout for this fragment

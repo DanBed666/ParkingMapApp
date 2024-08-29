@@ -42,13 +42,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class MapActivity extends AppCompatActivity implements MapEventsReceiver, CloseMarker
+public class MapActivity extends AppCompatActivity implements MapEventsReceiver
 {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     MapView map;
     MyLocationNewOverlay mLocationOverlay;
     FragmentInterface listener;
-    AddressViewModel addressViewModel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -170,8 +170,6 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver,
                         .commit();
             }
         });
-
-        addressViewModel = new AddressViewModel();
     }
 
     @Override
@@ -271,12 +269,6 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver,
 
         return true;
     }
-    @Override
-    public void closeMarker()
-    {
-
-    }
-
     @Override
     protected void onRestart()
     {

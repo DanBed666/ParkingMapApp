@@ -31,16 +31,9 @@ import java.util.Calendar;
 
 public class RegisterActivity2 extends AppCompatActivity
 {
-    EditText nameET;
-    EditText surnameET;
-    EditText emailET;
-    EditText passwordET;
-    EditText password2ET;
-    Button register;
-    TextView goToLogin;
     FirebaseAuth mAuth;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    EditText nickET;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -58,14 +51,16 @@ public class RegisterActivity2 extends AppCompatActivity
 
         mAuth = FirebaseAuth.getInstance();
 
-        nameET = findViewById(R.id.et_name);
-        surnameET = findViewById(R.id.et_surname);
-        emailET = findViewById(R.id.et_email);
-        passwordET = findViewById(R.id.et_password);
-        password2ET = findViewById(R.id.et_password2);
-        register = findViewById(R.id.btn_next);
-        goToLogin = findViewById(R.id.tv_login);
-        nickET = findViewById(R.id.et_nick);
+        EditText nameET = findViewById(R.id.et_name);
+        EditText surnameET = findViewById(R.id.et_surname);
+        EditText emailET = findViewById(R.id.et_email);
+        EditText passwordET = findViewById(R.id.et_password);
+        EditText password2ET = findViewById(R.id.et_password2);
+        Button register = findViewById(R.id.btn_next);
+        TextView goToLogin = findViewById(R.id.tv_login);
+        EditText nickET = findViewById(R.id.et_nick);
+
+        EditText [] editTexts = new EditText[]{nameET, surnameET, nickET};
 
         register.setOnClickListener(new View.OnClickListener()
         {
@@ -81,7 +76,7 @@ public class RegisterActivity2 extends AppCompatActivity
 
                 if (checkCredentials(email, password, password2))
                 {
-                    signUp(email, password);
+                    signUp(email, password, editTexts);
                 }
             }
         });
@@ -96,7 +91,7 @@ public class RegisterActivity2 extends AppCompatActivity
         });
     }
 
-    public void signUp(String email, String password)
+    public void signUp(String email, String password, EditText [] editTexts)
     {
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>()
         {
@@ -105,9 +100,9 @@ public class RegisterActivity2 extends AppCompatActivity
             {
                 if (task.isSuccessful())
                 {
-                    String name = nameET.getText().toString();
-                    String surname = surnameET.getText().toString();
-                    String nick = nickET.getText().toString();
+                    String name = editTexts[0].getText().toString();
+                    String surname = editTexts[1].getText().toString();
+                    String nick = editTexts[2].getText().toString();
                     Log.i("REJESTRACJA", "Zarejestrowano!");
 
                     FirebaseUser user = mAuth.getCurrentUser();

@@ -36,20 +36,9 @@ import java.util.Objects;
 
 public class InfoProfileActivity extends AppCompatActivity
 {
-    TextView name;
-    TextView surname;
-    TextView ranga;
-    TextView created;
-    TextView edited;
-    TextView registered;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseUser user = mAuth.getCurrentUser();
-    String caseC;
-    Spinner spinner;
-    Button adminPanel;
     String id;
-    Button verifyPanel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -63,23 +52,25 @@ public class InfoProfileActivity extends AppCompatActivity
             return insets;
         });
 
-        caseC = getIntent().getStringExtra("CASE");
+        String caseC = getIntent().getStringExtra("CASE");
         id = getIntent().getStringExtra("ID");
-        name = findViewById(R.id.tv_name);
-        surname = findViewById(R.id.tv_surname);
-        ranga = findViewById(R.id.tv_ranga);
-        created = findViewById(R.id.tv_created);
-        edited = findViewById(R.id.tv_edited);
-        registered = findViewById(R.id.tv_date);
-        spinner = findViewById(R.id.spinner_access);
+        TextView name = findViewById(R.id.tv_name);
+        TextView surname = findViewById(R.id.tv_surname);
+        TextView ranga = findViewById(R.id.tv_ranga);
+        TextView created = findViewById(R.id.tv_created);
+        TextView edited = findViewById(R.id.tv_edited);
+        TextView registered = findViewById(R.id.tv_date);
+        Spinner spinner = findViewById(R.id.spinner_access);
         String[] roles = getResources().getStringArray(R.array.ranga);
+
+        TextView [] userTVS = new TextView[]{name, surname, ranga, registered};
 
         Button guy = findViewById(R.id.btn_guy);
         Button changePass = findViewById(R.id.btn_change_pass);
         Button changeMail = findViewById(R.id.btn_change_email);
-        adminPanel = findViewById(R.id.btn_panel);
+        Button adminPanel = findViewById(R.id.btn_panel);
         Button confirm = findViewById(R.id.btn_confirm);
-        verifyPanel = findViewById(R.id.btn_ver);
+        Button verifyPanel = findViewById(R.id.btn_ver);
 
         ArrayAdapter<String> aa = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, roles);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -152,10 +143,10 @@ public class InfoProfileActivity extends AppCompatActivity
 
         getEdits("Utworzono", created);
         getEdits("Edytowano", edited);
-        getUser();
+        getUser(userTVS, adminPanel, verifyPanel);
     }
 
-    public void getUser()
+    public void getUser(TextView [] userTVS, Button adminPanel, Button verifyPanel)
     {
         db.collection("users").whereEqualTo("uId", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
@@ -166,10 +157,10 @@ public class InfoProfileActivity extends AppCompatActivity
                 {
                     for (DocumentSnapshot ds : task.getResult().getDocuments())
                     {
-                        name.setText(ds.getString("name"));
-                        surname.setText(ds.getString("surname"));
-                        ranga.setText(ds.getString("ranga"));
-                        registered.setText(ds.getString("registerDate"));
+                        userTVS[0].setText(ds.getString("name"));
+                        userTVS[1].setText(ds.getString("surname"));
+                        userTVS[2].setText(ds.getString("ranga"));
+                        userTVS[3].setText(ds.getString("registerDate"));
 
                         if (Objects.equals(ds.getString("ranga"), "Administrator"))
                         {

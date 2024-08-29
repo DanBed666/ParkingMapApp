@@ -42,25 +42,8 @@ public class VerifyChangesActivity extends AppCompatActivity
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String id;
     String editId;
-    TextView nameTV;
-    TextView parkingTV;
-    TextView capacityTV;
-    TextView feeTV;
-    TextView supervisedTV;
-    TextView operatorTV;
-    TextView accessTV;
-    TextView capacityDisTV;
-    TextView capacityTruTV;
-    TextView capacityBusTV;
-    TextView capacityMotoTV;
-    Button pass;
-    Button notPass;
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseUser user = mAuth.getCurrentUser();
-    TextView priceTV;
-    AddressViewModel addressViewModel;
-    Button showOnMap;
-    Button harmBut;
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -76,24 +59,28 @@ public class VerifyChangesActivity extends AppCompatActivity
 
         id = getIntent().getStringExtra("PARKINGID");
         editId = getIntent().getStringExtra("EDITID");
-        nameTV = findViewById(R.id.tv_name);
-        parkingTV = findViewById(R.id.tv_parking);
-        capacityTV = findViewById(R.id.tv_capacity);
-        feeTV = findViewById(R.id.tv_fee);
-        supervisedTV = findViewById(R.id.tv_supervised);
-        operatorTV = findViewById(R.id.tv_operator);
-        accessTV = findViewById(R.id.tv_access);
-        capacityDisTV = findViewById(R.id.tv_capacitydis);
-        capacityTruTV = findViewById(R.id.tv_capacitytrucks);
-        capacityBusTV = findViewById(R.id.tv_capacitybus);
-        capacityMotoTV = findViewById(R.id.tv_capacitymoto);
-        pass = findViewById(R.id.btn_pass);
-        notPass = findViewById(R.id.btn_notpass);
-        priceTV = findViewById(R.id.tv_price);
-        addressViewModel = new AddressViewModel();
-        showOnMap = findViewById(R.id.btn_showonmap);
+        TextView nameTV = findViewById(R.id.tv_name);
+        TextView parkingTV = findViewById(R.id.tv_parking);
+        TextView capacityTV = findViewById(R.id.tv_capacity);
+        TextView feeTV = findViewById(R.id.tv_fee);
+        TextView supervisedTV = findViewById(R.id.tv_supervised);
+        TextView operatorTV = findViewById(R.id.tv_operator);
+        TextView accessTV = findViewById(R.id.tv_access);
+        TextView capacityDisTV = findViewById(R.id.tv_capacitydis);
+        TextView capacityTruTV = findViewById(R.id.tv_capacitytrucks);
+        TextView capacityBusTV = findViewById(R.id.tv_capacitybus);
+        TextView capacityMotoTV = findViewById(R.id.tv_capacitymoto);
+        Button pass = findViewById(R.id.btn_pass);
+        Button notPass = findViewById(R.id.btn_notpass);
+        TextView priceTV = findViewById(R.id.tv_price);
+        Button showOnMap = findViewById(R.id.btn_showonmap);
         String edit = "nic";
-        harmBut = findViewById(R.id.btn_harm);
+        Button harmBut = findViewById(R.id.btn_harm);
+
+        Button [] buttons = new Button[]{harmBut, showOnMap, pass, notPass};
+
+        TextView [] textViews = new TextView[]{nameTV, parkingTV, capacityTV, feeTV, supervisedTV,
+                operatorTV, accessTV, capacityDisTV, capacityTruTV, capacityBusTV, capacityMotoTV, priceTV};
 
         if (getIntent().getStringExtra("EDITST") != null)
         {
@@ -105,10 +92,10 @@ public class VerifyChangesActivity extends AppCompatActivity
             showOnMap.setVisibility(View.GONE);
         }
 
-        getVerifies();
+        getVerifies(textViews, buttons);
     }
 
-    public void getVerifies()
+    public void getVerifies(TextView [] textViews, Button [] buttons)
     {
         Log.i("VIERFIEIS", id);
         db.collection("edits").whereEqualTo("editId", editId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
@@ -136,27 +123,29 @@ public class VerifyChangesActivity extends AppCompatActivity
                         String created = ds.getString("dataCreated");
                         String edited = ds.getString("dataEdited");
 
-                        nameTV.setText("Nazwa: " + name);
-                        parkingTV.setText("Nawierzchnia: " + parking);
-                        capacityTV.setText("Wielkość: " + capacity);
-                        feeTV.setText("Płatny: " + fee);
-                        supervisedTV.setText("Strzeżony: " + supervised);
-                        operatorTV.setText("Operator: " + operator);
-                        accessTV.setText("Dostęp: " + access);
-                        capacityDisTV.setText("Miejsca dla niepełnosprawnych: " + capacityDis);
-                        capacityTruTV.setText("Miejsca dla tirów: " + capacityTru);
-                        capacityBusTV.setText("Miejsca dla autobusów: " + capacityBus);
-                        capacityMotoTV.setText("Miejsca dla motocykli: " + capacityMoto);
-                        priceTV.setText("Cena: " + price);
+                        textViews[0].setText("Nazwa: " + name);
+                        textViews[1].setText("Nawierzchnia: " + parking);
+                        textViews[2].setText("Wielkość: " + capacity);
+                        textViews[3].setText("Płatny: " + fee);
+                        textViews[4].setText("Strzeżony: " + supervised);
+                        textViews[5].setText("Operator: " + operator);
+                        textViews[6].setText("Dostęp: " + access);
+                        textViews[7].setText("Miejsca dla niepełnosprawnych: " + capacityDis);
+                        textViews[8].setText("Miejsca dla tirów: " + capacityTru);
+                        textViews[9].setText("Miejsca dla autobusów: " + capacityBus);
+                        textViews[10].setText("Miejsca dla motocykli: " + capacityMoto);
+                        textViews[11].setText("Cena: " + price);
                         Map<String, String> schedule = (Map<String, String>) ds.get("harmonogram");
 
                         Map<String, Object> mapa = new HashMap<>();
 
+                        //Harm button actions
+
                         if (Objects.equals(ds.getString("supervised"), "yes"))
                         {
-                            harmBut.setVisibility(View.VISIBLE);
+                            buttons[0].setVisibility(View.VISIBLE);
                         }
-                        harmBut.setOnClickListener(new View.OnClickListener()
+                        buttons[0].setOnClickListener(new View.OnClickListener()
                         {
                             @Override
                             public void onClick(View v)
@@ -171,9 +160,10 @@ public class VerifyChangesActivity extends AppCompatActivity
                         double lon = ds.getDouble("longitude");
                         String create = ds.getString("action");
 
-                        getUser(Boolean.TRUE.equals(ds.getBoolean("verified")));
+                        getUser(Boolean.TRUE.equals(ds.getBoolean("verified")), buttons);
 
-                        showOnMap.setOnClickListener(new View.OnClickListener()
+                        //Show on map button
+                        buttons[1].setOnClickListener(new View.OnClickListener()
                         {
                             @Override
                             public void onClick(View v)
@@ -189,7 +179,8 @@ public class VerifyChangesActivity extends AppCompatActivity
                                 fee, supervised, operator, lat, lon, created, edited, getActualDate(), "Utworzono",
                                 schedule, price, true, "Zweryfikowany", Calendar.getInstance().getTime());
 
-                        pass.setOnClickListener(new View.OnClickListener()
+                        //Pass button
+                        buttons[2].setOnClickListener(new View.OnClickListener()
                         {
                             @Override
                             public void onClick(View v)
@@ -216,7 +207,8 @@ public class VerifyChangesActivity extends AppCompatActivity
                             }
                         });
 
-                        notPass.setOnClickListener(new View.OnClickListener()
+                        //Not pass button
+                        buttons[3].setOnClickListener(new View.OnClickListener()
                         {
                             @Override
                             public void onClick(View v)
@@ -271,7 +263,7 @@ public class VerifyChangesActivity extends AppCompatActivity
         return formattedDate;
     }
 
-    public void getUser(boolean verified)
+    public void getUser(boolean verified, Button [] buttons)
     {
         db.collection("users").whereEqualTo("uId", user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
@@ -284,8 +276,8 @@ public class VerifyChangesActivity extends AppCompatActivity
                     {
                         if ((Objects.equals(ds.getString("ranga"), "Użytkownik") || verified))
                         {
-                            pass.setVisibility(View.GONE);
-                            notPass.setVisibility(View.GONE);
+                            buttons[2].setVisibility(View.GONE);  //Pass button
+                            buttons[3].setVisibility(View.GONE);  //Not pass button
                         }
                     }
                 }

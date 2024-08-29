@@ -35,36 +35,12 @@ import java.util.Objects;
 
 public class ParkingInfoActivity extends AppCompatActivity
 {
-    TextView name;
-    TextView parking;
-    TextView capacity;
-    TextView fee;
-    TextView supervised;
-    TextView operator;
-    Button edit;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String documentId;
     String id;
-    TextView access;
-    TextView capacityDis;
-    TextView capacityTru;
-    TextView capacityBus;
-    TextView capacityMoto;
-    AddressViewModel addressViewModel;
-    TextView created_date;
-    TextView edited_date;
-    TextView verified_date;
-    TextView status;
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseUser user = mAuth.getCurrentUser();
-    Button history;
-    TextView userTV;
-    TextView price;
-    Button btnHarm;
-    TextView nickVer;
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_parking_info);
@@ -75,40 +51,42 @@ public class ParkingInfoActivity extends AppCompatActivity
             return insets;
         });
 
-        addressViewModel = new AddressViewModel();
-        name = findViewById(R.id.tv_name);
-        parking = findViewById(R.id.tv_parking);
-        capacity = findViewById(R.id.tv_capacity);
-        fee = findViewById(R.id.tv_fee);
-        supervised = findViewById(R.id.tv_supervised);
-        operator = findViewById(R.id.tv_operator);
-        edit = findViewById(R.id.btn_edit);
-        access = findViewById(R.id.tv_access);
-        capacityDis = findViewById(R.id.tv_capacitydis);
-        capacityTru = findViewById(R.id.tv_capacitytrucks);
-        capacityBus = findViewById(R.id.tv_capacitybus);
-        capacityMoto = findViewById(R.id.tv_capacitymoto);
-        created_date = findViewById(R.id.tv_created);
-        edited_date = findViewById(R.id.tv_edited);
-        verified_date = findViewById(R.id.tv_verified);
-        status = findViewById(R.id.tv_status);
-        history = findViewById(R.id.btn_hist);
-        userTV = findViewById(R.id.tv_user);
-        btnHarm = findViewById(R.id.btn_harm);
-        price = findViewById(R.id.tv_price);
-        nickVer = findViewById(R.id.tv_ver);
+        TextView name = findViewById(R.id.tv_name);
+        TextView parking = findViewById(R.id.tv_parking);
+        TextView capacity = findViewById(R.id.tv_capacity);
+        TextView fee = findViewById(R.id.tv_fee);
+        TextView supervised = findViewById(R.id.tv_supervised);
+        TextView operator = findViewById(R.id.tv_operator);
+        Button edit = findViewById(R.id.btn_edit);
+        TextView access = findViewById(R.id.tv_access);
+        TextView capacityDis = findViewById(R.id.tv_capacitydis);
+        TextView capacityTru = findViewById(R.id.tv_capacitytrucks);
+        TextView capacityBus = findViewById(R.id.tv_capacitybus);
+        TextView capacityMoto = findViewById(R.id.tv_capacitymoto);
+        TextView created_date = findViewById(R.id.tv_created);
+        TextView edited_date = findViewById(R.id.tv_edited);
+        TextView verified_date = findViewById(R.id.tv_verified);
+        TextView status = findViewById(R.id.tv_status);
+        Button history = findViewById(R.id.btn_hist);
+        TextView userTV = findViewById(R.id.tv_user);
+        Button btnHarm = findViewById(R.id.btn_harm);
+        TextView price = findViewById(R.id.tv_price);
+        TextView nickVer = findViewById(R.id.tv_ver);
 
         id = getIntent().getStringExtra("KEYID");
         Parking p = (Parking) getIntent().getSerializableExtra("PARKING");
         String adr = getIntent().getStringExtra("ADDRESS");
 
+        TextView [] textViews = new TextView[]{name, parking, capacity, fee, supervised, operator, access,
+        capacityDis, capacityTru, capacityBus, capacityMoto, price, created_date, edited_date, verified_date, status, userTV};
+
         assert id != null;
         Log.i("PARKING_ID", id);
 
-        getElementsFromDB("parkings");
-        //getElementsFromDB("verifyparkings");
+        getElementsFromDB("parkings", textViews, btnHarm);
 
-        edit.setOnClickListener(new View.OnClickListener() {
+        edit.setOnClickListener(new View.OnClickListener()
+        {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), EditParkingInfoActivity.class);
@@ -139,7 +117,7 @@ public class ParkingInfoActivity extends AppCompatActivity
         });
     }
 
-    public void getElementsFromDB(String col)
+    public void getElementsFromDB(String col, TextView [] textViews, Button btnHarm)
     {
         db.collection(col).whereEqualTo("id", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
@@ -171,8 +149,6 @@ public class ParkingInfoActivity extends AppCompatActivity
                         String stat = (String) document.getData().get("status");
                         String user = (String) document.getData().get("uId");
 
-                        getUser(user);
-
                         if (sup.equals("yes"))
                         {
                             btnHarm.setVisibility(View.VISIBLE);
@@ -189,24 +165,25 @@ public class ParkingInfoActivity extends AppCompatActivity
                             }
                         });
 
-                        name.setText("Nazwa: " + nam);
-                        parking.setText("Typ parkingu: " + pkg);
-                        capacity.setText("Wielkość: " + cpc);
-                        fee.setText("Opłaty: " + f33);
-                        supervised.setText("Parking strzeżony: " + sup);
-                        operator.setText("Operator: " + ope);
-                        access.setText("Dostęp: " + acc);
-                        capacityDis.setText("Miejsca dla niepełnosprawnych: " + cdis);
-                        capacityTru.setText("Miejsca dla tirów: " + ctru);
-                        capacityBus.setText("Miejsca dla busów: " + cbus);
-                        capacityMoto.setText("Miejsca dla motocykli: " + cmot);
-                        price.setText(kwota);
-                        documentId = document.getId();
+                        textViews[0].setText("Nazwa: " + nam);
+                        textViews[1].setText("Typ parkingu: " + pkg);
+                        textViews[2].setText("Wielkość: " + cpc);
+                        textViews[3].setText("Opłaty: " + f33);
+                        textViews[4].setText("Parking strzeżony: " + sup);
+                        textViews[5].setText("Operator: " + ope);
+                        textViews[6].setText("Dostęp: " + acc);
+                        textViews[7].setText("Miejsca dla niepełnosprawnych: " + cdis);
+                        textViews[8].setText("Miejsca dla tirów: " + ctru);
+                        textViews[9].setText("Miejsca dla busów: " + cbus);
+                        textViews[10].setText("Miejsca dla motocykli: " + cmot);
+                        textViews[11].setText(kwota);
+                        textViews[12].setText(createdDate);
+                        textViews[13].setText(editedDate);
+                        textViews[14].setText(verifiedDate);
+                        textViews[15].setText(stat);
 
-                        created_date.setText(createdDate);
-                        edited_date.setText(editedDate);
-                        verified_date.setText(verifiedDate);
-                        status.setText(stat);
+                        documentId = document.getId();
+                        getUser(user, textViews[16]);
                     }
                 }
                 else
@@ -217,7 +194,7 @@ public class ParkingInfoActivity extends AppCompatActivity
         });
     }
 
-    public void getUser(String uId)
+    public void getUser(String uId, TextView userTV)
     {
         db.collection("users").whereEqualTo("uId", uId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {

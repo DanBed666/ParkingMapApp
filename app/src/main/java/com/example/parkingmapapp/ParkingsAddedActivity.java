@@ -29,8 +29,7 @@ public class ParkingsAddedActivity extends AppCompatActivity
     RecyclerView recyclerView;
     ParkingsAdapter parkingsAdapter;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseUser user = mAuth.getCurrentUser();
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -53,7 +52,7 @@ public class ParkingsAddedActivity extends AppCompatActivity
 
     public void getParkings()
     {
-        db.collection("edits").whereEqualTo("uId", user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        db.collection("edits").whereEqualTo("uId", user.getUid()).orderBy("lastActionDate", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task)

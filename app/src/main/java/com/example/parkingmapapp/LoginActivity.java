@@ -30,13 +30,8 @@ import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
 
-    EditText emailET;
-    EditText passwordET;
-    Button register;
-    TextView goToRegister;
-    FirebaseAuth mAuth;
-    TextView remind;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,12 +43,11 @@ public class LoginActivity extends AppCompatActivity {
             return insets;
         });
 
-        emailET = findViewById(R.id.et_email);
-        passwordET = findViewById(R.id.et_password);
-        register = findViewById(R.id.btn_register);
-        goToRegister = findViewById(R.id.tv_register);
-        remind = findViewById(R.id.tv_remind);
-        mAuth = FirebaseAuth.getInstance();
+        EditText emailET = findViewById(R.id.et_email);
+        EditText passwordET = findViewById(R.id.et_password);
+        Button register = findViewById(R.id.btn_register);
+        TextView goToRegister = findViewById(R.id.tv_register);
+        TextView remind = findViewById(R.id.tv_remind);
 
         register.setOnClickListener(new View.OnClickListener()
         {

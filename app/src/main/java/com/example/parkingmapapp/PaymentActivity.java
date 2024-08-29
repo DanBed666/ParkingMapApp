@@ -49,9 +49,7 @@ public class PaymentActivity extends AppCompatActivity
     String clientSecret;
     String id;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseUser user = mAuth.getCurrentUser();
-    String price;
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String finalPriceStr;
     int hours;
     @Override

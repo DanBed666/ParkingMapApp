@@ -37,12 +37,7 @@ public class EditCarActivity extends AppCompatActivity {
 
     String carId;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    EditText markaET;
-    EditText modelET;
-    EditText numerET;
-    EditText rokET;
-    FirebaseAuth mAuth;
-    FirebaseUser user;
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String documentId;
     SwitchMaterial primarySw;
     Spinner typSpinner;
@@ -58,24 +53,23 @@ public class EditCarActivity extends AppCompatActivity {
             return insets;
         });
 
-        mAuth = FirebaseAuth.getInstance();
-        user = mAuth.getCurrentUser();
         carId = getIntent().getStringExtra("CARID");
         documentId = getIntent().getStringExtra("DOCUMENTID");
-        markaET = findViewById(R.id.et_marka);
-        modelET = findViewById(R.id.et_model);
+        EditText markaET = findViewById(R.id.et_marka);
+        EditText modelET = findViewById(R.id.et_model);
         typSpinner = findViewById(R.id.spinner_car);
-        numerET = findViewById(R.id.et_numer);
-        rokET = findViewById(R.id.et_rok);
+        EditText numerET = findViewById(R.id.et_numer);
+        EditText rokET = findViewById(R.id.et_rok);
         Button confirm = findViewById(R.id.btn_add);
         primarySw = findViewById(R.id.switch_primary);
 
+        EditText [] editTexts = new EditText[]{markaET, modelET, numerET, rokET};
 
         ArrayAdapter<String> aa = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, types);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         typSpinner.setAdapter(aa);
 
-        getCars();
+        getCars(editTexts);
         confirm.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -102,7 +96,7 @@ public class EditCarActivity extends AppCompatActivity {
         });
     }
 
-    public void getCars()
+    public void getCars(EditText [] editTexts)
     {
         db.collection("cars").whereEqualTo("id", carId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
@@ -122,8 +116,8 @@ public class EditCarActivity extends AppCompatActivity {
                         String year = (String) document.getData().get("year");
                         boolean primary = (boolean) document.getData().get("primary");
 
-                        markaET.setText(marka);
-                        modelET.setText(model);
+                        editTexts[0].setText(marka);
+                        editTexts[1].setText(model);
 
                         for (int i = 0; i < types.length; i++)
                         {
@@ -134,8 +128,8 @@ public class EditCarActivity extends AppCompatActivity {
                             }
                         }
 
-                        numerET.setText(reg);
-                        rokET.setText(year);
+                        editTexts[2].setText(reg);
+                        editTexts[3].setText(year);
 
                         if (primary)
                             primarySw.setChecked(true);

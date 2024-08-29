@@ -38,12 +38,4 @@
         android:text="rezerwacja"
         android:visibility="gone"/>
 
-    <Button
-        android:id="@+id/btn_delete"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="220dp"
-        android:text="usuń"
-        android:visibility="gone"/>
-
 </FrameLayout>

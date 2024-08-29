@@ -38,9 +38,7 @@ public class CarsAddedActivity extends AppCompatActivity implements RefreshListe
 {
     RecyclerView recyclerView;
     CarsAdapter carsAdapter;
-    Button new_car;
-    FirebaseAuth mAuth;
-    FirebaseUser user;
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     RefreshListener refreshListener;
     @SuppressLint("NotifyDataSetChanged")
@@ -57,9 +55,7 @@ public class CarsAddedActivity extends AppCompatActivity implements RefreshListe
             return insets;
         });
 
-        mAuth = FirebaseAuth.getInstance();
-        user = mAuth.getCurrentUser();
-        new_car = findViewById(R.id.new_car);
+        Button new_car = findViewById(R.id.new_car);
 
         refreshListener = this;
 

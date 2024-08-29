@@ -54,8 +54,6 @@ public class InfoFragment extends Fragment
     AddressViewModel addressViewModel;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String addressStr;
-    Button delete;
-    CloseMarker listener;
     Button reserve;
     String keyId;
 
@@ -104,7 +102,6 @@ public class InfoFragment extends Fragment
         info = v.findViewById(R.id.tv_info);
         infosp = v.findViewById(R.id.btn_info);
         reserve = v.findViewById(R.id.btn_reservation);
-        delete = v.findViewById(R.id.btn_delete);
 
         assert getArguments() != null;
         Utils u = (Utils) getArguments().getSerializable("OBJECT");
@@ -133,16 +130,6 @@ public class InfoFragment extends Fragment
                 intent.putExtra("PARKING", p);
                 intent.putExtra("ADDRESS", addressStr);
                 startActivity(intent);
-            }
-        });
-        delete.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                listener.closeMarker();
-                deleteParking(keyId);
-                getFragmentManager().beginTransaction().remove(InfoFragment.this).commit();
             }
         });
 
@@ -193,40 +180,6 @@ public class InfoFragment extends Fragment
             }
         });
     }
-    public void deleteParking(String id)
-    {
-        db.collection("parkings").document(id).delete().addOnSuccessListener(new OnSuccessListener<Void>()
-        {
-            @Override
-            public void onSuccess(Void unused)
-                {
-                    Log.i("CREATED", "usunieto");
-                }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Log.i("CREATED", e.getMessage());
-            }
-        });
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context)
-    {
-        super.onAttach(context);
-
-        try
-        {
-            listener = (CloseMarker) context;
-        }
-        catch (ClassCastException castException)
-        {
-            /** The activity does not implement the listener. */
-        }
-    }
-
     public void setReserve(Button reserve)
     {
         reserve.setOnClickListener(new View.OnClickListener()

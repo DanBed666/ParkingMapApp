@@ -27,11 +27,8 @@ public class BookingsActivity extends AppCompatActivity implements RefreshListen
 {
     RecyclerView recyclerView;
     BookingsAdapter bookingsAdapter;
-    AddressViewModel addressViewModel;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseUser user = mAuth.getCurrentUser();
-    RefreshListener listener;
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -45,17 +42,16 @@ public class BookingsActivity extends AppCompatActivity implements RefreshListen
             return insets;
         });
 
-        addressViewModel = new AddressViewModel();
         recyclerView = findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
 
-        listener = this;
+        RefreshListener listener = this;
 
-        getTickets();
+        getTickets(listener);
     }
 
-    public void getTickets()
+    public void getTickets(RefreshListener listener)
     {
         db.collection("tickets").whereEqualTo("uId", user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {

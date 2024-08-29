@@ -62,8 +62,8 @@ public class DatabaseManager
         double finalLon = lon;
 
         Parking parking = new Parking("xyz123", id, "editId", nm, pk, acc, cpc, cpcd, cpct, cpcb, cpcm, fee, svd, ope,
-                finalLat, finalLon, "18-03-2024 18:19", "28-06-2024 06:47", "28-06-2024 09:27", "Edytowano", new ExampleHarms().getHarmonogram(), "12",
-                true, "Zweryfikowany", Calendar.getInstance().getTime());
+                finalLat, finalLon, "18-03-2024 18:19", "28-06-2024 06:47", "28-06-2024 09:27", "Edytowano",
+                new ExampleHarms().getHarmonogram(), "12", true, "Zweryfikowany", Calendar.getInstance().getTime());
 
         addRecord(id, parking);
     }

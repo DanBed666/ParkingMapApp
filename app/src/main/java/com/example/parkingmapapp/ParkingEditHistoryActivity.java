@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Objects;
@@ -26,8 +27,6 @@ import java.util.Objects;
 public class ParkingEditHistoryActivity extends AppCompatActivity
 {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseUser user = mAuth.getCurrentUser();
     RecyclerView recyclerView;
     String id;
     String edit = "nic";
@@ -60,7 +59,7 @@ public class ParkingEditHistoryActivity extends AppCompatActivity
     public void getHistory()
     {
         Log.i("HISTORY", id);
-        db.collection("edits").whereEqualTo("id", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        db.collection("edits").whereEqualTo("id", id).orderBy("lastActionDate", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task)

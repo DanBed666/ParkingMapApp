@@ -31,8 +31,6 @@ import java.util.Random;
 public class AddCarActivity extends AppCompatActivity
 {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    FirebaseUser user;
-    FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -46,8 +44,8 @@ public class AddCarActivity extends AppCompatActivity
             return insets;
         });
 
-        mAuth = FirebaseAuth.getInstance();
-        user = mAuth.getCurrentUser();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
         EditText markaET = findViewById(R.id.et_marka);
         EditText modelET = findViewById(R.id.et_model);
         Spinner typSpinner = findViewById(R.id.spinner_car);

@@ -41,7 +41,6 @@ public class Utils implements Serializable, Parcelable
     Polyline roadOverlay;
     FragmentInterface listener;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    FragmentInfoManager fragmentInfoManager;
 
     public Utils(Context c, MapView m, GeoPoint start, GeoPoint end)
     {
@@ -108,7 +107,6 @@ public class Utils implements Serializable, Parcelable
 
     public void findParkings(String tag)
     {
-        //startPoint = new GeoPoint(53.428, 14.553);
         GeoPoint location = startPoint;
         OverpassAPIProvider overpassProvider = new OverpassAPIProvider();
         BoundingBox range = new BoundingBox(location.getLatitude() + 0.05, location.getLongitude() + 0.05,
@@ -138,15 +136,12 @@ public class Utils implements Serializable, Parcelable
                 {
                     Toast.makeText(ctx, "Nie znaleziono parkingów w danym obszarze!", Toast.LENGTH_SHORT).show();
                 }
-
-                Log.i("KONIEC", "koniecpol");
             }
         });
     }
 
     public void findParkingsDB(Query q)
     {
-        Log.i("FINDDB", "wykonuje");
         q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
             @Override
@@ -160,8 +155,6 @@ public class Utils implements Serializable, Parcelable
                         Double latitude = ds.getDouble("latitude");
                         Double longitude = ds.getDouble("longitude");
 
-                        Log.i("WYNIK", ds.getId());
-
                         if (latitude != null && longitude != null)
                         {
                             GeoPoint position = new GeoPoint(latitude, longitude);
@@ -172,12 +165,11 @@ public class Utils implements Serializable, Parcelable
                                 @Override
                                 public boolean onMarkerClick(Marker marker, MapView mapView)
                                 {
-                                    fragmentInfoManager = new FragmentInfoManager(ctx, map, startPoint, listener, true);
+                                    FragmentInfoManager fragmentInfoManager = new FragmentInfoManager(ctx, map, startPoint, listener, true);
                                     fragmentInfoManager.addFragment(position, ds.getId());
                                     return true;
                                 }
                             });
-
                             map.getOverlays().add(marker);
                         }
                     }

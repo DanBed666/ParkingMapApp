@@ -31,9 +31,7 @@ public class KMLStyler implements KmlFeature.Styler
     GeoPoint startPoint;
     FragmentInterface listener;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    FragmentInfoManager fragmentInfoManager;
     AddressViewModel addressViewModel;
-    Address addressAdr;
     public KMLStyler(Context ctx, MapView m, GeoPoint s, FragmentInterface l)
     {
         context = ctx;
@@ -53,7 +51,6 @@ public class KMLStyler implements KmlFeature.Styler
     public void onPoint(Marker marker, KmlPlacemark kmlPlacemark, KmlPoint kmlPoint)
     {
         String id = kmlPlacemark.mId;
-        Log.i("ADRESADR", String.valueOf(addressAdr));
         DatabaseManager databaseManager = new DatabaseManager(kmlPlacemark, kmlPoint.getPosition(), context);
         databaseManager.checkIfExists(id);
         howManyRecords();
@@ -64,7 +61,7 @@ public class KMLStyler implements KmlFeature.Styler
             public boolean onMarkerClick(Marker marker, MapView mapView)
             {
                 boolean verified = true;
-                fragmentInfoManager = new FragmentInfoManager(context, map, startPoint, listener, verified);
+                FragmentInfoManager fragmentInfoManager = new FragmentInfoManager(context, map, startPoint, listener, verified);
                 fragmentInfoManager.addFragment(marker.getPosition(), id);
                 Log.i("IDPOINT", id);
 
@@ -95,7 +92,7 @@ public class KMLStyler implements KmlFeature.Styler
             public boolean onMarkerClick(Marker marker, MapView mapView)
             {
                 boolean verified = true;
-                fragmentInfoManager = new FragmentInfoManager(context, map, startPoint, listener, verified);
+                FragmentInfoManager fragmentInfoManager = new FragmentInfoManager(context, map, startPoint, listener, verified);
                 fragmentInfoManager.addFragment(marker.getPosition(), id);
                 Log.i("IDPOINT", id);
 

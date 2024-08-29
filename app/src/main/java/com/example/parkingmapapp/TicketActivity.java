@@ -35,14 +35,6 @@ import java.util.Random;
 
 public class TicketActivity extends AppCompatActivity
 {
-    ImageView imageView;
-    String ticketId;
-    TextView ticket;
-    Button back;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseUser user = mAuth.getCurrentUser();
-    String id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -57,15 +49,13 @@ public class TicketActivity extends AppCompatActivity
             return insets;
         });
 
-        ticket = findViewById(R.id.ticket_id);
-        imageView = findViewById(R.id.imageCode);
-        back = findViewById(R.id.btn_back);
-        ticketId = getIntent().getStringExtra("TICKETID");
+        TextView ticket = findViewById(R.id.ticket_id);
+        ImageView imageView = findViewById(R.id.imageCode);
+        Button back = findViewById(R.id.btn_back);
+        String ticketId = getIntent().getStringExtra("TICKETID");
         ticket.setText(ticketId);
 
-        id = getIntent().getStringExtra("KEYID");
-
-        generateQrCode();
+        generateQrCode(ticketId, imageView);
 
         back.setOnClickListener(new View.OnClickListener()
         {
@@ -77,7 +67,7 @@ public class TicketActivity extends AppCompatActivity
         });
     }
 
-    public void generateQrCode()
+    public void generateQrCode(String ticketId, ImageView imageView)
     {
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
 

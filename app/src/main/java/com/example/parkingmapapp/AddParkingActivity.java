@@ -30,9 +30,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 
@@ -46,13 +46,9 @@ import java.util.Random;
 
 public class AddParkingActivity extends AppCompatActivity implements HarmValueListener
 {
-    AddressViewModel addressViewModel;
     Map<String, String> schedule = new HashMap<>();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    GeoPoint location;
-    String generatedId;
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseUser user = mAuth.getCurrentUser();
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -88,10 +84,7 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
         String[] opcje = getResources().getStringArray(R.array.options);
         String[] opcjeEN = {"", "yes", "no"};
 
-        addressViewModel = new AddressViewModel();
-
-        location = getIntent().getParcelableExtra("LOCATION");
-        generatedId = getIntent().getStringExtra("ID");
+        GeoPoint location = getIntent().getParcelableExtra("LOCATION");
 
         harmonogram.setOnClickListener(new View.OnClickListener()
         {
