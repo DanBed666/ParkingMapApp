@@ -19,7 +19,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
         app:cornerRadius="0dp"
-        android:text="FND"/>
+        app:icon="@drawable/xvy1rw01__1_"/>
 
     <Button
         android:id="@+id/btn_location"
@@ -28,7 +28,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         app:cornerRadius="0dp"
-        android:text="LOC"/>
+        app:icon="@drawable/p3caio01"/>
 
     <Button
         android:id="@+id/btn_settings"
@@ -37,7 +37,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         app:cornerRadius="0dp"
-        android:text="SET"/>
+        app:icon="@drawable/android_settings"/>
 
     <Button
         android:id="@+id/btn_clear"
@@ -47,7 +47,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         app:cornerRadius="0dp"
-        android:text="CLEAR"/>
+        app:icon="@drawable/android_delete"/>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment"

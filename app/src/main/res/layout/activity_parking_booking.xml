@@ -20,14 +20,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Wolnych miejsc: 8"
-        android:textSize="28dp"/>
+        android:layout_marginTop="90dp"
+        android:textSize="26dp"/>
 
     <Button
         android:id="@+id/btn_pay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="zapłać"
-        android:layout_marginTop="100dp"/>
+        android:layout_marginTop="10dp"/>
 
     <Button
         android:id="@+id/btn_pay2"

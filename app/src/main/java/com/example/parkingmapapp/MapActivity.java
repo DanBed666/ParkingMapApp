@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -48,7 +49,6 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
     MapView map;
     MyLocationNewOverlay mLocationOverlay;
     FragmentInterface listener;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -81,7 +81,8 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
 
         mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(getApplicationContext()),map);
 
-        String [] permissions = new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        String [] permissions = new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ,android.Manifest.permission.READ_EXTERNAL_STORAGE};
 
         requestPermissionsIfNecessary(permissions
                 // if you need to show the current location, uncomment the line below
@@ -235,6 +236,10 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
     }
     public void showMyLocation()
     {
+        //Marker marker = new Marker(map);
+        //marker.setPosition(new GeoPoint(52.2297700, 21.0117800));
+        //marker.setIcon(ResourcesCompat.getDrawable(getResources(), org.osmdroid.bonuspack.R.drawable.person, null));
+        //map.getOverlays().add(marker);
         mLocationOverlay.enableFollowLocation();
         map.getOverlays().add(mLocationOverlay);
         map.getController().setZoom(18.0);
@@ -263,7 +268,6 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
     public boolean longPressHelper(GeoPoint p)
     {
         Intent intent = new Intent(getApplicationContext(), AddParkingActivity.class);
-        Utils u = new Utils(getApplicationContext(), map, mLocationOverlay.getMyLocation(), listener);
         intent.putExtra("LOCATION", (Parcelable) p);
         startActivityForResult(intent, 1);
 
@@ -285,7 +289,6 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
             assert data != null;
             String myStr = data.getStringExtra("MyData");
             assert myStr != null;
-            Log.i("LUL", myStr);
 
             if (myStr.equals("created"))
             {
@@ -300,14 +303,13 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
                     public boolean onMarkerClick(Marker marker, MapView mapView)
                     {
                         boolean verified = false;
-                        FragmentInfoManager fragmentInfoManager = new FragmentInfoManager(getApplicationContext(), map, mLocationOverlay.getMyLocation(), listener, verified);
+                        FragmentInfoManager fragmentInfoManager = new FragmentInfoManager(getApplicationContext(), map,
+                                mLocationOverlay.getMyLocation(), listener, verified);
                         fragmentInfoManager.addFragment(marker.getPosition(), id);
-                        Log.i("IDPOINT", id);
 
                         return true;
                     }
                 });
-
                 map.getOverlays().add(marker);
             }
             else if (myStr.equals("show"))

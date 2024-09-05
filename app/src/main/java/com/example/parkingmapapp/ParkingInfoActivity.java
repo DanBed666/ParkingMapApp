@@ -137,10 +137,10 @@ public class ParkingInfoActivity extends AppCompatActivity
                         String sup = (String) document.getData().get("supervised");
                         String ope = (String) document.getData().get("operator");
                         String acc = (String) document.getData().get("access");
-                        String cdis = (String) document.getData().get("capacity:disabled");
-                        String ctru = (String) document.getData().get("capacity:truck");
-                        String cbus = (String) document.getData().get("capacity:bus");
-                        String cmot = (String) document.getData().get("capacity:motorcycle");
+                        String cdis = (String) document.getData().get("capacityDisabled");
+                        String ctru = (String) document.getData().get("capacityTruck");
+                        String cbus = (String) document.getData().get("capacityBus");
+                        String cmot = (String) document.getData().get("capacityMotorcycle");
                         String kwota = (String) document.getData().get("kwota");
                         Map<String, String> harm = (Map<String, String>) document.getData().get("harmonogram");
                         String createdDate = (String) document.getData().get("dataCreated");

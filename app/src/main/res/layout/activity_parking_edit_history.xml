@@ -9,7 +9,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:text="Lista użytkowników"
+        android:text="Historia edycji"
         android:textAlignment="center"
         android:textSize="26dp"
         android:layout_width="match_parent"

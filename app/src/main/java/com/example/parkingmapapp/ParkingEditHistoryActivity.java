@@ -2,13 +2,17 @@ package com.example.parkingmapapp;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.Observer;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,9 +48,17 @@ public class ParkingEditHistoryActivity extends AppCompatActivity
         });
 
         id = getIntent().getStringExtra("ID");
+
         recyclerView = findViewById(R.id.recycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),
+                LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(),
+                DividerItemDecoration.VERTICAL));
+        DividerItemDecoration itemDecorator = new DividerItemDecoration(getApplicationContext(),
+                DividerItemDecoration.VERTICAL);
+        itemDecorator.setDrawable(Objects.requireNonNull(ContextCompat.
+                getDrawable(getApplicationContext(), R.drawable.divider)));
 
         if (getIntent().getStringExtra("EDIT") != null)
         {
@@ -66,9 +78,14 @@ public class ParkingEditHistoryActivity extends AppCompatActivity
             {
                 if (task.isSuccessful())
                 {
+                    Log.i("HISTORY", String.valueOf(task.getResult().size()));
                     ParkingHistoryAdapter parkingHistoryAdapter = new ParkingHistoryAdapter(getApplicationContext(), task.getResult().getDocuments(), edit);
                     recyclerView.setAdapter(parkingHistoryAdapter);
                     parkingHistoryAdapter.notifyDataSetChanged();
+                }
+                else
+                {
+                    Log.i("HISTORY", task.getException().getMessage());
                 }
             }
         }).addOnFailureListener(new OnFailureListener()

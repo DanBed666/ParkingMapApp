@@ -20,6 +20,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.Observer;
 
+import org.osmdroid.util.GeoPoint;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -30,7 +31,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.osmdroid.views.MapView;
@@ -85,7 +85,6 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
         String[] opcjeEN = {"", "yes", "no"};
 
         GeoPoint location = getIntent().getParcelableExtra("LOCATION");
-
         harmonogram.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -183,11 +182,10 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
 
                 assert location != null;
                 String editId = generateId();
-
                 assert user != null;
                 Parking newParking = new Parking(user.getUid(), id, editId, name, parking, access, capacity, capacityDis, capacityTru, capacityBus, capacityMoto,
                         fee, supervised, operator, location.getLatitude(), location.getLongitude(), getActualDate(), "", "", "Utworzono",
-                        schedule, prize, false, "Oczekujący", Calendar.getInstance().getTime());
+                        schedule, prize, false, "Oczekujący", Calendar.getInstance().getTime(), false);
 
                 Intent intent = new Intent(getApplicationContext(), MapActivity.class);
                 intent.putExtra("MyData", "created");

@@ -149,14 +149,10 @@ public class InfoFragment extends Fragment
                     getAddressNominatim(d.getDocument().get("latitude") + "," + d.getDocument().get("longitude"),
                             "FiyHNQAmeoWKRcEdp5KyYWOAaAKf-7hvtqkz--lGBDc", info);
 
-                    if (d.getDocument().get("fee") == "yes" && d.getDocument().get("kwota") != null)
+                    if (Objects.equals(d.getDocument().getString("fee"), "yes") && !(Objects.requireNonNull(d.getDocument().getString("kwota")).isEmpty()))
                     {
                         reserve.setVisibility(View.VISIBLE);
                         setReserve(reserve);
-                    }
-                    else
-                    {
-                        reserve.setVisibility(View.GONE);
                     }
 
                     Log.i("TYP", String.valueOf(d.getType()));

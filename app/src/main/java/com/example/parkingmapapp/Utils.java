@@ -108,6 +108,7 @@ public class Utils implements Serializable, Parcelable
     public void findParkings(String tag)
     {
         GeoPoint location = startPoint;
+        //GeoPoint location =  new GeoPoint(52.2297700, 21.0117800);
         OverpassAPIProvider overpassProvider = new OverpassAPIProvider();
         BoundingBox range = new BoundingBox(location.getLatitude() + 0.05, location.getLongitude() + 0.05,
                 location.getLatitude() - 0.05, location.getLongitude() - 0.05);
@@ -188,7 +189,7 @@ public class Utils implements Serializable, Parcelable
             {
                 for (DocumentSnapshot ds : task.getResult().getDocuments())
                 {
-                    if (Boolean.TRUE.equals(ds.getBoolean("edited")))
+                    if (Boolean.TRUE.equals(ds.getBoolean("sample")))
                     {
                         ideks.add(ds.getId());
                     }

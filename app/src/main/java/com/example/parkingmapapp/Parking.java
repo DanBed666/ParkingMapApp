@@ -34,11 +34,12 @@ public class Parking implements Serializable
     private boolean verified;
     private String status;
     private Date lastActionDate;
+    private boolean sample;
 
     public Parking(String uId, String id, String editId, String name, String pking, String access, String capacity, String capacityDisabled,
                    String capacityTrucks, String capacityBus, String capacityMotorcycle, String fee, String supervised,
                    String operator, double latitude, double longitude, String dataCreated, String dataEdited, String dataVerified, String action,
-                   Map<String, String> harmonogram, String kwota, boolean verified, String status, Date last)
+                   Map<String, String> harmonogram, String kwota, boolean verified, String status, Date last, boolean sample)
     {
         this.uId = uId;
         this.id = id;
@@ -65,6 +66,15 @@ public class Parking implements Serializable
         this.verified = verified;
         this.status = status;
         this.lastActionDate = last;
+        this.sample = sample;
+    }
+
+    public boolean isSample() {
+        return sample;
+    }
+
+    public void setSample(boolean sample) {
+        this.sample = sample;
     }
 
     public Date getLastActionDate() {

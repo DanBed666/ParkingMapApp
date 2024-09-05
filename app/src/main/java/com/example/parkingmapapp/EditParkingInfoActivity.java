@@ -164,10 +164,10 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                         String sup = (String) document.getData().get("supervised");
                         String ope = (String) document.getData().get("operator");
                         String acc = (String) document.getData().get("access");
-                        String cdis = (String) document.getData().get("capacity:disabled");
-                        String ctru = (String) document.getData().get("capacity:truck");
-                        String cbus = (String) document.getData().get("capacity:bus");
-                        String cmot = (String) document.getData().get("capacity:motorcycle");
+                        String cdis = (String) document.getData().get("capacityDisabled");
+                        String ctru = (String) document.getData().get("capacityTruck");
+                        String cbus = (String) document.getData().get("capacityBus");
+                        String cmot = (String) document.getData().get("capacityMotorcycle");
                         String cena = (String) document.getData().get("kwota");
                         schedule = (Map<String, String>) document.getData().get("harmonogram");
 
@@ -280,7 +280,7 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
 
                 Parking newParking2 = new Parking(user.getUid(), id, editedId, name, parking, access, capacity, cdis, ctru, cbus, cmot,
                         fee, supervised, operator, lat, lon, created, getActualDate(), "", "Edytowano",
-                        schedule, price, false, "Oczekujący", Calendar.getInstance().getTime());
+                        schedule, price, false, "Oczekujący", Calendar.getInstance().getTime(), false);
 
                 Log.i("EDS", editedId);
 

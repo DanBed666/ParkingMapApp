@@ -19,6 +19,7 @@ import org.osmdroid.util.GeoPoint;
 
 import java.util.Calendar;
 import java.util.Objects;
+import java.util.Random;
 
 public class DatabaseManager
 {
@@ -50,20 +51,17 @@ public class DatabaseManager
         String cpcb = kmlPlacemark.getExtendedData("capacity:bus"); if(cpcb == null) cpcb="Brak";
         String cpct = kmlPlacemark.getExtendedData("capacity:truck"); if(cpct == null) cpct="Brak";
         String cpcm = kmlPlacemark.getExtendedData("capacity:motorcycle"); if(cpcm == null) cpcm="Brak";
-        double lat;
-        double lon;
-
+        double lat = loc.getLatitude();
+        double lon = loc.getLongitude();
+        String price = "Brak";
         Log.i("GEOLAT", String.valueOf(loc.getLatitude()));
         Log.i("GEOLON", String.valueOf(loc.getLongitude()));
-        lat = loc.getLatitude();
-        lon = loc.getLongitude();
 
-        double finalLat = lat;
-        double finalLon = lon;
+        if (ope.equals("yes")) price = String.valueOf(new Random().nextInt(9) + 3);
 
         Parking parking = new Parking("xyz123", id, "editId", nm, pk, acc, cpc, cpcd, cpct, cpcb, cpcm, fee, svd, ope,
-                finalLat, finalLon, "18-03-2024 18:19", "28-06-2024 06:47", "28-06-2024 09:27", "Edytowano",
-                new ExampleHarms().getHarmonogram(), "12", true, "Zweryfikowany", Calendar.getInstance().getTime());
+                lat, lon, "18-03-2024 18:19", "28-06-2024 06:47", "28-06-2024 09:27", "Edytowano",
+                new ExampleHarms().getHarmonogram(), price, true, "Zweryfikowany", Calendar.getInstance().getTime(), true);
 
         addRecord(id, parking);
     }

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -20,10 +21,12 @@ public class ParkingsAdapter extends RecyclerView.Adapter<ParkingsAdapter.Parkin
 {
     Context context;
     List<DocumentSnapshot> exampleList;
+    AddressViewModel addressViewModel;
     public ParkingsAdapter(Context applicationContext, List<DocumentSnapshot> example)
     {
         context = applicationContext;
         exampleList = example;
+        addressViewModel = new AddressViewModel();
     }
     @NonNull
     @Override
@@ -36,10 +39,9 @@ public class ParkingsAdapter extends RecyclerView.Adapter<ParkingsAdapter.Parkin
     @Override
     public void onBindViewHolder(@NonNull ParkingsAdapter.ParkingsViewHolder holder, int position)
     {
-        boolean edited = Boolean.TRUE.equals(exampleList.get(position).get("edited"));
-        boolean created = Boolean.TRUE.equals(exampleList.get(position).get("created"));
         String editId = exampleList.get(position).getString("editId");
         String id = exampleList.get(position).getString("id");
+        String action = exampleList.get(position).getString("action");
 
         Log.i("HISTORIA88", String.valueOf(exampleList.size()));
         Log.i("HISTORIA88", String.valueOf(position));
@@ -48,12 +50,15 @@ public class ParkingsAdapter extends RecyclerView.Adapter<ParkingsAdapter.Parkin
 
         holder.nazwa.setText(Objects.requireNonNull(exampleList.get(position).get("name")).toString());
 
-        if (edited)
+        getAddressNominatim(exampleList.get(position).get("latitude") + "," + exampleList.get(position).get("longitude"),
+                "FiyHNQAmeoWKRcEdp5KyYWOAaAKf-7hvtqkz--lGBDc", holder.adres);
+
+        if (Objects.equals(action, "Edytowano"))
         {
             holder.data.setText(Objects.requireNonNull(exampleList.get(position).get("dataEdited")).toString());
             holder.status_edyt.setText(Objects.requireNonNull("Edytowano").toString());
         }
-        else if (created)
+        else if (Objects.equals(action, "Utworzono"))
         {
             holder.data.setText(Objects.requireNonNull(exampleList.get(position).get("dataCreated")).toString());
             holder.status_edyt.setText(Objects.requireNonNull("Utworzono").toString());
@@ -70,6 +75,20 @@ public class ParkingsAdapter extends RecyclerView.Adapter<ParkingsAdapter.Parkin
                 intent.putExtra("EDITID", editId);
                 intent.putExtra("PARKINGID", id);
                 context.startActivity(intent);
+            }
+        });
+    }
+
+    public void getAddressNominatim(String geoPoint, String apiKey, TextView tv)
+    {
+        addressViewModel.getAddressVM(geoPoint, apiKey).observeForever(new Observer<Address>()
+        {
+            @Override
+            public void onChanged(Address address)
+            {
+                Log.i("ADRES", address.getItems().get(0).getTitle());
+                String addressStr = address.getItems().get(0).getTitle();
+                tv.setText(addressStr);
             }
         });
     }
