@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.List;
@@ -73,7 +74,20 @@ public class ParkingHistoryAdapter extends RecyclerView.Adapter<ParkingHistoryAd
 
         holder.edited.setText(data);
 
-        getUser(uId, holder.user);
+        DatabaseManager dbm = new DatabaseManager();
+        Query q = db.collection("users").whereEqualTo("uId", uId);
+
+        dbm.getElements(q, new OnElementsGet()
+        {
+            @Override
+            public void setOnElementsGet(List<DocumentSnapshot> documentSnapshotList)
+            {
+                for (DocumentSnapshot ds : documentSnapshotList)
+                {
+                    holder.user.setText(ds.getString("nick"));
+                }
+            }
+        });
 
         holder.itemView.setOnClickListener(new View.OnClickListener()
         {
@@ -125,30 +139,5 @@ public class ParkingHistoryAdapter extends RecyclerView.Adapter<ParkingHistoryAd
             user = itemView.findViewById(R.id.tv_user);
             adres = itemView.findViewById(R.id.tv_adres);
         }
-    }
-
-    public void getUser(String uId, TextView userTV)
-    {
-        db.collection("users").whereEqualTo("uId", uId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
-        {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task)
-            {
-                if (task.isSuccessful())
-                {
-                    for (DocumentSnapshot ds : task.getResult().getDocuments())
-                    {
-                        userTV.setText(ds.getString("nick"));
-                    }
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-
-            }
-        });
     }
 }

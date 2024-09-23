@@ -52,7 +52,9 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.Bookin
         holder.data.setText(exampleList.get(position).getString("reservationDate"));
         String ticketId = exampleList.get(position).getString("ticketId");
 
-        getAddressNominatim(exampleList.get(position).getDouble("latitude") + "," + exampleList.get(position).getDouble("longitude"),
+        GetTagData get = new GetTagData();
+
+        get.getAddressHere(exampleList.get(position).getDouble("latitude") + "," + exampleList.get(position).getDouble("longitude"),
                 "FiyHNQAmeoWKRcEdp5KyYWOAaAKf-7hvtqkz--lGBDc", holder.adres);
 
         if(!checkValidity(exampleList.get(position).getString("validThruDate")))
@@ -123,21 +125,6 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.Bookin
             delete = itemView.findViewById(R.id.btn_delete);
         }
     }
-
-    public void getAddressNominatim(String geoPoint, String apiKey, TextView info)
-    {
-        addressViewModel.getAddressVM(geoPoint, apiKey).observeForever(new Observer<Address>()
-        {
-            @Override
-            public void onChanged(Address address)
-            {
-                Log.i("ADRES", address.getItems().get(0).getTitle());
-                Log.i("ADRESADRADRADR", address.getItems().get(0).getTitle());
-                info.setText(address.getItems().get(0).getTitle());
-            }
-        });
-    }
-
     public boolean checkValidity(String validDate)
     {
         Calendar calender = Calendar.getInstance();

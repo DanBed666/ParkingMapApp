@@ -104,13 +104,16 @@ public class RegisterActivity2 extends AppCompatActivity
                     String surname = editTexts[1].getText().toString();
                     String nick = editTexts[2].getText().toString();
                     Log.i("REJESTRACJA", "Zarejestrowano!");
+                    GetTagData get = new GetTagData();
+                    DatabaseManager dbm = new DatabaseManager();
 
                     FirebaseUser user = mAuth.getCurrentUser();
                     assert user != null;
                     //User userObj = new User(user.getUid(), name, surname, "Administrator", "0", "0", nick, getActualDate());
                     //User userObj = new User(user.getUid(), name, surname, "Moderator", "0", "0", nick, getActualDate());
-                    User userObj = new User(user.getUid(), name, surname, "Użytkownik", "0", "0", nick, getActualDate());
-                    addUser(userObj, user);
+                    User userObj = new User(user.getUid(), name, surname, "Użytkownik", "0", "0", nick, get.getActualDate());
+                    dbm.addElement("users", user.getUid(), userObj);
+
                     startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                     sendConfirmMail();
                     finish();
@@ -165,31 +168,5 @@ public class RegisterActivity2 extends AppCompatActivity
                 }
             }
         });
-    }
-
-    public void addUser(User user, FirebaseUser u)
-    {
-        db.collection("users").document(u.getUid()).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused)
-            {
-                Log.d("TEST", "DocumentSnapshot added with ID: ");
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Log.e("ERROR", "error");
-            }
-        });
-    }
-
-    public String getActualDate()
-    {
-        Calendar calender = Calendar.getInstance();
-        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-        String formattedDate = df.format(calender.getTime());
-        return formattedDate;
     }
 }

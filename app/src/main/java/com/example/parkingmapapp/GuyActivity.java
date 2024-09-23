@@ -21,12 +21,16 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class GuyActivity extends AppCompatActivity
 {
@@ -55,32 +59,29 @@ public class GuyActivity extends AppCompatActivity
         confirm = findViewById(R.id.btn_confirm);
         user = mAuth.getCurrentUser();
 
+        DatabaseManager dbm = new DatabaseManager();
+        Query q = db.collection("users").whereEqualTo("uId", user.getUid());
+
         assert user != null;
         documentId = getIntent().getStringExtra("DOCUMENTID");
 
-        db.collection("users").whereEqualTo("uId", user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        dbm.getElements(q, new OnElementsGet()
         {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task)
+            public void setOnElementsGet(List<DocumentSnapshot> documentSnapshotList)
             {
-                if (task.isSuccessful())
+                for (DocumentSnapshot document : documentSnapshotList)
                 {
-                    for (QueryDocumentSnapshot document : task.getResult())
-                    {
-                        Log.d("LOL", document.getId() + " => " + document.getData());
-                        Log.i("XD", "xd");
-                        String nameDb = (String) document.getData().get("name");
-                        String surnameDb = (String) document.getData().get("surname");
-                        nameET.setText(nameDb);
-                        surnameET.setText(surnameDb);
-                    }
-                }
-                else
-                {
-                    Log.w("ERR", "Error getting documents.", task.getException());
+                    Log.d("LOL", document.getId() + " => " + document.getData());
+                    Log.i("XD", "xd");
+                    String nameDb = (String) Objects.requireNonNull(document.getData()).get("name");
+                    String surnameDb = (String) document.getData().get("surname");
+                    nameET.setText(nameDb);
+                    surnameET.setText(surnameDb);
                 }
             }
         });
+
         confirm.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -93,28 +94,10 @@ public class GuyActivity extends AppCompatActivity
                 mapa.put("name", name);
                 mapa.put("surname", surname);
 
-                addUser(mapa);
+                dbm.addElement("users", documentId, mapa);
+
                 finish();
                 Toast.makeText(getApplicationContext(), "Zmiany zostały zapisane!", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    public void addUser(Map<String, Object> mapa)
-    {
-        db.collection("users").document(documentId).update(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
-        {
-            @Override
-            public void onSuccess(Void documentReference)
-            {
-                Log.d("TEST", "DocumentSnapshot added with ID");
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Log.d("ERROR", "Error: " + e.getMessage());
             }
         });
     }

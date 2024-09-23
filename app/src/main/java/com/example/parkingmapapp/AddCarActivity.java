@@ -30,7 +30,6 @@ import java.util.Random;
 
 public class AddCarActivity extends AppCompatActivity
 {
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -79,46 +78,14 @@ public class AddCarActivity extends AppCompatActivity
                     primary = true;
                 }
 
-                Car car = new Car(generateCarId(), user.getUid(), marka, model, typ, numer, rok, primary);
-
-                addCar(car);
+                String id = new GetTagData().generateTicketId();
+                Car car = new Car(id, user.getUid(), marka, model, typ, numer, rok, primary);
+                DatabaseManager dbm = new DatabaseManager();
+                dbm.addElement("cars", id, car);
                 finish();
             }
         });
     }
-
-    public void addCar(Car car)
-    {
-        db.collection("cars").add(car).addOnSuccessListener(new OnSuccessListener<DocumentReference>()
-        {
-            @Override
-            public void onSuccess(DocumentReference documentReference)
-            {
-                Log.d("TEST", "DocumentSnapshot added with ID: " + documentReference.getId());
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Log.d("ERROR", "Error: " + e.getMessage());
-            }
-        });
-    }
-
-    public String generateCarId()
-    {
-        StringBuilder chain = new StringBuilder();
-        Random rand = new Random();
-
-        for (int i = 0; i < 12; i++)
-        {
-            chain.append((char) (rand.nextInt(26) + 65));
-        }
-
-        return chain.toString();
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
     {

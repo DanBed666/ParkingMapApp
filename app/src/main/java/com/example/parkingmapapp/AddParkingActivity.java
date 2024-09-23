@@ -31,6 +31,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.osmdroid.views.MapView;
@@ -40,6 +41,7 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
@@ -47,8 +49,11 @@ import java.util.Random;
 public class AddParkingActivity extends AppCompatActivity implements HarmValueListener
 {
     Map<String, String> schedule = new HashMap<>();
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    GetTagData get = new GetTagData();
+    String[] typesEN = {"", "surface", "street_side", "multi-storey", "underground"};
+    String[] accessTabEN = {"", "yes", "private", "customers"};
+    String[] opcjeEN = {"", "yes", "no"};
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -74,15 +79,15 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
         EditText capacityET = findViewById(R.id.et_capacity);
         EditText operatorET = findViewById(R.id.et_operator);
         Button createBTN = findViewById(R.id.btn_create);
-        EditText cena = findViewById(R.id.et_cena);
+        EditText cenaET = findViewById(R.id.et_cena);
         Button harmonogram = findViewById(R.id.btn_hours);
 
         String[] types = getResources().getStringArray(R.array.types);
-        String[] typesEN = {"", "surface", "street_side", "multi-storey", "underground"};
         String[] accessTab = getResources().getStringArray(R.array.access);
-        String[] accessTabEN = {"", "yes", "private", "customers"};
         String[] opcje = getResources().getStringArray(R.array.options);
-        String[] opcjeEN = {"", "yes", "no"};
+
+        Spinner [] spinners = new Spinner[]{spinnerType, spinnerAccess, spinnerFee, spinnerSupervised, spinnerBus, spinnerTrucks, spinnerDisabled, spinnerMoto};
+        EditText [] editTexts = new EditText[]{nameET, capacityET, operatorET, cenaET};
 
         GeoPoint location = getIntent().getParcelableExtra("LOCATION");
         harmonogram.setOnClickListener(new View.OnClickListener()
@@ -121,11 +126,11 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
             {
                 if (position == 1)
                 {
-                    cena.setVisibility(View.VISIBLE);
+                    cenaET.setVisibility(View.VISIBLE);
                 }
                 else
                 {
-                    cena.setVisibility(View.GONE);
+                    cenaET.setVisibility(View.GONE);
                 }
             }
 
@@ -163,111 +168,57 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
             @Override
             public void onClick(View v)
             {
-                String id = generateId();
-                String name = nameET.getText().toString();
-                String capacity = capacityET.getText().toString();
-                String parking = getValue(spinnerType, typesEN);
-                String fee = getValue(spinnerFee, opcjeEN);
-                String supervised = getValue(spinnerSupervised, opcjeEN);
-                String operator = operatorET.getText().toString();
-                String access = getValue(spinnerAccess, accessTabEN);
-                String capacityDis = getValue(spinnerDisabled, opcjeEN);
-                String capacityTru = getValue(spinnerTrucks, opcjeEN);
-                String capacityBus = getValue(spinnerBus, opcjeEN);
-                String capacityMoto = getValue(spinnerMoto, opcjeEN);
-                String prize = cena.getText().toString();
-
-                if (schedule.isEmpty())
-                    schedule.put("Brak", "nie ma");
-
-                assert location != null;
-                String editId = generateId();
-                assert user != null;
-                Parking newParking = new Parking(user.getUid(), id, editId, name, parking, access, capacity, capacityDis, capacityTru, capacityBus, capacityMoto,
-                        fee, supervised, operator, location.getLatitude(), location.getLongitude(), getActualDate(), "", "", "Utworzono",
-                        schedule, prize, false, "Oczekujący", Calendar.getInstance().getTime(), false);
-
-                Intent intent = new Intent(getApplicationContext(), MapActivity.class);
-                intent.putExtra("MyData", "created");
-                intent.putExtra("ID", id);
-                intent.putExtra("GEOPOINT", (Parcelable) location);
-                setResult(1, intent);
-
-                getUser(id, editId, newParking);
-
-                finish();
+                addListener(location, spinners, editTexts);
             }
         });
     }
 
-    public void getUser(String id, String editId, Parking newParking)
+    public void addListener(GeoPoint location, Spinner [] spinners, EditText [] editTexts)
     {
-        db.collection("users").whereEqualTo("uId", user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
-        {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task)
-            {
-                if (task.isSuccessful())
-                {
-                    for (DocumentSnapshot ds : task.getResult().getDocuments())
-                    {
-                        if (Objects.equals(ds.getString("ranga"), "Administrator") || Objects.equals(ds.getString("ranga"), "Moderator"))
-                        {
-                            newParking.setVerified(true);
-                            newParking.setStatus("Zweryfikowany");
-                            newParking.setDataVerified(getActualDate());
-                            addParking(id, newParking, "parkings");
-                            addParking(editId, newParking, "edits");
-                            Intent i = new Intent(getApplicationContext(), ParkingEditHistoryActivity.class);
-                            i.putExtra("ID", id);
-                            startActivity(i);
-                        }
-                        else
-                        {
-                            addParking(editId, newParking, "edits");
-                            Intent i = new Intent(getApplicationContext(), ParkingEditHistoryActivity.class);
-                            i.putExtra("ID", id);
-                            startActivity(i);
-                        }
-                    }
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
+        //Get values from editText, spinners
+        String id = get.generateId();
+        String name = editTexts[0].getText().toString();
+        String capacity = editTexts[1].getText().toString();
+        String parking = getValue(spinners[0], typesEN);
+        String fee = getValue(spinners[1], opcjeEN);
+        String supervised = getValue(spinners[2], opcjeEN);
+        String operator = editTexts[2].getText().toString();
+        String access = getValue(spinners[3], accessTabEN);
+        String capacityDis = getValue(spinners[4], opcjeEN);
+        String capacityTru = getValue(spinners[5], opcjeEN);
+        String capacityBus = getValue(spinners[6], opcjeEN);
+        String capacityMoto = getValue(spinners[7], opcjeEN);
+        String prize = editTexts[3].getText().toString();
+        String editId = get.generateId();
 
-            }
-        });
-    }
+        if (schedule.isEmpty())
+            schedule.put("Brak", "nie ma");
 
-    public void addParking(String id, Parking newParking, String col)
-    {
-        db.collection(col).document(id).set(newParking).addOnSuccessListener(new OnSuccessListener<Void>()
-        {
-            @Override
-            public void onSuccess(Void unused)
-            {
-                Log.i("CREATEDADD", "created");
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
-            }
-        });
-    }
-    public String getActualDate()
-    {
-        Calendar calender = Calendar.getInstance();
-        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-        String formattedDate = df.format(calender.getTime());
-        return formattedDate;
-    }
+        //Create new object and add creation
 
+        assert location != null;
+        assert user != null;
+        Parking newParking = new Parking(user.getUid(), id, editId, name, parking, access, capacity,
+                capacityDis, capacityTru, capacityBus, capacityMoto,
+                fee, supervised, operator, location.getLatitude(), location.getLongitude(),
+                get.getActualDate(), "", "", "Utworzono",
+                schedule, prize, false, "Oczekujący", Calendar.getInstance().getTime(), false);
+
+        Intent intent = new Intent(getApplicationContext(), MapActivity.class);
+        intent.putExtra("MyData", "created");
+        intent.putExtra("ID", id);
+        intent.putExtra("GEOPOINT", (Parcelable) location);
+        setResult(1, intent);
+
+        ParkingManager pm = new ParkingManager();
+        pm.addParking(newParking, id, editId);
+
+        Intent i = new Intent(getApplicationContext(), ParkingEditHistoryActivity.class);
+        i.putExtra("ID", id);
+        startActivity(i);
+
+        finish();
+    }
     public void initializeAdapter(String [] tab, Spinner spinner)
     {
         ArrayAdapter<String> aa = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, tab);
@@ -294,32 +245,6 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
             Log.i("DAY", entry.getKey() + " " + entry.getValue());
         }
     }
-
-    public String generateId()
-    {
-        Random random = new Random();
-        StringBuilder chain = new StringBuilder();
-
-        for (int i = 1; i <= 20; i++)
-        {
-            char c = (char)(random.nextInt(26) + 'a');
-            chain.append(c);
-        }
-
-        return chain.toString();
-    }
-
-    /*
-    @Override
-    public void onBackPressed()
-    {
-        super.onBackPressed();
-        SharedPreferences sp = getSharedPreferences("LoginInfos", 0);
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putString("email", "dupa");
-        editor.apply();
-    }
-    */
 
     @Override
     public void onBackPressed()

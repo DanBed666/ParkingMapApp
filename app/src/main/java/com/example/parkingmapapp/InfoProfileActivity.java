@@ -28,9 +28,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -51,6 +53,8 @@ public class InfoProfileActivity extends AppCompatActivity
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        DatabaseManager dbm = new DatabaseManager();
 
         String caseC = getIntent().getStringExtra("CASE");
         id = getIntent().getStringExtra("ID");
@@ -92,7 +96,7 @@ public class InfoProfileActivity extends AppCompatActivity
                 int position = spinner.getSelectedItemPosition();
                 Map<String, Object> map = new HashMap<>();
                 map.put("ranga", roles[position]);
-                addUser(map);
+                dbm.editElement("users", id, map);
             }
         });
 
@@ -141,88 +145,49 @@ public class InfoProfileActivity extends AppCompatActivity
             }
         });
 
-        getEdits("Utworzono", created);
-        getEdits("Edytowano", edited);
-        getUser(userTVS, adminPanel, verifyPanel);
-    }
-
-    public void getUser(TextView [] userTVS, Button adminPanel, Button verifyPanel)
-    {
-        db.collection("users").whereEqualTo("uId", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        Query q1 = db.collection("edits").whereEqualTo("uId", id).whereEqualTo("action", "Utworzono");
+        dbm.getElements(q1, new OnElementsGet()
         {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task)
+            public void setOnElementsGet(List<DocumentSnapshot> documentSnapshotList)
             {
-                if (task.isSuccessful())
+                created.setText(String.valueOf(documentSnapshotList.size()));
+            }
+        });
+
+        Query q2 = db.collection("edits").whereEqualTo("uId", id).whereEqualTo("action", "Edytowano");
+        dbm.getElements(q2, new OnElementsGet()
+        {
+            @Override
+            public void setOnElementsGet(List<DocumentSnapshot> documentSnapshotList)
+            {
+                edited.setText(String.valueOf(documentSnapshotList.size()));
+            }
+        });
+
+        Query q = db.collection("users").whereEqualTo("uId", id);
+        dbm.getElements(q, new OnElementsGet()
+        {
+            @Override
+            public void setOnElementsGet(List<DocumentSnapshot> documentSnapshotList)
+            {
+                for (DocumentSnapshot ds : documentSnapshotList)
                 {
-                    for (DocumentSnapshot ds : task.getResult().getDocuments())
+                    userTVS[0].setText(ds.getString("name"));
+                    userTVS[1].setText(ds.getString("surname"));
+                    userTVS[2].setText(ds.getString("ranga"));
+                    userTVS[3].setText(ds.getString("registerDate"));
+
+                    if (Objects.equals(ds.getString("ranga"), "Administrator"))
                     {
-                        userTVS[0].setText(ds.getString("name"));
-                        userTVS[1].setText(ds.getString("surname"));
-                        userTVS[2].setText(ds.getString("ranga"));
-                        userTVS[3].setText(ds.getString("registerDate"));
+                        adminPanel.setVisibility(View.VISIBLE);
+                    }
 
-                        if (Objects.equals(ds.getString("ranga"), "Administrator"))
-                        {
-                            adminPanel.setVisibility(View.VISIBLE);
-                        }
-
-                        if (Objects.equals(ds.getString("ranga"), "Administrator") || Objects.equals(ds.getString("ranga"), "Moderator"))
-                        {
-                            verifyPanel.setVisibility(View.VISIBLE);
-                        }
+                    if (Objects.equals(ds.getString("ranga"), "Administrator") || Objects.equals(ds.getString("ranga"), "Moderator"))
+                    {
+                        verifyPanel.setVisibility(View.VISIBLE);
                     }
                 }
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-
-            }
-        });
-    }
-
-    public void addUser(Map<String, Object> mapa)
-    {
-        db.collection("users").document(id).update(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
-        {
-            @Override
-            public void onSuccess(Void documentReference)
-            {
-                Log.d("TEST", "DocumentSnapshot added with ID");
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Log.d("ERROR", "Error: " + e.getMessage());
-            }
-        });
-    }
-
-    public void getEdits(String value, TextView textView)
-    {
-        db.collection("edits").whereEqualTo("uId", id).whereEqualTo("action", value).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
-        {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task)
-            {
-                Log.i("DUPPP", String.valueOf(task.getResult().getDocuments().size()));
-
-                if (task.isSuccessful())
-                {
-                    textView.setText(String.valueOf(task.getResult().getDocuments().size()));
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-
             }
         });
     }

@@ -55,7 +55,8 @@ public class TicketActivity extends AppCompatActivity
         String ticketId = getIntent().getStringExtra("TICKETID");
         ticket.setText(ticketId);
 
-        generateQrCode(ticketId, imageView);
+        GetTagData get = new GetTagData();
+        get.generateQrCode(ticketId, imageView);
 
         back.setOnClickListener(new View.OnClickListener()
         {
@@ -65,22 +66,5 @@ public class TicketActivity extends AppCompatActivity
                 finish();
             }
         });
-    }
-
-    public void generateQrCode(String ticketId, ImageView imageView)
-    {
-        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
-
-        try
-        {
-            BitMatrix bitMatrix = multiFormatWriter.encode(ticketId, BarcodeFormat.QR_CODE, 400, 400);
-            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-            Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
-            imageView.setImageBitmap(bitmap);
-        }
-        catch (WriterException e)
-        {
-            e.printStackTrace();
-        }
     }
 }

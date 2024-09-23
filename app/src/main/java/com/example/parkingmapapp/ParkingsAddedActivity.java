@@ -26,6 +26,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.List;
 import java.util.Objects;
 
 public class ParkingsAddedActivity extends AppCompatActivity
@@ -54,33 +55,17 @@ public class ParkingsAddedActivity extends AppCompatActivity
         DividerItemDecoration itemDecorator = new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL);
         itemDecorator.setDrawable(Objects.requireNonNull(ContextCompat.getDrawable(getApplicationContext(), R.drawable.divider)));
 
-        getParkings();
-    }
+        DatabaseManager dbm = new DatabaseManager();
+        Query q = db.collection("edits").whereEqualTo("uId", user.getUid()).orderBy("lastActionDate", Query.Direction.DESCENDING);
 
-    public void getParkings()
-    {
-        db.collection("edits").whereEqualTo("uId", user.getUid()).orderBy("lastActionDate", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        dbm.getElements(q, new OnElementsGet()
         {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task)
+            public void setOnElementsGet(List<DocumentSnapshot> documentSnapshotList)
             {
-                if (task.isSuccessful())
-                {
-                    parkingsAdapter = new ParkingsAdapter(getApplicationContext(), task.getResult().getDocuments());
-                    recyclerView.setAdapter(parkingsAdapter);
-                    int pos = 0;
-                    Log.i("ILE99", String.valueOf(task.getResult().size()));
-
-                    for (DocumentSnapshot ds : task.getResult().getDocuments())
-                    {
-                        pos++;
-                        parkingsAdapter.notifyItemChanged(pos);
-                    }
-                }
-                else
-                {
-                    Log.w("ERR", "Error getting documents.", task.getException());
-                }
+                parkingsAdapter = new ParkingsAdapter(getApplicationContext(), documentSnapshotList);
+                recyclerView.setAdapter(parkingsAdapter);
+                parkingsAdapter.notifyDataSetChanged();
             }
         });
     }

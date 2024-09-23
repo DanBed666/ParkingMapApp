@@ -3,7 +3,7 @@ package com.example.parkingmapapp;
 public class Car
 {
     String id;
-    String userId;
+    String uId;
     String marka;
     String model;
     String type;
@@ -13,7 +13,7 @@ public class Car
 
     public Car(String id, String userId, String marka, String model, String type, String registrationNumber, String year, boolean primary) {
         this.id = id;
-        this.userId = userId;
+        this.uId = userId;
         this.marka = marka;
         this.model = model;
         this.type = type;
@@ -46,12 +46,12 @@ public class Car
         this.year = year;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getuId() {
+        return uId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setuId(String uId) {
+        this.uId = uId;
     }
 
     public String getMarka() {

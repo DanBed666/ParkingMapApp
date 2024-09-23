@@ -26,6 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.List;
 import java.util.Objects;
 
 public class ParkingEditHistoryActivity extends AppCompatActivity
@@ -49,6 +50,18 @@ public class ParkingEditHistoryActivity extends AppCompatActivity
 
         id = getIntent().getStringExtra("ID");
 
+        setRecyclerView();
+
+        if (getIntent().getStringExtra("EDIT") != null)
+        {
+            edit = getIntent().getStringExtra("EDIT");
+        }
+
+        showHistory();
+    }
+
+    public void setRecyclerView()
+    {
         recyclerView = findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),
                 LinearLayoutManager.VERTICAL, false));
@@ -59,41 +72,21 @@ public class ParkingEditHistoryActivity extends AppCompatActivity
                 DividerItemDecoration.VERTICAL);
         itemDecorator.setDrawable(Objects.requireNonNull(ContextCompat.
                 getDrawable(getApplicationContext(), R.drawable.divider)));
-
-        if (getIntent().getStringExtra("EDIT") != null)
-        {
-            edit = getIntent().getStringExtra("EDIT");
-        }
-
-        getHistory();
     }
 
-    public void getHistory()
+    public void showHistory()
     {
-        Log.i("HISTORY", id);
-        db.collection("edits").whereEqualTo("id", id).orderBy("lastActionDate", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        DatabaseManager dbm = new DatabaseManager();
+        Query q = db.collection("edits").whereEqualTo("id", id).orderBy("lastActionDate", Query.Direction.DESCENDING);
+        dbm.getElements(q, new OnElementsGet()
         {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task)
+            public void setOnElementsGet(List<DocumentSnapshot> documentSnapshotList)
             {
-                if (task.isSuccessful())
-                {
-                    Log.i("HISTORY", String.valueOf(task.getResult().size()));
-                    ParkingHistoryAdapter parkingHistoryAdapter = new ParkingHistoryAdapter(getApplicationContext(), task.getResult().getDocuments(), edit);
-                    recyclerView.setAdapter(parkingHistoryAdapter);
-                    parkingHistoryAdapter.notifyDataSetChanged();
-                }
-                else
-                {
-                    Log.i("HISTORY", task.getException().getMessage());
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-
+                Log.i("HISTORY", String.valueOf(documentSnapshotList.size()));
+                ParkingHistoryAdapter parkingHistoryAdapter = new ParkingHistoryAdapter(getApplicationContext(), documentSnapshotList, edit);
+                recyclerView.setAdapter(parkingHistoryAdapter);
+                parkingHistoryAdapter.notifyDataSetChanged();
             }
         });
     }

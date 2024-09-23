@@ -8,7 +8,9 @@ import androidx.lifecycle.Observer;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.osmdroid.bonuspack.kml.KmlFeature;
@@ -24,6 +26,9 @@ import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.Polygon;
 import org.osmdroid.views.overlay.Polyline;
 
+import java.util.List;
+import java.util.Objects;
+
 public class KMLStyler implements KmlFeature.Styler
 {
     Context context;
@@ -31,14 +36,13 @@ public class KMLStyler implements KmlFeature.Styler
     GeoPoint startPoint;
     FragmentInterface listener;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    AddressViewModel addressViewModel;
+
     public KMLStyler(Context ctx, MapView m, GeoPoint s, FragmentInterface l)
     {
         context = ctx;
         map = m;
         startPoint = s;
         listener = l;
-        addressViewModel = new AddressViewModel();
     }
 
     @Override
@@ -51,23 +55,12 @@ public class KMLStyler implements KmlFeature.Styler
     public void onPoint(Marker marker, KmlPlacemark kmlPlacemark, KmlPoint kmlPoint)
     {
         String id = kmlPlacemark.mId;
-        DatabaseManager databaseManager = new DatabaseManager(kmlPlacemark, kmlPoint.getPosition(), context);
-        databaseManager.checkIfExists(id);
-        howManyRecords();
+        ParkingManager pm = new ParkingManager();
+        pm.addSampleParkings(id, kmlPlacemark, kmlPoint.getPosition());
 
-        marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener()
-        {
-            @Override
-            public boolean onMarkerClick(Marker marker, MapView mapView)
-            {
-                boolean verified = true;
-                FragmentInfoManager fragmentInfoManager = new FragmentInfoManager(context, map, startPoint, listener, verified);
-                fragmentInfoManager.addFragment(marker.getPosition(), id);
-                Log.i("IDPOINT", id);
-
-                return true;
-            }
-        });
+        FragmentInfoManager fragmentInfoManager = new FragmentInfoManager
+                (context, map, startPoint, listener, true);
+        fragmentInfoManager.setMarkerActions(id, marker);
     }
 
     @Override
@@ -82,46 +75,20 @@ public class KMLStyler implements KmlFeature.Styler
         polygon.setVisible(false);
         String id = kmlPlacemark.mId;
 
-        Marker marker = new Marker(map);
         double latitude = kmlPolygon.getBoundingBox().getCenterLatitude();
         double longitude = kmlPolygon.getBoundingBox().getCenterLongitude();
-        marker.setPosition(new GeoPoint(latitude, longitude));
-        marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener()
-        {
-            @Override
-            public boolean onMarkerClick(Marker marker, MapView mapView)
-            {
-                boolean verified = true;
-                FragmentInfoManager fragmentInfoManager = new FragmentInfoManager(context, map, startPoint, listener, verified);
-                fragmentInfoManager.addFragment(marker.getPosition(), id);
-                Log.i("IDPOINT", id);
+        GeoPoint position = new GeoPoint(latitude, longitude);
 
-                return true;
-            }
-        });
-
-        DatabaseManager databaseManager = new DatabaseManager(kmlPlacemark, kmlPolygon.getBoundingBox().getCenter(), context);
-        databaseManager.checkIfExists(id);
-        howManyRecords();
-
-        map.getOverlays().add(marker);
+        ParkingManager pm = new ParkingManager();
+        pm.addSampleParkings(id, kmlPlacemark, position);
+        FragmentInfoManager fragmentInfoManager = new FragmentInfoManager
+                (context, map, startPoint, listener, true);
+        fragmentInfoManager.setMarkerActions(id, position);
     }
 
     @Override
     public void onTrack(Polyline polyline, KmlPlacemark kmlPlacemark, KmlTrack kmlTrack)
     {
 
-    }
-
-    public void howManyRecords()
-    {
-        db.collection("parkings").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
-        {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task)
-            {
-                Log.i("ILE", String.valueOf(task.getResult().size()));
-            }
-        });
     }
 }

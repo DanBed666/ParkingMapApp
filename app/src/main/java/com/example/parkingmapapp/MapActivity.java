@@ -1,9 +1,7 @@
 package com.example.parkingmapapp;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -19,12 +17,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Observer;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
@@ -41,14 +37,15 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Random;
 
-public class MapActivity extends AppCompatActivity implements MapEventsReceiver
+public class MapActivity extends AppCompatActivity implements MapEventsReceiver, Serializable
 {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     MapView map;
-    MyLocationNewOverlay mLocationOverlay;
+    MapActions ma = new MapActions();
+    LocationManager lm;
     FragmentInterface listener;
+    MyLocationNewOverlay mLocationOverlay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -79,8 +76,6 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
         map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
 
-        mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(getApplicationContext()),map);
-
         String [] permissions = new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.WRITE_EXTERNAL_STORAGE
         ,android.Manifest.permission.READ_EXTERNAL_STORAGE};
 
@@ -90,11 +85,14 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
                 // WRITE_EXTERNAL_STORAGE is required in order to show the map
         );
 
-        map.setBuiltInZoomControls(true);
-        map.setMultiTouchControls(true);
+        mLocationOverlay = new MyLocationNewOverlay
+                (new GpsMyLocationProvider(getApplicationContext()), map);
 
-        showMyLocation();
-        showCompass();
+        lm = new LocationManager(mLocationOverlay);
+
+        lm.showMyLocation(map);
+        ma.showCompass(getApplicationContext(), map);
+        ma.setMultiTouch(map);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -113,12 +111,13 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
         clear = findViewById(R.id.btn_clear);
 
         Configuration.getInstance().setUserAgentValue("userAgent");
+
         location.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                navToLocation(mLocationOverlay.getMyLocation());
+                lm.setMyLocation(map);
             }
         });
 
@@ -136,12 +135,9 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
             @Override
             public void onClick(View v)
             {
-                map.getOverlays().removeIf(o -> o instanceof Marker);
-                map.getOverlays().removeIf(o -> o instanceof FolderOverlay);
-                map.invalidate();
+                ma.clearMarkers(map);
             }
         });
-
         listener = new FragmentInterface()
         {
             @Override
@@ -158,17 +154,13 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
             @Override
             public void onClick(View v)
             {
-                FindParksOptionsFragment fragment = new FindParksOptionsFragment();
-                Utils u = new Utils(getApplicationContext(), map, mLocationOverlay.getMyLocation(), listener);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("OBJECT", u);
-                fragment.setArguments(bundle);
-
-                getSupportFragmentManager().beginTransaction().
-                        setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                        .show(fragment)
-                        .replace(R.id.fragment2, fragment)
-                        .commit();
+                Intent intent = new Intent(getApplicationContext(), FindParkingsActivity.class);
+                Log.i("MAPA", String.valueOf(map == null));
+                ParkingManager pm = new ParkingManager(lm.getMyLocation(), getApplicationContext(), map, listener);
+                Bundle b = new Bundle();
+                b.putSerializable("PM", pm);
+                intent.putExtras(b);
+                startActivity(intent);
             }
         });
     }
@@ -234,24 +226,6 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
     }
-    public void showMyLocation()
-    {
-        //Marker marker = new Marker(map);
-        //marker.setPosition(new GeoPoint(52.2297700, 21.0117800));
-        //marker.setIcon(ResourcesCompat.getDrawable(getResources(), org.osmdroid.bonuspack.R.drawable.person, null));
-        //map.getOverlays().add(marker);
-        mLocationOverlay.enableFollowLocation();
-        map.getOverlays().add(mLocationOverlay);
-        map.getController().setZoom(18.0);
-    }
-
-    public void showCompass()
-    {
-        CompassOverlay mCompassOverlay = new CompassOverlay(getApplicationContext(), new InternalCompassOrientationProvider(getApplicationContext()), map);
-        mCompassOverlay.enableCompass();
-        map.getOverlays().add(mCompassOverlay);
-    }
-
     public void navToLocation(GeoPoint location)
     {
         map.getController().setCenter(location);
@@ -294,23 +268,10 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver
             {
                 String id = data.getStringExtra("ID");
                 GeoPoint geoPoint = data.getParcelableExtra("GEOPOINT");
-                Log.i("LUL", geoPoint.getLatitude() + " " + geoPoint.getLongitude());
 
-                Marker marker = new Marker(map);
-                marker.setPosition(geoPoint);
-                marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
-                    @Override
-                    public boolean onMarkerClick(Marker marker, MapView mapView)
-                    {
-                        boolean verified = false;
-                        FragmentInfoManager fragmentInfoManager = new FragmentInfoManager(getApplicationContext(), map,
-                                mLocationOverlay.getMyLocation(), listener, verified);
-                        fragmentInfoManager.addFragment(marker.getPosition(), id);
-
-                        return true;
-                    }
-                });
-                map.getOverlays().add(marker);
+                FragmentInfoManager fragmentInfoManager = new FragmentInfoManager(getApplicationContext(), map,
+                        lm.getMyLocation(), listener, false);
+                fragmentInfoManager.setMarkerActions(id, geoPoint);
             }
             else if (myStr.equals("show"))
             {

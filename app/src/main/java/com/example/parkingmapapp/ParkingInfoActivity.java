@@ -26,10 +26,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -93,7 +95,6 @@ public class ParkingInfoActivity extends AppCompatActivity
                 intent.putExtra("KEYID", id);
                 intent.putExtra("PARKING", p);
                 intent.putExtra("DOCUMENTID", documentId);
-                intent.putExtra("ADDRESS", adr);
                 startActivity(intent);
             }
         });
@@ -119,102 +120,96 @@ public class ParkingInfoActivity extends AppCompatActivity
 
     public void getElementsFromDB(String col, TextView [] textViews, Button btnHarm)
     {
-        db.collection(col).whereEqualTo("id", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        DatabaseManager dbm = new DatabaseManager();
+        Query q = db.collection(col).whereEqualTo("id", id);
+
+        dbm.getElements(q, new OnElementsGet()
         {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task)
+            public void setOnElementsGet(List<DocumentSnapshot> documentSnapshotList)
             {
-                if (task.isSuccessful())
+                for (DocumentSnapshot document : documentSnapshotList)
                 {
-                    for (QueryDocumentSnapshot document : task.getResult())
-                    {
-                        Log.d("LOL", document.getId() + " => " + document.getData());
-                        Log.i("XD", document.getId() + " => " + document.getData());
-                        String nam = (String) document.getData().get("name");
-                        String pkg = (String) document.getData().get("pking");
-                        String cpc = (String) document.getData().get("capacity");
-                        String f33 = (String) document.getData().get("fee");
-                        String sup = (String) document.getData().get("supervised");
-                        String ope = (String) document.getData().get("operator");
-                        String acc = (String) document.getData().get("access");
-                        String cdis = (String) document.getData().get("capacityDisabled");
-                        String ctru = (String) document.getData().get("capacityTruck");
-                        String cbus = (String) document.getData().get("capacityBus");
-                        String cmot = (String) document.getData().get("capacityMotorcycle");
-                        String kwota = (String) document.getData().get("kwota");
-                        Map<String, String> harm = (Map<String, String>) document.getData().get("harmonogram");
-                        String createdDate = (String) document.getData().get("dataCreated");
-                        String editedDate = (String) document.getData().get("dataEdited");
-                        String verifiedDate = (String) document.getData().get("dataVerified");
-                        String stat = (String) document.getData().get("status");
-                        String user = (String) document.getData().get("uId");
-
-                        if (sup.equals("yes"))
-                        {
-                            btnHarm.setVisibility(View.VISIBLE);
-                        }
-
-                        btnHarm.setOnClickListener(new View.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(View v)
-                            {
-                                Intent intent = new Intent(getApplicationContext(), HarmonogramActivity.class);
-                                intent.putExtra("SCHEDULE", (Serializable) harm);
-                                startActivity(intent);
-                            }
-                        });
-
-                        textViews[0].setText("Nazwa: " + nam);
-                        textViews[1].setText("Typ parkingu: " + pkg);
-                        textViews[2].setText("Wielkość: " + cpc);
-                        textViews[3].setText("Opłaty: " + f33);
-                        textViews[4].setText("Parking strzeżony: " + sup);
-                        textViews[5].setText("Operator: " + ope);
-                        textViews[6].setText("Dostęp: " + acc);
-                        textViews[7].setText("Miejsca dla niepełnosprawnych: " + cdis);
-                        textViews[8].setText("Miejsca dla tirów: " + ctru);
-                        textViews[9].setText("Miejsca dla busów: " + cbus);
-                        textViews[10].setText("Miejsca dla motocykli: " + cmot);
-                        textViews[11].setText(kwota);
-                        textViews[12].setText(createdDate);
-                        textViews[13].setText(editedDate);
-                        textViews[14].setText(verifiedDate);
-                        textViews[15].setText(stat);
-
-                        documentId = document.getId();
-                        getUser(user, textViews[16]);
-                    }
-                }
-                else
-                {
-                    Log.w("ERR", "Error getting documents.", task.getException());
+                    loadData(document, textViews, btnHarm);
                 }
             }
         });
     }
 
+    public void loadData(DocumentSnapshot document, TextView [] textViews, Button btnHarm)
+    {
+        Log.d("LOL", document.getId() + " => " + document.getData());
+        Log.i("XD", document.getId() + " => " + document.getData());
+        String nam = (String) document.getData().get("name");
+        String pkg = (String) document.getData().get("pking");
+        String cpc = (String) document.getData().get("capacity");
+        String f33 = (String) document.getData().get("fee");
+        String sup = (String) document.getData().get("supervised");
+        String ope = (String) document.getData().get("operator");
+        String acc = (String) document.getData().get("access");
+        String cdis = (String) document.getData().get("capacityDisabled");
+        String ctru = (String) document.getData().get("capacityTruck");
+        String cbus = (String) document.getData().get("capacityBus");
+        String cmot = (String) document.getData().get("capacityMotorcycle");
+        String kwota = (String) document.getData().get("kwota");
+        Map<String, String> harm = (Map<String, String>) document.getData().get("harmonogram");
+        String createdDate = (String) document.getData().get("dataCreated");
+        String editedDate = (String) document.getData().get("dataEdited");
+        String verifiedDate = (String) document.getData().get("dataVerified");
+        String stat = (String) document.getData().get("status");
+        String user = (String) document.getData().get("uId");
+
+        if (sup.equals("yes"))
+        {
+            btnHarm.setVisibility(View.VISIBLE);
+        }
+
+        btnHarm.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(getApplicationContext(), HarmonogramActivity.class);
+                intent.putExtra("SCHEDULE", (Serializable) harm);
+                startActivity(intent);
+            }
+        });
+
+        textViews[0].setText("Nazwa: " + nam);
+        textViews[1].setText("Typ parkingu: " + pkg);
+        textViews[2].setText("Wielkość: " + cpc);
+        textViews[3].setText("Opłaty: " + f33);
+        textViews[4].setText("Parking strzeżony: " + sup);
+        textViews[5].setText("Operator: " + ope);
+        textViews[6].setText("Dostęp: " + acc);
+        textViews[7].setText("Miejsca dla niepełnosprawnych: " + cdis);
+        textViews[8].setText("Miejsca dla tirów: " + ctru);
+        textViews[9].setText("Miejsca dla busów: " + cbus);
+        textViews[10].setText("Miejsca dla motocykli: " + cmot);
+        textViews[11].setText(kwota);
+        textViews[12].setText(createdDate);
+        textViews[13].setText(editedDate);
+        textViews[14].setText(verifiedDate);
+        textViews[15].setText(stat);
+
+        documentId = document.getId();
+        getUser(user, textViews[16]);
+    }
+
     public void getUser(String uId, TextView userTV)
     {
-        db.collection("users").whereEqualTo("uId", uId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
-        {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task)
-            {
-                if (task.isSuccessful())
-                {
-                    for (DocumentSnapshot ds : task.getResult().getDocuments())
-                    {
-                        userTV.setText(ds.getString("nick"));
-                    }
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
+        DatabaseManager dbm = new DatabaseManager();
+        Query q = db.collection("users").whereEqualTo("uId", uId);
 
+        dbm.getElements(q, new OnElementsGet()
+        {
+            @Override
+            public void setOnElementsGet(List<DocumentSnapshot> documentSnapshotList)
+            {
+                for (DocumentSnapshot ds : documentSnapshotList)
+                {
+                    userTV.setText(ds.getString("nick"));
+                }
             }
         });
     }

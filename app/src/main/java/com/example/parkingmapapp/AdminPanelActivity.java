@@ -16,7 +16,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.List;
 
 public class AdminPanelActivity extends AppCompatActivity
 {
@@ -41,29 +44,16 @@ public class AdminPanelActivity extends AppCompatActivity
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
 
-        getUser();
-    }
-
-    public void getUser()
-    {
-        db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        DatabaseManager dbm = new DatabaseManager();
+        Query q = db.collection("users");
+        dbm.getElements(q, new OnElementsGet()
         {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task)
+            public void setOnElementsGet(List<DocumentSnapshot> documentSnapshotList)
             {
-                if (task.isSuccessful())
-                {
-                    adminPanelAdapter = new AdminPanelAdapter(getApplicationContext(), task.getResult().getDocuments());
-                    recyclerView.setAdapter(adminPanelAdapter);
-                    adminPanelAdapter.notifyDataSetChanged();
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-
+                adminPanelAdapter = new AdminPanelAdapter(getApplicationContext(), documentSnapshotList);
+                recyclerView.setAdapter(adminPanelAdapter);
+                adminPanelAdapter.notifyDataSetChanged();
             }
         });
     }

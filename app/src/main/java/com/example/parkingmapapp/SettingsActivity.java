@@ -22,12 +22,15 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.List;
 import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity
@@ -116,53 +119,23 @@ public class SettingsActivity extends AppCompatActivity
             }
         });
 
-        db.collection("users").whereEqualTo("uId", user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
-        {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task)
-            {
-                if (task.isSuccessful())
-                {
-                    for (QueryDocumentSnapshot document : task.getResult())
-                    {
-                        Log.d("LOL2", document.getId() + " => " + document.getData());
-                        Log.i("XD2", "xd");
-                        String nameDb = (String) document.getData().get("name");
-                        String surnameDb = (String) document.getData().get("surname");
-                        name.setText(nameDb);
-                        surname.setText(surnameDb);
-                        documentId = document.getId();
-                    }
-                }
-                else
-                {
-                    Log.w("ERR", "Error getting documents.", task.getException());
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Log.e("ERR2", "Error getting documents.", e);
-            }
-        });
+        DatabaseManager dbm = new DatabaseManager();
+        Query q = db.collection("users").whereEqualTo("uId", user.getUid());
 
-        db.collection("users").whereEqualTo("uId", user.getUid()).addSnapshotListener(new EventListener<QuerySnapshot>()
+        dbm.getElements(q, new OnElementsGet()
         {
             @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error)
+            public void setOnElementsGet(List<DocumentSnapshot> documentSnapshotList)
             {
-                assert value != null;
-                for (DocumentChange d : value.getDocumentChanges())
+                for (DocumentSnapshot document : documentSnapshotList)
                 {
-                    Log.i("TYP", String.valueOf(d.getType()));
-                    String nameDb = (String) d.getDocument().get("name");
-                    String surnameDb = (String) d.getDocument().get("surname");
-                    Log.i("EXDE", (String) Objects.requireNonNull(d.getDocument().get("name")));
-                    Log.i("EXDE", (String) Objects.requireNonNull(d.getDocument().get("surname")));
+                    Log.d("LOL2", document.getId() + " => " + document.getData());
+                    Log.i("XD2", "xd");
+                    String nameDb = (String) Objects.requireNonNull(document.getData()).get("name");
+                    String surnameDb = (String) document.getData().get("surname");
                     name.setText(nameDb);
                     surname.setText(surnameDb);
+                    documentId = document.getId();
                 }
             }
         });

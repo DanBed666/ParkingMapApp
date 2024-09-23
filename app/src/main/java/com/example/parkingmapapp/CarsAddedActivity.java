@@ -11,9 +11,11 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,6 +29,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -62,6 +65,9 @@ public class CarsAddedActivity extends AppCompatActivity implements RefreshListe
         recyclerView = findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
+        DividerItemDecoration itemDecorator = new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL);
+        itemDecorator.setDrawable(Objects.requireNonNull(ContextCompat.getDrawable(getApplicationContext(), R.drawable.divider)));
         new_car.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -71,39 +77,17 @@ public class CarsAddedActivity extends AppCompatActivity implements RefreshListe
             }
         });
 
-        getCars();
-    }
+        DatabaseManager dbm = new DatabaseManager();
+        Query q = db.collection("cars").whereEqualTo("uId", user.getUid());
 
-    public void getCars()
-    {
-        db.collection("cars").whereEqualTo("userId", user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        dbm.getElements(q, new OnElementsGet()
         {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task)
+            public void setOnElementsGet(List<DocumentSnapshot> documentSnapshotList)
             {
-                if (task.isSuccessful())
-                {
-                    carsAdapter = new CarsAdapter(getApplicationContext(), task.getResult().getDocuments(), refreshListener);
-                    recyclerView.setAdapter(carsAdapter);
-                    int pos = 0;
-
-                    for (DocumentSnapshot ds : task.getResult().getDocuments())
-                    {
-                        pos++;
-                        carsAdapter.notifyItemChanged(pos);
-                    }
-                }
-                else
-                {
-                    Log.w("ERR", "Error getting documents.", task.getException());
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Log.e("ERR2", "Error getting documents.", e);
+                carsAdapter = new CarsAdapter(getApplicationContext(), documentSnapshotList, refreshListener);
+                recyclerView.setAdapter(carsAdapter);
+                carsAdapter.notifyDataSetChanged();
             }
         });
     }

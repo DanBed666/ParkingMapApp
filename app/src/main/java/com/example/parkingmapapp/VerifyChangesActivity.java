@@ -27,12 +27,14 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -43,6 +45,9 @@ public class VerifyChangesActivity extends AppCompatActivity
     String id;
     String editId;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    DatabaseManager dbm = new DatabaseManager();
+    GetTagData get = new GetTagData();
+    ParkingManager pm = new ParkingManager();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -97,7 +102,6 @@ public class VerifyChangesActivity extends AppCompatActivity
 
     public void getVerifies(TextView [] textViews, Button [] buttons)
     {
-        Log.i("VIERFIEIS", id);
         db.collection("edits").whereEqualTo("editId", editId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
         {
             @Override
@@ -122,6 +126,10 @@ public class VerifyChangesActivity extends AppCompatActivity
                         String price = ds.getString("kwota");
                         String created = ds.getString("dataCreated");
                         String edited = ds.getString("dataEdited");
+                        double lat = ds.getDouble("latitude");
+                        double lon = ds.getDouble("longitude");
+                        String create = ds.getString("action");
+                        getUser(Boolean.TRUE.equals(ds.getBoolean("verified")), buttons);
 
                         textViews[0].setText("Nazwa: " + name);
                         textViews[1].setText("Nawierzchnia: " + parking);
@@ -156,12 +164,6 @@ public class VerifyChangesActivity extends AppCompatActivity
                             }
                         });
 
-                        double lat = ds.getDouble("latitude");
-                        double lon = ds.getDouble("longitude");
-                        String create = ds.getString("action");
-
-                        getUser(Boolean.TRUE.equals(ds.getBoolean("verified")), buttons);
-
                         //Show on map button
                         buttons[1].setOnClickListener(new View.OnClickListener()
                         {
@@ -176,7 +178,7 @@ public class VerifyChangesActivity extends AppCompatActivity
                         });
 
                         Parking newParking = new Parking(uId, id, editId, name, parking, access, capacity, capacityDis, capacityTru, capacityBus, capacityMoto,
-                                fee, supervised, operator, lat, lon, created, edited, getActualDate(), "Utworzono",
+                                fee, supervised, operator, lat, lon, created, edited, get.getActualDate(), "Utworzono",
                                 schedule, price, true, "Zweryfikowany", Calendar.getInstance().getTime(), false);
 
                         //Pass button
@@ -185,24 +187,9 @@ public class VerifyChangesActivity extends AppCompatActivity
                             @Override
                             public void onClick(View v)
                             {
-                                if (create.equals("Utworzono"))
-                                {
-                                    addParking(id, newParking, "parkings");
-                                    mapa.put("verified", true);
-                                    mapa.put("status", "Zweryfikowany");
-                                    mapa.put("dataVerified", getActualDate());
-                                    editParking(mapa, "edits", editId);
-                                }
-                                else
-                                {
-                                    addMap(mapa, ds);
-                                    mapa.put("verified", true);
-                                    mapa.put("status", "Zweryfikowany");
-                                    mapa.put("dataVerified", getActualDate());
-                                    editParking(mapa, "parkings", id);
-                                    editParking(mapa, "edits", editId);
-                                }
-
+                                String [] ids = new String[]{id, editId, create};
+                                assert create != null;
+                                pm.parkingPass(ds, mapa, newParking, ids);
                                 finish();
                             }
                         });
@@ -213,10 +200,7 @@ public class VerifyChangesActivity extends AppCompatActivity
                             @Override
                             public void onClick(View v)
                             {
-                                addMap(mapa, ds);
-                                mapa.put("verified", false);
-                                mapa.put("status", "Odrzucony");
-                                editParking(mapa, "edits", editId);
+                                pm.parkingNoPass(ds, mapa, editId);
                                 finish();
                             }
                         });
@@ -236,96 +220,23 @@ public class VerifyChangesActivity extends AppCompatActivity
             }
         });
     }
-    public void editParking(Map<String, Object> mapa, String col, String idNumber)
-    {
-        db.collection(col).document(idNumber).update(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
-        {
-            @Override
-            public void onSuccess(Void documentReference)
-            {
-                Log.i("ERROdddsR", "GUT");
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Log.d("ERROR", "Error: " + e.getMessage());
-            }
-        });
-    }
-
-    public String getActualDate()
-    {
-        Calendar calender = Calendar.getInstance();
-        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-        String formattedDate = df.format(calender.getTime());
-        return formattedDate;
-    }
-
     public void getUser(boolean verified, Button [] buttons)
     {
-        db.collection("users").whereEqualTo("uId", user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        Query q = db.collection("users").whereEqualTo("uId", user.getUid());
+
+        dbm.getElements(q, new OnElementsGet()
         {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task)
+            public void setOnElementsGet(List<DocumentSnapshot> documentSnapshotList)
             {
-                if (task.isSuccessful())
+                for (DocumentSnapshot ds : documentSnapshotList)
                 {
-                    for (DocumentSnapshot ds : task.getResult().getDocuments())
+                    if ((Objects.equals(ds.getString("ranga"), "Użytkownik") || verified))
                     {
-                        if ((Objects.equals(ds.getString("ranga"), "Użytkownik") || verified))
-                        {
-                            buttons[2].setVisibility(View.GONE);  //Pass button
-                            buttons[3].setVisibility(View.GONE);  //Not pass button
-                        }
+                        buttons[2].setVisibility(View.GONE);  //Pass button
+                        buttons[3].setVisibility(View.GONE);  //Not pass button
                     }
                 }
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-
-            }
-        });
-    }
-
-    public void addMap(Map<String, Object> mapa, DocumentSnapshot ds)
-    {
-        mapa.put("name", ds.getString("name"));
-        mapa.put("pking", ds.getString("pking"));
-        mapa.put("capacity", ds.getString("capacity"));
-        mapa.put("fee", ds.getString("fee"));
-        mapa.put("supervised", ds.getString("supervised"));
-        mapa.put("operator", ds.getString("operator"));
-        mapa.put("action", "Edytowano");
-        mapa.put("access", ds.getString("access"));
-        mapa.put("capacityDisabled", ds.getString("capacityDisabled"));
-        mapa.put("capacityTrucks", ds.getString("capacityTrucks"));
-        mapa.put("capacityBus", ds.getString("capacityBus"));
-        mapa.put("capacityMotorcycle", ds.getString("capacityMotorcycle"));
-        mapa.put("dataEdited", getActualDate());
-        mapa.put("harmonogram", ds.get("harmonogram"));
-        mapa.put("kwota", ds.getString("kwota"));
-    }
-
-    public void addParking(String id, Parking newParking, String col)
-    {
-        db.collection(col).document(id).set(newParking).addOnSuccessListener(new OnSuccessListener<Void>()
-        {
-            @Override
-            public void onSuccess(Void unused)
-            {
-                Log.i("CREATEDADD", "created");
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
             }
         });
     }

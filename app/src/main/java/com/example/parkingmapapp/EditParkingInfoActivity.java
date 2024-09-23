@@ -33,6 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -42,6 +43,7 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
@@ -56,6 +58,8 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
     String [] typesEN = {"", "surface", "street_side", "multi-storey", "underground"};
     String [] accessTabEN = {"", "yes", "private", "customers"};
     String [] opcjeEN = {"", "yes", "no"};
+    GetTagData get = new GetTagData();
+    DatabaseManager dbm = new DatabaseManager();
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -146,62 +150,8 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
 
             }
         });
-        db.collection("parkings").whereEqualTo("id", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
-        {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task)
-            {
-                if (task.isSuccessful())
-                {
-                    for (QueryDocumentSnapshot document : task.getResult())
-                    {
-                        Log.d("LOL", document.getId() + " => " + document.getData());
-                        Log.i("XD", document.getId() + " => " + document.getData());
-                        String nam = (String) document.getData().get("name");
-                        String pkg = (String) document.getData().get("pking");
-                        String cpc = (String) document.getData().get("capacity");
-                        String f33 = (String) document.getData().get("fee");
-                        String sup = (String) document.getData().get("supervised");
-                        String ope = (String) document.getData().get("operator");
-                        String acc = (String) document.getData().get("access");
-                        String cdis = (String) document.getData().get("capacityDisabled");
-                        String ctru = (String) document.getData().get("capacityTruck");
-                        String cbus = (String) document.getData().get("capacityBus");
-                        String cmot = (String) document.getData().get("capacityMotorcycle");
-                        String cena = (String) document.getData().get("kwota");
-                        schedule = (Map<String, String>) document.getData().get("harmonogram");
 
-                        double latitude = (double) document.getData().get("latitude");
-                        double longitude = (double) document.getData().get("longitude");
-                        String created = (String) document.getData().get("dataCreated");
-                        String uId = (String) document.getData().get("uId");
-                        //String verified = (String) document.getData().get("dataVerified");
-                        //String action = (String) document.getData().get("action");
-                        //String status = (String) document.getData().get("status");
-
-                        nameET.setText(nam);
-                        capacityET.setText(cpc);
-                        operatorET.setText(ope);
-                        cenaET.setText(cena);
-
-                        spinnerType.setSelection(getPosition(pkg, typesEN));
-                        spinnerAccess.setSelection(getPosition(acc, accessTabEN));
-                        spinnerDisabled.setSelection(getPosition(cdis, opcjeEN));
-                        spinnerFee.setSelection(getPosition(f33, opcjeEN));
-                        spinnerSupervised.setSelection(getPosition(sup, opcjeEN));
-                        spinnerBus.setSelection(getPosition(cbus, opcjeEN));
-                        spinnerMoto.setSelection(getPosition(cmot, opcjeEN));
-                        spinnerTrucks.setSelection(getPosition(ctru, opcjeEN));
-
-                        editListener(latitude, longitude, created, edit, spinners, editTexts);
-                    }
-                }
-                else
-                {
-                    Log.w("ERR", "Error getting documents.", task.getException());
-                }
-            }
-        });
+        loadDataDB(spinners, editTexts, edit);
 
         harmonogram.setOnClickListener(new View.OnClickListener()
         {
@@ -221,6 +171,54 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
             }
         });
     }
+    public void loadDataDB(Spinner [] spinners, EditText [] editTexts, Button edit)
+    {
+        Query q = db.collection("parkings").whereEqualTo("id", id);
+        dbm.getElements(q, new OnElementsGet()
+        {
+            @Override
+            public void setOnElementsGet(List<DocumentSnapshot> documentSnapshotList)
+            {
+                for (DocumentSnapshot document : documentSnapshotList)
+                {
+                    //Get values from database and intialize it to spinners, editTexts
+                    Log.d("LOL", document.getId() + " => " + document.getData());
+                    Log.i("XD", document.getId() + " => " + document.getData());
+                    String nam = (String) document.getData().get("name");
+                    String pkg = (String) document.getData().get("pking");
+                    String cpc = (String) document.getData().get("capacity");
+                    String f33 = (String) document.getData().get("fee");
+                    String sup = (String) document.getData().get("supervised");
+                    String ope = (String) document.getData().get("operator");
+                    String acc = (String) document.getData().get("access");
+                    String cdis = (String) document.getData().get("capacityDisabled");
+                    String ctru = (String) document.getData().get("capacityTruck");
+                    String cbus = (String) document.getData().get("capacityBus");
+                    String cmot = (String) document.getData().get("capacityMotorcycle");
+                    String cena = (String) document.getData().get("kwota");
+                    schedule = (Map<String, String>) document.getData().get("harmonogram");
+                    double latitude = (double) document.getData().get("latitude");
+                    double longitude = (double) document.getData().get("longitude");
+                    String created = (String) document.getData().get("dataCreated");
+
+                    editTexts[0].setText(nam);
+                    editTexts[1].setText(cpc);
+                    editTexts[2].setText(ope);
+                    editTexts[3].setText(cena);
+                    spinners[0].setSelection(getPosition(pkg, typesEN));
+                    spinners[1].setSelection(getPosition(acc, accessTabEN));
+                    spinners[2].setSelection(getPosition(cdis, opcjeEN));
+                    spinners[3].setSelection(getPosition(f33, opcjeEN));
+                    spinners[4].setSelection(getPosition(sup, opcjeEN));
+                    spinners[5].setSelection(getPosition(cbus, opcjeEN));
+                    spinners[6].setSelection(getPosition(cmot, opcjeEN));
+                    spinners[7].setSelection(getPosition(ctru, opcjeEN));
+
+                    editListener(latitude, longitude, created, edit, spinners, editTexts);
+                }
+            }
+        });
+    }
 
     private void editListener(double lat, double lon, String created, Button edit, Spinner [] spinners, EditText [] editTexts)
     {
@@ -229,6 +227,7 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
             @Override
             public void onClick(View v)
             {
+                //Get values from editText, spinners
                 String name = editTexts[0].getText().toString();
                 String capacity = editTexts[1].getText().toString();
                 String parking = getValue(spinners[0], typesEN);
@@ -254,7 +253,7 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                 mapa.put("capacityTrucks", ctru);
                 mapa.put("capacityBus", cbus);
                 mapa.put("capacityMotorcycle", cmot);
-                mapa.put("dataEdited", getActualDate());
+                mapa.put("dataEdited", get.getActualDate());
                 mapa.put("harmonogram", schedule);
                 mapa.put("kwota", price);
                 mapa.put("action", "Edytowano");
@@ -276,113 +275,30 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                     }
                 }
 
-                String editedId = generateId();
+                String editedId = get.generateId();
 
-                Parking newParking2 = new Parking(user.getUid(), id, editedId, name, parking, access, capacity, cdis, ctru, cbus, cmot,
-                        fee, supervised, operator, lat, lon, created, getActualDate(), "", "Edytowano",
-                        schedule, price, false, "Oczekujący", Calendar.getInstance().getTime(), false);
+                //Create new object and add edit
+
+                Parking newParking2 = new Parking(user.getUid(), id, editedId, name, parking,
+                        access, capacity, cdis, ctru, cbus, cmot,
+                        fee, supervised, operator, lat, lon, created,
+                        get.getActualDate(), "", "Edytowano",
+                        schedule, price, false, "Oczekujący",
+                        Calendar.getInstance().getTime(), false);
 
                 Log.i("EDS", editedId);
 
-                getUser(mapa, newParking2);
+                ParkingManager pm = new ParkingManager();
+                pm.editParking(newParking2, mapa, id, editedId);
+
+                Intent i = new Intent(getApplicationContext(), ParkingEditHistoryActivity.class);
+                i.putExtra("ID", id);
+                startActivity(i);
 
                 finish();
             }
         });
     }
-
-    public void editParking(Map<String, Object> mapa)
-    {
-        Log.i("EDITPAR", documentId);
-        db.collection("parkings").document(documentId).update(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
-        {
-            @Override
-            public void onSuccess(Void unused)
-            {
-                Log.i("CREATEDADD", "created");
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
-            }
-        });
-    }
-
-    public void addEdit(Parking parking)
-    {
-        db.collection("edits").document(parking.getEditId()).set(parking).addOnSuccessListener(new OnSuccessListener<Void>()
-        {
-            @Override
-            public void onSuccess(Void unused)
-            {
-                Log.i("CREATEDADD", "created");
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
-            }
-        });
-    }
-
-    public void getUser(Map<String, Object> mapa, Parking newParking)
-    {
-        db.collection("users").whereEqualTo("uId", user.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
-        {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task)
-            {
-                if (task.isSuccessful())
-                {
-                    for (DocumentSnapshot ds : task.getResult().getDocuments())
-                    {
-                        if (Objects.equals(ds.getString("ranga"), "Administrator") || Objects.equals(ds.getString("ranga"), "Moderator"))
-                        {
-                            mapa.put("verified", true);
-                            mapa.put("status", "Zweryfikowany");
-                            mapa.put("dataVerified", getActualDate());
-                            newParking.setVerified(true);
-                            newParking.setStatus("Zweryfikowany");
-                            newParking.setDataVerified(getActualDate());
-                            editParking(mapa);
-                            addEdit(newParking);
-                            Intent i = new Intent(getApplicationContext(), ParkingEditHistoryActivity.class);
-                            i.putExtra("ID", id);
-                            startActivity(i);
-                        }
-                        else
-                        {
-                            addEdit(newParking);
-                            Intent i = new Intent(getApplicationContext(), ParkingEditHistoryActivity.class);
-                            i.putExtra("ID", id);
-                            startActivity(i);
-                        }
-                    }
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-
-            }
-        });
-    }
-
-    public String getActualDate()
-    {
-        Calendar calender = Calendar.getInstance();
-        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-        String formattedDate = df.format(calender.getTime());
-        return formattedDate;
-    }
-
     public void initializeAdapter(String [] tab, Spinner spinner)
     {
         ArrayAdapter<String> aa = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, tab);
@@ -415,20 +331,6 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
         }
 
         return position;
-    }
-
-    public String generateId()
-    {
-        Random random = new Random();
-        StringBuilder chain = new StringBuilder();
-
-        for (int i = 1; i <= 20; i++)
-        {
-            char c = (char)(random.nextInt(26) + 'a');
-            chain.append(c);
-        }
-
-        return chain.toString();
     }
 
     @Override

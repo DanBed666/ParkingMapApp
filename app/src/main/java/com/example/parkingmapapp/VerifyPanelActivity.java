@@ -17,10 +17,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.List;
 import java.util.Objects;
 
 public class VerifyPanelActivity extends AppCompatActivity
@@ -48,31 +50,17 @@ public class VerifyPanelActivity extends AppCompatActivity
         DividerItemDecoration itemDecorator = new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL);
         itemDecorator.setDrawable(Objects.requireNonNull(ContextCompat.getDrawable(getApplicationContext(), R.drawable.divider)));
 
-        getEdits();
-    }
+        DatabaseManager dbm = new DatabaseManager();
+        Query q = db.collection("edits").whereEqualTo("status", "Oczekujący").orderBy("lastActionDate", Query.Direction.DESCENDING);
 
-    public void getEdits()
-    {
-        db.collection("edits").whereEqualTo("status", "Oczekujący").orderBy("lastActionDate", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        dbm.getElements(q, new OnElementsGet()
         {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task)
+            public void setOnElementsGet(List<DocumentSnapshot> documentSnapshotList)
             {
-                Log.i("VERIFIERS", String.valueOf(task.getResult().getDocuments().size()));
-
-                if (task.isSuccessful())
-                {
-                    verifyPanelAdapter = new VerifyPanelAdapter(getApplicationContext(), task.getResult().getDocuments());
-                    recyclerView.setAdapter(verifyPanelAdapter);
-                    verifyPanelAdapter.notifyDataSetChanged();
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-
+                verifyPanelAdapter = new VerifyPanelAdapter(getApplicationContext(), documentSnapshotList);
+                recyclerView.setAdapter(verifyPanelAdapter);
+                verifyPanelAdapter.notifyDataSetChanged();
             }
         });
     }

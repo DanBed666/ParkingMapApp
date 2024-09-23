@@ -16,7 +16,9 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -27,6 +29,7 @@ public class ParkingBookingActivity extends AppCompatActivity
 {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String id;
+    Intent intent = new Intent(getApplicationContext(), PaymentActivity.class);
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -45,19 +48,7 @@ public class ParkingBookingActivity extends AppCompatActivity
         Button pay3 = findViewById(R.id.btn_pay3);
 
         id = getIntent().getStringExtra("KEYID");
-        Intent intent = new Intent(getApplicationContext(), PaymentActivity.class);
-        getParkings(new GetPriceCallback()
-        {
-            @SuppressLint("DefaultLocale")
-            @Override
-            public void getPrice(String price)
-            {
-                pay.setText(String.format("1 godzina, cena: %d zł", Integer.parseInt(price)));
-                pay2.setText(String.format("2 godziny, cena: %d zł", Integer.parseInt(price) * 2));
-                pay3.setText(String.format("3 godziny, cena: %d zł", Integer.parseInt(price) * 3));
-                intent.putExtra("PRICE", price);
-            }
-        });
+
         pay.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -90,31 +81,31 @@ public class ParkingBookingActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
+
+        setPrice(pay, pay2, pay3);
     }
 
-    public void getParkings(GetPriceCallback callback)
+    public void setPrice(Button pay, Button pay2, Button pay3)
     {
-        db.collection("parkings").whereEqualTo("id", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+        DatabaseManager dbm = new DatabaseManager();
+        Query q = db.collection("parkings").whereEqualTo("id", id);
+
+        dbm.getElements(q, new OnElementsGet()
         {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task)
+            public void setOnElementsGet(List<DocumentSnapshot> documentSnapshotList)
             {
-                String kwota = "0";
-
-                if (task.isSuccessful())
+                for (DocumentSnapshot document : documentSnapshotList)
                 {
-                    for (QueryDocumentSnapshot document : task.getResult())
-                    {
-                        kwota = (String) document.getData().get("kwota");
-                        Log.i("KWOTA", kwota);
-                    }
-                }
-                else
-                {
-                    Log.w("ERR", "Error getting documents.", task.getException());
-                }
+                    String kwota = (String) document.getData().get("kwota");
+                    assert kwota != null;
+                    Log.i("KWOTA", kwota);
 
-                callback.getPrice(kwota);
+                    pay.setText(String.format("1 godzina, cena: %d zł", Integer.parseInt(kwota)));
+                    pay2.setText(String.format("2 godziny, cena: %d zł", Integer.parseInt(kwota) * 2));
+                    pay3.setText(String.format("3 godziny, cena: %d zł", Integer.parseInt(kwota) * 3));
+                    intent.putExtra("PRICE", kwota);
+                }
             }
         });
     }

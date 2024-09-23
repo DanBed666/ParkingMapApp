@@ -5,13 +5,11 @@
     android:layout_height="match_parent"
     tools:context=".InfoFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <TextView
         android:id="@+id/tv_info"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="ulica abp. Jerzego Ablewicza, 33-100 Tarnów, Polska"
+        android:text="ulica Ulica, 00-000 Miasto, Kraj"
         android:textSize="22dp"
         android:textAlignment="center"
         android:background="#FFF000"/>

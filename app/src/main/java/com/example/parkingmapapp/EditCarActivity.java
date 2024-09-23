@@ -26,10 +26,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -53,6 +55,7 @@ public class EditCarActivity extends AppCompatActivity {
             return insets;
         });
 
+        DatabaseManager dbm = new DatabaseManager();
         carId = getIntent().getStringExtra("CARID");
         documentId = getIntent().getStringExtra("DOCUMENTID");
         EditText markaET = findViewById(R.id.et_marka);
@@ -69,7 +72,43 @@ public class EditCarActivity extends AppCompatActivity {
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         typSpinner.setAdapter(aa);
 
-        getCars(editTexts);
+        Query q = db.collection("cars").whereEqualTo("id", carId);
+        dbm.getElements(q, new OnElementsGet()
+        {
+            @Override
+            public void setOnElementsGet(List<DocumentSnapshot> documentSnapshotList)
+            {
+                for (DocumentSnapshot document : documentSnapshotList)
+                {
+                    Log.d("LOL", document.getId() + " => " + document.getData());
+                    Log.i("XD", "xd");
+                    String marka = (String) document.getData().get("marka");
+                    String model = (String) document.getData().get("model");
+                    String type = (String) document.getData().get("type");
+                    String reg = (String) document.getData().get("registrationNumber");
+                    String year = (String) document.getData().get("year");
+                    boolean primary = (boolean) document.getData().get("primary");
+
+                    editTexts[0].setText(marka);
+                    editTexts[1].setText(model);
+
+                    for (int i = 0; i < types.length; i++)
+                    {
+                        if (Objects.equals(type, types[i]))
+                        {
+                            typSpinner.setSelection(i);
+                            break;
+                        }
+                    }
+
+                    editTexts[2].setText(reg);
+                    editTexts[3].setText(year);
+
+                    if (primary)
+                        primarySw.setChecked(true);
+                }
+            }
+        });
         confirm.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -87,91 +126,20 @@ public class EditCarActivity extends AppCompatActivity {
                 if (primarySw.isChecked())
                     primary = true;
 
-                addCar(new Car(carId, user.getUid(), marka, model, typ, numer, rok, primary));
+                Map<String, Object> mapa = new HashMap<>();
+                mapa.put("marka", marka);
+                mapa.put("model", model);
+                mapa.put("primary", primary);
+                mapa.put("registrationNumber", numer);
+                mapa.put("type", typ);
+                mapa.put("year", rok);
+
+                dbm.addElement("cars", documentId, mapa);
+
                 Intent intent = new Intent(getApplicationContext(), AddCarActivity.class);
                 setResult(RESULT_OK, intent);
                 finish();
                 Toast.makeText(getApplicationContext(), "Zmiany zostały zapisane!", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    public void getCars(EditText [] editTexts)
-    {
-        db.collection("cars").whereEqualTo("id", carId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
-        {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task)
-            {
-                if (task.isSuccessful())
-                {
-                    for (QueryDocumentSnapshot document : task.getResult())
-                    {
-                        Log.d("LOL", document.getId() + " => " + document.getData());
-                        Log.i("XD", "xd");
-                        String marka = (String) document.getData().get("marka");
-                        String model = (String) document.getData().get("model");
-                        String type = (String) document.getData().get("type");
-                        String reg = (String) document.getData().get("registrationNumber");
-                        String year = (String) document.getData().get("year");
-                        boolean primary = (boolean) document.getData().get("primary");
-
-                        editTexts[0].setText(marka);
-                        editTexts[1].setText(model);
-
-                        for (int i = 0; i < types.length; i++)
-                        {
-                            if (Objects.equals(type, types[i]))
-                            {
-                                typSpinner.setSelection(i);
-                                break;
-                            }
-                        }
-
-                        editTexts[2].setText(reg);
-                        editTexts[3].setText(year);
-
-                        if (primary)
-                            primarySw.setChecked(true);
-                    }
-                }
-                else
-                {
-                    Log.w("ERR", "Error getting documents.", task.getException());
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Log.e("ERR2", "Error getting documents.", e);
-            }
-        });
-    }
-
-    public void addCar(Car car)
-    {
-        Map<String, Object> mapa = new HashMap<>();
-        mapa.put("marka", car.getMarka());
-        mapa.put("model", car.getModel());
-        mapa.put("primary", car.isPrimary());
-        mapa.put("registrationNumber", car.getRegistrationNumber());
-        mapa.put("type", car.getType());
-        mapa.put("year", car.getYear());
-        db.collection("cars").document(documentId).update(mapa).addOnSuccessListener(new OnSuccessListener<Void>()
-        {
-            @Override
-            public void onSuccess(Void documentReference)
-            {
-                Log.d("TEST", "DocumentSnapshot added with ID");
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Log.d("ERROR", "Error: " + e.getMessage());
             }
         });
     }

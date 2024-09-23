@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
@@ -60,11 +61,26 @@ public class VerifyPanelAdapter extends RecyclerView.Adapter<VerifyPanelAdapter.
         SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         String formattedDate = df.format(date.getTime());
         holder.edited.setText(formattedDate);
+        GetTagData get = new GetTagData();
 
-        getAddressNominatim(documentSnapshotList.get(position).get("latitude") + "," + documentSnapshotList.get(position).get("longitude"),
+        get.getAddressHere(documentSnapshotList.get(position).get("latitude") + "," + documentSnapshotList.get(position).get("longitude"),
                 "FiyHNQAmeoWKRcEdp5KyYWOAaAKf-7hvtqkz--lGBDc", holder.adres);
 
-        getUser(uId, holder.user);
+        DatabaseManager dbm = new DatabaseManager();
+        Query q = db.collection("users").whereEqualTo("uId", uId);
+
+        dbm.getElements(q, new OnElementsGet()
+        {
+            @Override
+            public void setOnElementsGet(List<DocumentSnapshot> documentSnapshotList)
+            {
+                for (DocumentSnapshot ds : documentSnapshotList)
+                {
+                    holder.user.setText(ds.getString("nick"));
+                }
+            }
+        });
+
         holder.itemView.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -77,21 +93,6 @@ public class VerifyPanelAdapter extends RecyclerView.Adapter<VerifyPanelAdapter.
             }
         });
     }
-
-    public void getAddressNominatim(String geoPoint, String apiKey, TextView tv)
-    {
-        addressViewModel.getAddressVM(geoPoint, apiKey).observeForever(new Observer<Address>()
-        {
-            @Override
-            public void onChanged(Address address)
-            {
-                Log.i("ADRES", address.getItems().get(0).getTitle());
-                String addressStr = address.getItems().get(0).getTitle();
-                tv.setText(addressStr);
-            }
-        });
-    }
-
     @Override
     public int getItemCount()
     {
@@ -114,30 +115,5 @@ public class VerifyPanelAdapter extends RecyclerView.Adapter<VerifyPanelAdapter.
             user = itemView.findViewById(R.id.tv_user);
             adres = itemView.findViewById(R.id.tv_adres);
         }
-    }
-
-    public void getUser(String uId, TextView userTV)
-    {
-        db.collection("users").whereEqualTo("uId", uId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
-        {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task)
-            {
-                if (task.isSuccessful())
-                {
-                    for (DocumentSnapshot ds : task.getResult().getDocuments())
-                    {
-                        userTV.setText(ds.getString("nick"));
-                    }
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-
-            }
-        });
     }
 }

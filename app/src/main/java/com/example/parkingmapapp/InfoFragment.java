@@ -1,13 +1,10 @@
 package com.example.parkingmapapp;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 
 import android.util.Log;
@@ -17,22 +14,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.Map;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -51,11 +41,11 @@ public class InfoFragment extends Fragment
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    AddressViewModel addressViewModel;
+
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    String addressStr;
     Button reserve;
     String keyId;
+    private final String API_KEY = "FiyHNQAmeoWKRcEdp5KyYWOAaAKf-7hvtqkz--lGBDc";
 
     public InfoFragment() {
         // Required empty public constructor
@@ -94,7 +84,6 @@ public class InfoFragment extends Fragment
         Button route;
         TextView info;
         Button infosp;
-        addressViewModel = new AddressViewModel();
 
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_info, container, false);
@@ -104,20 +93,44 @@ public class InfoFragment extends Fragment
         reserve = v.findViewById(R.id.btn_reservation);
 
         assert getArguments() != null;
-        Utils u = (Utils) getArguments().getSerializable("OBJECT");
+        RouteManager rm = (RouteManager) getArguments().getSerializable("ROUTE");
         keyId = getArguments().getString("KEYID");
         Parking p = (Parking) getArguments().getSerializable("PARKING");
         boolean verified = getArguments().getBoolean("VERIFIED");
 
-        getInfo(keyId, info);
+        DatabaseManager dbm = new DatabaseManager();
+        GetTagData get = new GetTagData();
+
+        Query q = db.collection("parkings").whereEqualTo("id", keyId);
+        dbm.getElements(q, new OnElementsGet()
+        {
+            @Override
+            public void setOnElementsGet(List<DocumentSnapshot> documentSnapshotList)
+            {
+                for (DocumentSnapshot d : documentSnapshotList)
+                {
+                    get.getAddressHere(d.get("latitude") + "," + d.get("longitude"),
+                            API_KEY, info);
+
+                    if (Objects.equals(d.getString("fee"), "yes") &&
+                            !(Objects.requireNonNull(d.getString("kwota")).isEmpty()))
+                    {
+                        reserve.setVisibility(View.VISIBLE);
+                        setReserve(reserve);
+                    }
+
+                    Log.i("EXDE", (String) Objects.requireNonNull(d.get("name")));
+                }
+            }
+        });
 
         route.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                assert u != null;
-                u.setRoute();
+                assert rm != null;
+                rm.setRoute();
             }
         });
         infosp.setOnClickListener(new View.OnClickListener()
@@ -128,7 +141,6 @@ public class InfoFragment extends Fragment
                 Intent intent = new Intent(requireActivity().getApplicationContext(), ParkingInfoActivity.class);
                 intent.putExtra("KEYID", keyId);
                 intent.putExtra("PARKING", p);
-                intent.putExtra("ADDRESS", addressStr);
                 startActivity(intent);
             }
         });
@@ -136,46 +148,6 @@ public class InfoFragment extends Fragment
         return v;
     }
 
-    public void getInfo(String id, TextView info)
-    {
-        db.collection("parkings").whereEqualTo("id", id).addSnapshotListener(new EventListener<QuerySnapshot>()
-        {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error)
-            {
-                assert value != null;
-                for (DocumentChange d : value.getDocumentChanges())
-                {
-                    getAddressNominatim(d.getDocument().get("latitude") + "," + d.getDocument().get("longitude"),
-                            "FiyHNQAmeoWKRcEdp5KyYWOAaAKf-7hvtqkz--lGBDc", info);
-
-                    if (Objects.equals(d.getDocument().getString("fee"), "yes") && !(Objects.requireNonNull(d.getDocument().getString("kwota")).isEmpty()))
-                    {
-                        reserve.setVisibility(View.VISIBLE);
-                        setReserve(reserve);
-                    }
-
-                    Log.i("TYP", String.valueOf(d.getType()));
-                    Log.i("EXDE", (String) Objects.requireNonNull(d.getDocument().get("name")));
-                }
-            }
-        });
-    }
-
-    public void getAddressNominatim(String geoPoint, String apiKey, TextView info)
-    {
-        addressViewModel.getAddressVM(geoPoint, apiKey).observeForever(new Observer<Address>()
-        {
-            @Override
-            public void onChanged(Address address)
-            {
-                Log.i("ADRES", address.getItems().get(0).getTitle());
-                Log.i("ADRESADRADRADR", address.getItems().get(0).getTitle());
-                info.setText(address.getItems().get(0).getTitle());
-                addressStr = address.getItems().get(0).getTitle();
-            }
-        });
-    }
     public void setReserve(Button reserve)
     {
         reserve.setOnClickListener(new View.OnClickListener()
