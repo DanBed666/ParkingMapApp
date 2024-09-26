@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -74,13 +75,14 @@ public class ParkingInfoActivity extends AppCompatActivity
         Button btnHarm = findViewById(R.id.btn_harm);
         TextView price = findViewById(R.id.tv_price);
         TextView nickVer = findViewById(R.id.tv_ver);
+        Button delete = findViewById(R.id.btn_delete);
 
         id = getIntent().getStringExtra("KEYID");
         Parking p = (Parking) getIntent().getSerializableExtra("PARKING");
         String adr = getIntent().getStringExtra("ADDRESS");
 
         TextView [] textViews = new TextView[]{name, parking, capacity, fee, supervised, operator, access,
-        capacityDis, capacityTru, capacityBus, capacityMoto, price, created_date, edited_date, verified_date, status, userTV};
+        capacityDis, capacityTru, capacityBus, capacityMoto, price, created_date, edited_date, verified_date, status, userTV, nickVer};
 
         assert id != null;
         Log.i("PARKING_ID", id);
@@ -116,6 +118,18 @@ public class ParkingInfoActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
+
+        delete.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                DatabaseManager dbm = new DatabaseManager();
+                dbm.deleteElement("parkings", id);
+                Toast.makeText(getApplicationContext(), "Parking został usunięty", Toast.LENGTH_SHORT);
+                finish();
+            }
+        });
     }
 
     public void getElementsFromDB(String col, TextView [] textViews, Button btnHarm)
@@ -138,8 +152,6 @@ public class ParkingInfoActivity extends AppCompatActivity
 
     public void loadData(DocumentSnapshot document, TextView [] textViews, Button btnHarm)
     {
-        Log.d("LOL", document.getId() + " => " + document.getData());
-        Log.i("XD", document.getId() + " => " + document.getData());
         String nam = (String) document.getData().get("name");
         String pkg = (String) document.getData().get("pking");
         String cpc = (String) document.getData().get("capacity");
@@ -158,6 +170,8 @@ public class ParkingInfoActivity extends AppCompatActivity
         String verifiedDate = (String) document.getData().get("dataVerified");
         String stat = (String) document.getData().get("status");
         String user = (String) document.getData().get("uId");
+
+        //String user = (String) document.getData().get("uId");
 
         if (sup.equals("yes"))
         {
@@ -194,6 +208,7 @@ public class ParkingInfoActivity extends AppCompatActivity
 
         documentId = document.getId();
         getUser(user, textViews[16]);
+        getUser(user, textViews[17]);
     }
 
     public void getUser(String uId, TextView userTV)
@@ -213,7 +228,6 @@ public class ParkingInfoActivity extends AppCompatActivity
             }
         });
     }
-
     @Override
     protected void onRestart()
     {

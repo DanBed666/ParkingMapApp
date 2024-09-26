@@ -182,8 +182,6 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                 for (DocumentSnapshot document : documentSnapshotList)
                 {
                     //Get values from database and intialize it to spinners, editTexts
-                    Log.d("LOL", document.getId() + " => " + document.getData());
-                    Log.i("XD", document.getId() + " => " + document.getData());
                     String nam = (String) document.getData().get("name");
                     String pkg = (String) document.getData().get("pking");
                     String cpc = (String) document.getData().get("capacity");
@@ -257,6 +255,7 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                 mapa.put("harmonogram", schedule);
                 mapa.put("kwota", price);
                 mapa.put("action", "Edytowano");
+                mapa.put("sample", false);
 
                 //checkIfExists(id);
 
@@ -284,7 +283,7 @@ public class EditParkingInfoActivity extends AppCompatActivity implements HarmVa
                         fee, supervised, operator, lat, lon, created,
                         get.getActualDate(), "", "Edytowano",
                         schedule, price, false, "Oczekujący",
-                        Calendar.getInstance().getTime(), false);
+                        Calendar.getInstance().getTime(), false, "xyz");
 
                 Log.i("EDS", editedId);
 

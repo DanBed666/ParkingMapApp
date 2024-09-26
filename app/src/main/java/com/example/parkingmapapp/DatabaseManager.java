@@ -39,7 +39,7 @@ public class DatabaseManager
             @Override
             public void onSuccess(Void unused)
             {
-                Log.i("CREATED", "created");
+                Log.i("ADDED", "added");
             }
         }).addOnFailureListener(new OnFailureListener()
         {
@@ -59,7 +59,27 @@ public class DatabaseManager
             @Override
             public void onSuccess(Void unused)
             {
-                Log.i("CREATED", "created");
+                Log.i("EDITED", "edited");
+            }
+        }).addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+                Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
+            }
+        });
+    }
+
+    public void deleteElement(String collection, String id)
+    {
+        db.collection(collection).document(id).delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>()
+        {
+            @Override
+            public void onSuccess(Void unused)
+            {
+                Log.i("DELETED", "deleted");
             }
         }).addOnFailureListener(new OnFailureListener()
         {

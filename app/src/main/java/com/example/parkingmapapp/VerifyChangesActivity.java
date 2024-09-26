@@ -179,7 +179,7 @@ public class VerifyChangesActivity extends AppCompatActivity
 
                         Parking newParking = new Parking(uId, id, editId, name, parking, access, capacity, capacityDis, capacityTru, capacityBus, capacityMoto,
                                 fee, supervised, operator, lat, lon, created, edited, get.getActualDate(), "Utworzono",
-                                schedule, price, true, "Zweryfikowany", Calendar.getInstance().getTime(), false);
+                                schedule, price, true, "Zweryfikowany", Calendar.getInstance().getTime(), false, "xyz");
 
                         //Pass button
                         buttons[2].setOnClickListener(new View.OnClickListener()

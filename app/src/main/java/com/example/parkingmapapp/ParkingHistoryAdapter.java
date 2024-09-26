@@ -32,13 +32,15 @@ public class ParkingHistoryAdapter extends RecyclerView.Adapter<ParkingHistoryAd
     String edit;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     AddressViewModel addressViewModel;
+    RefreshListener refreshListener;
 
-    public ParkingHistoryAdapter(Context context, List<DocumentSnapshot> documentSnapshotList, String edit)
+    public ParkingHistoryAdapter(Context context, List<DocumentSnapshot> documentSnapshotList, String edit, RefreshListener refresh)
     {
         this.context = context;
         this.documentSnapshotList = documentSnapshotList;
         this.edit = edit;
         addressViewModel = new AddressViewModel();
+        this.refreshListener = refresh;
     }
 
     @NonNull

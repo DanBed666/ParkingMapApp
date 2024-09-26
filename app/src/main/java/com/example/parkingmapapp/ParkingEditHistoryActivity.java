@@ -29,12 +29,13 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.List;
 import java.util.Objects;
 
-public class ParkingEditHistoryActivity extends AppCompatActivity
+public class ParkingEditHistoryActivity extends AppCompatActivity implements RefreshListener
 {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     RecyclerView recyclerView;
     String id;
     String edit = "nic";
+    RefreshListener refreshListener;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -56,6 +57,8 @@ public class ParkingEditHistoryActivity extends AppCompatActivity
         {
             edit = getIntent().getStringExtra("EDIT");
         }
+
+        refreshListener = this;
 
         showHistory();
     }
@@ -84,7 +87,8 @@ public class ParkingEditHistoryActivity extends AppCompatActivity
             public void setOnElementsGet(List<DocumentSnapshot> documentSnapshotList)
             {
                 Log.i("HISTORY", String.valueOf(documentSnapshotList.size()));
-                ParkingHistoryAdapter parkingHistoryAdapter = new ParkingHistoryAdapter(getApplicationContext(), documentSnapshotList, edit);
+                ParkingHistoryAdapter parkingHistoryAdapter = new ParkingHistoryAdapter(getApplicationContext(),
+                        documentSnapshotList, edit, refreshListener);
                 recyclerView.setAdapter(parkingHistoryAdapter);
                 parkingHistoryAdapter.notifyDataSetChanged();
             }
@@ -95,6 +99,15 @@ public class ParkingEditHistoryActivity extends AppCompatActivity
     protected void onRestart()
     {
         super.onRestart();
+        finish();
+        overridePendingTransition(0, 0);
+        startActivity(getIntent());
+        overridePendingTransition(0, 0);
+    }
+
+    @Override
+    public void refresh()
+    {
         finish();
         overridePendingTransition(0, 0);
         startActivity(getIntent());

@@ -57,6 +57,7 @@ public class KMLStyler implements KmlFeature.Styler
         String id = kmlPlacemark.mId;
         ParkingManager pm = new ParkingManager();
         pm.addSampleParkings(id, kmlPlacemark, kmlPoint.getPosition());
+        Log.i("FUNKCJA", "wykon");
 
         FragmentInfoManager fragmentInfoManager = new FragmentInfoManager
                 (context, map, startPoint, listener, true);
@@ -74,6 +75,7 @@ public class KMLStyler implements KmlFeature.Styler
     {
         polygon.setVisible(false);
         String id = kmlPlacemark.mId;
+        Log.i("FUNKCJA", "wykon");
 
         double latitude = kmlPolygon.getBoundingBox().getCenterLatitude();
         double longitude = kmlPolygon.getBoundingBox().getCenterLongitude();

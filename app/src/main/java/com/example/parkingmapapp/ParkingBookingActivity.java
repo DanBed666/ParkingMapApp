@@ -29,7 +29,7 @@ public class ParkingBookingActivity extends AppCompatActivity
 {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String id;
-    Intent intent = new Intent(getApplicationContext(), PaymentActivity.class);
+    Intent intent;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -46,6 +46,8 @@ public class ParkingBookingActivity extends AppCompatActivity
         Button pay = findViewById(R.id.btn_pay);
         Button pay2 = findViewById(R.id.btn_pay2);
         Button pay3 = findViewById(R.id.btn_pay3);
+
+        intent = new Intent(getApplicationContext(), PaymentActivity.class);
 
         id = getIntent().getStringExtra("KEYID");
 

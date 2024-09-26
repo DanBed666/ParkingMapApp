@@ -154,13 +154,18 @@ public class MapActivity extends AppCompatActivity implements MapEventsReceiver,
             @Override
             public void onClick(View v)
             {
-                Intent intent = new Intent(getApplicationContext(), FindParkingsActivity.class);
-                Log.i("MAPA", String.valueOf(map == null));
+                FindParkingsFragment fragment = new FindParkingsFragment();
                 ParkingManager pm = new ParkingManager(lm.getMyLocation(), getApplicationContext(), map, listener);
                 Bundle b = new Bundle();
                 b.putSerializable("PM", pm);
-                intent.putExtras(b);
-                startActivity(intent);
+
+                fragment.setArguments(b);
+
+                getSupportFragmentManager().beginTransaction().
+                        setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                        .show(fragment)
+                        .replace(R.id.fragment2, fragment)
+                        .commit();
             }
         });
     }

@@ -202,7 +202,7 @@ public class AddParkingActivity extends AppCompatActivity implements HarmValueLi
                 capacityDis, capacityTru, capacityBus, capacityMoto,
                 fee, supervised, operator, location.getLatitude(), location.getLongitude(),
                 get.getActualDate(), "", "", "Utworzono",
-                schedule, prize, false, "Oczekujący", Calendar.getInstance().getTime(), false);
+                schedule, prize, false, "Oczekujący", Calendar.getInstance().getTime(), false, "xyz");
 
         Intent intent = new Intent(getApplicationContext(), MapActivity.class);
         intent.putExtra("MyData", "created");

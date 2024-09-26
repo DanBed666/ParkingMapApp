@@ -40,7 +40,7 @@ public class PaymentActivity extends AppCompatActivity
 {
     private final String PUBLIC_KEY = "pk_test_51Pj6PVRrVVwJdPXUYAxptYWgjXZowfZ3UrCllUVMykgq0zeoo7ux78GMQkrrS4mrniOwEI0ZOZxfdT9hX8XGUpkI00hExNrw5a";
     PaymentSheet paymentSheet;
-    String id;
+    String parkingId;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     PaymentManager paymentManager = new PaymentManager();
     String finalPriceStr;
@@ -68,7 +68,7 @@ public class PaymentActivity extends AppCompatActivity
             onPaymentResult(paymentSheetResult);
         });
 
-        id = getIntent().getStringExtra("KEYID");
+        parkingId = getIntent().getStringExtra("KEYID");
         String price = getIntent().getStringExtra("PRICE");
         hours = getIntent().getIntExtra("HOURS", 0);
 
@@ -107,11 +107,11 @@ public class PaymentActivity extends AppCompatActivity
             Toast.makeText(getApplicationContext(), "Płatność zakończona sukcesem!",
                     Toast.LENGTH_SHORT).show();
             String ticketId = get.generateTicketId();
+            createTicket(ticketId);
             Intent intent = new Intent(getApplicationContext(), TicketActivity.class);
             intent.putExtra("TICKETID", ticketId);
+            intent.putExtra("PARKINGID", parkingId);
             startActivity(intent);
-            Ticket ticket = new Ticket(user.getUid(), get.getActualDate(), get.getValidDate(hours), ticketId);
-            dbm.addElement("tickets", user.getUid(), ticket);
             finish();
         }
         else if (paymentSheetResult instanceof PaymentSheetResult.Failed)
@@ -124,5 +124,12 @@ public class PaymentActivity extends AppCompatActivity
         {
             Toast.makeText(getApplicationContext(), "Payment Cancelled", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void createTicket(String ticketId)
+    {
+        Ticket ticket = new Ticket(user.getUid(), get.getActualDate(),
+                get.getValidDate(hours), ticketId, parkingId);
+        dbm.addElement("tickets", ticketId, ticket);
     }
 }

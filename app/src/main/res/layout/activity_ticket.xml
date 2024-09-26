@@ -19,8 +19,8 @@
         android:id="@+id/imageCode"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="100dp"/>
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="50dp"/>
 
     <TextView
         android:id="@+id/ticket_id"
@@ -28,23 +28,41 @@
         android:layout_height="wrap_content"
         android:textSize="20dp"
         android:textAlignment="center"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="30dp"
         android:text="Bilet na parking"/>
 
     <TextView
-        android:id="@+id/info"
+        android:id="@+id/adres"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:textAlignment="center"
+        android:layout_marginTop="30dp"
+        android:text="Bilet na parking"/>
+
+    <TextView
+        android:id="@+id/ticket_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="20dp"
         android:textAlignment="center"
         android:layout_marginTop="10dp"
-        android:text="Valid thru"/>
+        android:text="Data kupna"/>
+
+    <TextView
+        android:id="@+id/ticket_valid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:textAlignment="center"
+        android:layout_marginTop="10dp"
+        android:text="Ważny do"/>
 
     <Button
         android:id="@+id/btn_back"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="70dp"
-        android:text="powrot"/>
+        android:layout_marginTop="20dp"
+        android:text="Zamknij"/>
 
 </LinearLayout>

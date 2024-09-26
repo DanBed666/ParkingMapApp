@@ -26,7 +26,6 @@ public class LocationManager implements Serializable
 
     public void showMyLocation(MapView map)
     {
-        Log.i("MAPA", String.valueOf(map == null));
         mLocationOverlay.enableFollowLocation();
         map.getOverlays().add(mLocationOverlay);
         map.getController().setZoom(18.0);

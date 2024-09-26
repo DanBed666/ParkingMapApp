@@ -1,6 +1,10 @@
 package com.example.parkingmapapp;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
 
 import org.osmdroid.bonuspack.routing.OSRMRoadManager;
 import org.osmdroid.bonuspack.routing.Road;
@@ -13,7 +17,7 @@ import org.osmdroid.views.overlay.Polyline;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class RouteManager implements Serializable
+public class RouteManager implements Serializable, Parcelable
 {
     Polyline roadOverlay;
     Context context;
@@ -45,5 +49,36 @@ public class RouteManager implements Serializable
     {
         map.getOverlays().remove(roadOverlay);
         map.invalidate();
+    }
+
+    protected RouteManager(Parcel in)
+    {
+        startPoint = in.readParcelable(GeoPoint.class.getClassLoader());
+        endPoint = in.readParcelable(GeoPoint.class.getClassLoader());
+    }
+
+    public static final Creator<ParkingManager> CREATOR = new Creator<ParkingManager>() {
+        @Override
+        public ParkingManager createFromParcel(Parcel in) {
+            return new ParkingManager(in);
+        }
+
+        @Override
+        public ParkingManager[] newArray(int size) {
+            return new ParkingManager[size];
+        }
+    };
+
+    @Override
+    public int describeContents()
+    {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags)
+    {
+        dest.writeParcelable(startPoint, flags);
+        dest.writeParcelable(endPoint, flags);
     }
 }

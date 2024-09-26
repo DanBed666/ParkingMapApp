@@ -155,7 +155,6 @@ public class FindParkingsActivity extends AppCompatActivity
                     findingQuery = findingQuery.whereLessThan("capacity", capacityET.getText().toString());
                 }
 
-                assert pm != null;
                 pm.findParkings(findingTag);
                 pm.findParkingsDB(findingQuery);
 

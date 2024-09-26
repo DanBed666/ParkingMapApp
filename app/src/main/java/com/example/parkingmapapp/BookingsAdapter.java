@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,6 +32,7 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.Bookin
     AddressViewModel addressViewModel;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     RefreshListener refreshListener;
+    private final String API_KEY = "FiyHNQAmeoWKRcEdp5KyYWOAaAKf-7hvtqkz--lGBDc";
     public BookingsAdapter(Context applicationContext, List<DocumentSnapshot> example, RefreshListener listener)
     {
         context = applicationContext;
@@ -49,15 +51,18 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.Bookin
     @Override
     public void onBindViewHolder(@NonNull BookingsAdapter.BookingsViewHolder holder, int position)
     {
-        holder.data.setText(exampleList.get(position).getString("reservationDate"));
         String ticketId = exampleList.get(position).getString("ticketId");
+        String parkingId = exampleList.get(position).getString("parkingId");
+        String data = exampleList.get(position).getString("reservationDate");
+        String validThruDate = exampleList.get(position).getString("validThruDate");
 
-        GetTagData get = new GetTagData();
+        holder.data.setText(data);
+        holder.id.setText(ticketId);
+        holder.isValid.setText("Ważny do: " + validThruDate);
 
-        get.getAddressHere(exampleList.get(position).getDouble("latitude") + "," + exampleList.get(position).getDouble("longitude"),
-                "FiyHNQAmeoWKRcEdp5KyYWOAaAKf-7hvtqkz--lGBDc", holder.adres);
+        getAddress(parkingId, holder.adres);
 
-        if(!checkValidity(exampleList.get(position).getString("validThruDate")))
+        if(!checkValidity(validThruDate))
         {
             holder.isValid.setText("Bilet nieważny!");
             holder.delete.setVisibility(View.VISIBLE);
@@ -67,23 +72,7 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.Bookin
                 @Override
                 public void onClick(View v)
                 {
-                    assert ticketId != null;
-                    db.collection("tickets").document(ticketId).delete().addOnSuccessListener(new OnSuccessListener<Void>()
-                    {
-                        @Override
-                        public void onSuccess(Void unused)
-                        {
-                            Log.i("CREATED", "usunieto");
-                            refreshListener.refresh();
-                        }
-                    }).addOnFailureListener(new OnFailureListener()
-                    {
-                        @Override
-                        public void onFailure(@NonNull Exception e)
-                        {
-                            Log.i("CREATED", e.getMessage());
-                        }
-                    });
+                    deleteTicket(ticketId);
                 }
             });
         }
@@ -95,6 +84,7 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.Bookin
             {
                 Intent intent = new Intent(context, TicketActivity.class);
                 intent.putExtra("TICKETID", ticketId);
+                intent.putExtra("PARKINGID", parkingId);
                 context.startActivity(intent);
             }
         });
@@ -146,5 +136,45 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.Bookin
         }
 
         return isValid;
+    }
+
+    public void getAddress(String parkingId, TextView adresTV)
+    {
+        GetTagData get = new GetTagData();
+        DatabaseManager dbm = new DatabaseManager();
+        Query q2 = db.collection("parkings").whereEqualTo("id", parkingId);
+        dbm.getElements(q2, new OnElementsGet()
+        {
+            @Override
+            public void setOnElementsGet(List<DocumentSnapshot> documentSnapshotList)
+            {
+                for (DocumentSnapshot d : documentSnapshotList)
+                {
+                    get.getAddressHere(d.get("latitude") + "," + d.get("longitude"),
+                            API_KEY, adresTV);
+                }
+            }
+        });
+    }
+
+    public void deleteTicket(String ticketId)
+    {
+        assert ticketId != null;
+        db.collection("tickets").document(ticketId).delete().addOnSuccessListener(new OnSuccessListener<Void>()
+        {
+            @Override
+            public void onSuccess(Void unused)
+            {
+                Log.i("CREATED", "usunieto");
+                refreshListener.refresh();
+            }
+        }).addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+                Log.i("CREATED", e.getMessage());
+            }
+        });
     }
 }

@@ -8,12 +8,22 @@ public class Ticket
     String reservationDate;
     String validThruDate;
     String ticketId;
+    String parkingId;
 
-    public Ticket(String uId, String reservationDate, String validThruDate, String ticketId) {
+    public Ticket(String uId, String reservationDate, String validThruDate, String ticketId, String parkingId) {
         this.uId = uId;
         this.reservationDate = reservationDate;
         this.validThruDate = validThruDate;
         this.ticketId = ticketId;
+        this.parkingId = parkingId;
+    }
+
+    public String getParkingId() {
+        return parkingId;
+    }
+
+    public void setParkingId(String parkingId) {
+        this.parkingId = parkingId;
     }
 
     public String getValidThruDate() {

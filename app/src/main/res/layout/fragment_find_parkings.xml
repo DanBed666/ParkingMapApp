@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fillViewport="true">
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".FindParksOptionsFragment"
+        android:background="#FFF000">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:ignore="UselessParent">
+
+            <Button
+                android:id="@+id/btn_close"
+                android:layout_width="55dp"
+                android:layout_height="50dp"
+                android:text="X"
+                app:cornerRadius="0dp"
+                android:layout_marginLeft="320dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="22dp"
+                android:textAlignment="center"
+                android:text="Znajdź parking"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="22dp"
+                android:layout_marginTop="10dp"
+                android:textAlignment="center"
+                android:text="Typ parkingu"/>
+
+            <Spinner
+                android:id="@+id/spinner_type"
+                android:layout_height="wrap_content"
+                android:layout_width="280dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="10dp"
+                android:spinnerMode="dropdown"
+                android:background="@android:drawable/btn_dropdown"
+                android:theme="@style/ThemeOverlay.AppCompat.Light"
+                android:layout_marginTop="10dp"
+                android:entries="@array/types"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="22dp"
+                android:textAlignment="center"
+                android:text="Dostęp"/>
+
+            <Spinner
+                android:id="@+id/spinner_access"
+                android:layout_height="50dp"
+                android:layout_width="280dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="10dp"
+                android:spinnerMode="dropdown"
+                android:background="@android:drawable/btn_dropdown"
+                android:theme="@style/ThemeOverlay.AppCompat.Light"
+                android:layout_marginTop="10dp"
+                android:entries="@array/access"/>
+
+            <EditText
+                android:id="@+id/et_capacity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="10dp"
+                android:hint="Wielkość parkingu (liczba miejsc)"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="22dp"
+                android:textAlignment="center"
+                android:text="Parking płatny"/>
+
+            <Spinner
+                android:id="@+id/spinner_fee"
+                android:layout_height="50dp"
+                android:layout_width="280dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="10dp"
+                android:spinnerMode="dropdown"
+                android:background="@android:drawable/btn_dropdown"
+                android:theme="@style/ThemeOverlay.AppCompat.Light"
+                android:layout_marginTop="10dp"
+                android:entries="@array/options"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="22dp"
+                android:textAlignment="center"
+                android:text="Parking strzeżony"/>
+
+            <Spinner
+                android:id="@+id/spinner_supervised"
+                android:layout_height="50dp"
+                android:layout_width="280dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="10dp"
+                android:spinnerMode="dropdown"
+                android:background="@android:drawable/btn_dropdown"
+                android:theme="@style/ThemeOverlay.AppCompat.Light"
+                android:layout_marginTop="10dp"
+                android:entries="@array/options"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="22dp"
+                android:textAlignment="center"
+                android:text="Miejsca dla niepełnosprawnych"/>
+
+            <Spinner
+                android:id="@+id/spinner_disabled"
+                android:layout_height="50dp"
+                android:layout_width="280dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="10dp"
+                android:spinnerMode="dropdown"
+                android:background="@android:drawable/btn_dropdown"
+                android:theme="@style/ThemeOverlay.AppCompat.Light"
+                android:layout_marginTop="10dp"
+                android:entries="@array/options"/>
+
+            <TextView
+                android:id="@+id/tv_tir"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="22dp"
+                android:textAlignment="center"
+                android:text="Miejsca dla tirów"/>
+
+            <Spinner
+                android:id="@+id/spinner_truck"
+                android:layout_height="50dp"
+                android:layout_width="280dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="10dp"
+                android:spinnerMode="dropdown"
+                android:background="@android:drawable/btn_dropdown"
+                android:theme="@style/ThemeOverlay.AppCompat.Light"
+                android:layout_marginTop="10dp"
+                android:entries="@array/options"/>
+
+            <TextView
+                android:id="@+id/tv_bus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="22dp"
+                android:textAlignment="center"
+                android:text="Miejsca dla busów"/>
+
+            <Spinner
+                android:id="@+id/spinner_bus"
+                android:layout_height="50dp"
+                android:layout_width="280dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="10dp"
+                android:spinnerMode="dropdown"
+                android:background="@android:drawable/btn_dropdown"
+                android:theme="@style/ThemeOverlay.AppCompat.Light"
+                android:layout_marginTop="10dp"
+                android:entries="@array/options"/>
+
+            <TextView
+                android:id="@+id/tv_moto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="22dp"
+                android:textAlignment="center"
+                android:text="Miejsca dla motocykli"/>
+
+            <Spinner
+                android:id="@+id/spinner_moto"
+                android:layout_height="50dp"
+                android:layout_width="280dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="10dp"
+                android:spinnerMode="dropdown"
+                android:background="@android:drawable/btn_dropdown"
+                android:theme="@style/ThemeOverlay.AppCompat.Light"
+                android:layout_marginTop="10dp"
+                android:entries="@array/options"/>
+
+            <Button
+                android:id="@+id/btn_find"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="SZUKAJ"
+                android:layout_marginTop="10dp"/>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</ScrollView>

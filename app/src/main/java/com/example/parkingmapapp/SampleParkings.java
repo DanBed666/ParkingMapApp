@@ -53,8 +53,9 @@ public class SampleParkings
 
         Parking parking = new Parking("xyz123", id, "editId", nm, pk, acc, cpc, cpcd, cpct, cpcb, cpcm, fee, svd, ope,
                 lat, lon, "18-03-2024 18:19", "28-06-2024 06:47", "28-06-2024 09:27", "Edytowano",
-                getExampleHarm(), price, true, "Zweryfikowany", Calendar.getInstance().getTime(), true);
+                getExampleHarm(), price, true, "Zweryfikowany", Calendar.getInstance().getTime(), true, "xyz");
 
+        Log.i("NIEMA2", "wykon");
         DatabaseManager databaseManager = new DatabaseManager();
         databaseManager.addElement("parkings", id, parking);
     }

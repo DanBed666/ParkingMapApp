@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.stripe.model.tax.Registration;
 
 import org.osmdroid.bonuspack.kml.KmlDocument;
 import org.osmdroid.bonuspack.kml.KmlPlacemark;
@@ -38,6 +39,7 @@ public class ParkingManager implements Serializable, Parcelable
     FragmentInterface listener;
     DatabaseManager dbm;
     GetTagData get;
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     public ParkingManager(GeoPoint s, Context c, MapView m, FragmentInterface l)
     {
         startPoint = s;
@@ -54,7 +56,6 @@ public class ParkingManager implements Serializable, Parcelable
     }
     public void findParkings(String tag)
     {
-        Log.i("MAPA", String.valueOf(map == null));
         GeoPoint location = startPoint;
         OverpassAPIProvider overpassProvider = new OverpassAPIProvider();
         BoundingBox range = new BoundingBox(location.getLatitude() + 0.05, location.getLongitude() + 0.05,
@@ -124,7 +125,6 @@ public class ParkingManager implements Serializable, Parcelable
     {
         DatabaseManager dbm = new DatabaseManager();
         GetTagData get = new GetTagData();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         Query q = db.collection("users").whereEqualTo("uId", user.getUid());
         dbm.getElements(q, new OnElementsGet()
         {
@@ -139,6 +139,7 @@ public class ParkingManager implements Serializable, Parcelable
                         newParking.setVerified(true);
                         newParking.setStatus("Zweryfikowany");
                         newParking.setDataVerified(get.getActualDate());
+                        newParking.setuIdVer(user.getUid());
                         dbm.addElement("parkings", id, newParking);
                         dbm.addElement("edits", editId, newParking);
                     }
@@ -174,6 +175,7 @@ public class ParkingManager implements Serializable, Parcelable
                         newParking2.setVerified(true);
                         newParking2.setStatus("Zweryfikowany");
                         newParking2.setDataVerified(get.getActualDate());
+                        newParking2.setuIdVer(user.getUid());
                         dbm.editElement("parkings", documentId, mapa);
                         dbm.addElement("edits", editedId, newParking2);
                     }
@@ -196,6 +198,7 @@ public class ParkingManager implements Serializable, Parcelable
             mapa.put("verified", true);
             mapa.put("status", "Zweryfikowany");
             mapa.put("dataVerified", get.getActualDate());
+            mapa.put("uIdVer", user.getUid());
             dbm.editElement("edits", ids[1], mapa); //editId
         }
         else
@@ -204,6 +207,7 @@ public class ParkingManager implements Serializable, Parcelable
             mapa.put("verified", true);
             mapa.put("status", "Zweryfikowany");
             mapa.put("dataVerified", get.getActualDate());
+            mapa.put("uIdVer", user.getUid());
             dbm.editElement("parkings", ids[0], mapa); //id
             dbm.editElement("edits", ids[1], mapa); //editId
         }
@@ -235,23 +239,26 @@ public class ParkingManager implements Serializable, Parcelable
         mapa.put("dataEdited", get.getActualDate());
         mapa.put("harmonogram", ds.get("harmonogram"));
         mapa.put("kwota", ds.getString("kwota"));
+        mapa.put("sample", ds.getString("sample"));
     }
 
     public void addSampleParkings(String id, KmlPlacemark kmlPlacemark, GeoPoint position)
     {
-        Query query = db.collection("parkings");
+        Query query = db.collection("parkings").whereEqualTo("id", id);
         dbm.getElements(query, new OnElementsGet()
         {
             @Override
             public void setOnElementsGet(List<DocumentSnapshot> documentSnapshotList)
             {
-                for (DocumentSnapshot ds : documentSnapshotList)
+                if (!documentSnapshotList.isEmpty())
                 {
-                    if (Objects.equals(ds.get("id"), id))
-                    {
-                        SampleParkings sampleParkings = new SampleParkings();
-                        sampleParkings.addSampleParkings(kmlPlacemark, position);
-                    }
+                    Log.i("DODANO", id  + "już istnieje");
+                }
+                else
+                {
+                    Log.i("NIEMA", "wykon");
+                    SampleParkings sampleParkings = new SampleParkings();
+                    sampleParkings.addSampleParkings(kmlPlacemark, position);
                 }
             }
         });

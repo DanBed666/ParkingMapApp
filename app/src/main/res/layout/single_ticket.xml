@@ -12,13 +12,6 @@
         android:textAlignment="center"/>
 
     <TextView
-        android:id="@+id/nazwa"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="26dp"
-        android:textAlignment="center"/>
-
-    <TextView
         android:id="@+id/adres"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
